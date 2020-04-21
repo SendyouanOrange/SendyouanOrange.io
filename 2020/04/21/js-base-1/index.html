@@ -3,13 +3,16 @@
 <head>
   <meta charset="utf-8">
   
-  <title>js-base-1 › lic-blog</title>
+  <title>函数的柯里化 › lic-blog</title>
   <meta name="author" content="triumphLic">
+  
+  <meta name="description" content="定义函数柯里化是将一个多参数函数转换成嵌套的一元函数的过程
+例子1234567const curry = (func) =&amp;gt; &amp;#123;  return function (firstArg) &amp;#123;    return function (secondArg) &amp;#123;     ">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="js-base-1"/>
+  <meta property="og:title" content="函数的柯里化"/>
   <meta property="og:site_name" content="lic-blog"/>
 
   
@@ -32,8 +35,6 @@
   <nav id="main-nav">
     <ul>
       
-      <li><a href="/archives">Archives</a></li>
-      
     </ul>
     <div class="clearfix"></div>
   </nav>
@@ -46,7 +47,7 @@
     <header>
       
   
-    <h1 class="title">js-base-1</h1>
+    <h1 class="title">函数的柯里化</h1>
   
 
       
@@ -55,7 +56,14 @@
     </header>
     <div class="entry">
       
-        
+        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>函数柯里化是将一个多参数函数转换成嵌套的一元函数的过程</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><em>例子</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function">(<span class="params">func</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">firstArg</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">secondArg</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> func (firstArg, secondArg)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="显而易见，它的实现原理：闭包"><a href="#显而易见，它的实现原理：闭包" class="headerlink" title="显而易见，它的实现原理：闭包"></a>显而易见，它的实现原理：闭包</h4><h4 id="现在有一个const-sum-a-b-gt-a-b函数，我们轻易的可以利用curry函数把sum函数柯里化"><a href="#现在有一个const-sum-a-b-gt-a-b函数，我们轻易的可以利用curry函数把sum函数柯里化" class="headerlink" title="现在有一个const sum = (a, b) =&gt; a + b函数，我们轻易的可以利用curry函数把sum函数柯里化"></a>现在有一个<code>const sum = (a, b) =&gt; a + b</code>函数，我们轻易的可以利用curry函数把sum函数<strong>柯里化</strong></h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> currySum = curry(sum)</span><br><span class="line">curry(<span class="number">1</span>)(<span class="number">2</span>)</span><br><span class="line"><span class="comment">// 3</span></span><br><span class="line">sum(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"><span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="多参数的柯里化"><a href="#多参数的柯里化" class="headerlink" title="多参数的柯里化"></a><em>多参数的柯里化</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function">(<span class="params">func</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> func !== <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">'argument is not function!'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">innerFunc</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(args)</span><br><span class="line">    <span class="keyword">if</span> (func.length &gt; args.length) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> innerFunc.apply(<span class="literal">null</span>, args.concat(<span class="built_in">Array</span>.from(<span class="built_in">arguments</span>)))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> func.apply(<span class="literal">null</span>, args)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><em>小结</em></h2><p>柯里化的实现和原理都很好搞懂，就是在实践中，如果遇到问题能够运用它解决一些问题才是实在的</p>
+
       
     </div>
       
@@ -94,20 +102,13 @@
 
 </div></div>
     <aside id="sidebar" class="alignright">
-  <div class="search">
-  <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Search">
-    <input type="hidden" name="q" value="site:sendyouanorange.github.io/SendyouanOrange.io">
-  </form>
-</div>
-
   
 <div class="widget tag">
   <h3 class="title">Recent Posts</h3>
   <ul class="entry">
     
       <li>
-        <a href="/SendyouanOrange.io/2020/04/21/js-base-1/">js-base-1</a>
+        <a href="/SendyouanOrange.io/2020/04/21/js-base-1/">函数的柯里化</a>
       </li>
     
       <li>
