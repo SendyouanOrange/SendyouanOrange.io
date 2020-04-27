@@ -45,7 +45,37 @@
     <header>
       
   
-    <h1 class="title"><a href="/SendyouanOrange.io/2020/04/22/js-base-1/">函数的柯里化</a></h1>
+    <h1 class="title"><a href="/SendyouanOrange.io/2020/04/27/js-base-2/">知识笔记 --组合和管道</a></h1>
+  
+
+      
+        <time datetime="2020-04-27T06:28:22.000Z">2020-04-27</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2>
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/SendyouanOrange.io/2020/04/22/js-base-1/">知识笔记 --函数的柯里化</a></h1>
   
 
       
@@ -95,10 +125,16 @@
 <h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><em>例子</em></h2><ul>
 <li>纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br></pre></td></tr></table></figure></li>
 <li>非纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">words = <span class="string">'hi'</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hi lic</span></span><br></pre></td></tr></table></figure>
-<h2 id="纯函数的扩展"><a href="#纯函数的扩展" class="headerlink" title="纯函数的扩展"></a><em>纯函数的扩展</em></h2></li>
+
+</li>
 </ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> g = <span class="function"><span class="keyword">function</span>(<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> f = <span class="function"><span class="keyword">function</span>(<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> g(b)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> cf = <span class="function"><span class="keyword">function</span>(<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> g(b)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="纯函数的扩展"><a href="#纯函数的扩展" class="headerlink" title="纯函数的扩展"></a><em>纯函数的扩展</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> g = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> f = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> g(b)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> cf = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> g(b)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>在上面的例子中<br>显而易见的是<code>g()</code>函数不是纯函数，<code>f()</code>函数也不是纯函数<br>但是，<code>cf()</code>函数却是纯函数，因为相同的输入，都会返回一个相同的函数。即使返回值是函数，那也符合纯函数的定义：输入一致，输出永远一致</p>
+<h2 id="能做什么"><a href="#能做什么" class="headerlink" title="能做什么"></a><em>能做什么</em></h2><p>因为输入一致的情况下输出是一致的，所以可以在函数内对输出做缓存,下面就是一个<code>memorize()</code>可以对一个纯函数做结果的缓存</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> memorize = <span class="function"><span class="keyword">function</span> (<span class="params">func</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> cache = &#123;&#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> key = <span class="built_in">JSON</span>.stringify(<span class="built_in">arguments</span>)</span><br><span class="line">    cache[key] = cache[key] || func.apply(<span class="literal">null</span>, <span class="built_in">Array</span>.from(<span class="built_in">arguments</span>))</span><br><span class="line">    <span class="keyword">return</span> cache[key]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><em>小结</em></h2><p>因为纯函数的定义囊括范围比较广，所以实际应用中，都是它的子集，例curry函数等比较出名</p>
 
       
     </div>
@@ -214,7 +250,11 @@
   <ul class="entry">
     
       <li>
-        <a href="/SendyouanOrange.io/2020/04/22/js-base-1/">函数的柯里化</a>
+        <a href="/SendyouanOrange.io/2020/04/27/js-base-2/">知识笔记 --组合和管道</a>
+      </li>
+    
+      <li>
+        <a href="/SendyouanOrange.io/2020/04/22/js-base-1/">知识笔记 --函数的柯里化</a>
       </li>
     
       <li>
