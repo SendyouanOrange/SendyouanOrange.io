@@ -3,17 +3,20 @@
 <head>
   <meta charset="utf-8">
   
-  <title>知识笔记 --纯函数 › lic-blog</title>
+  <title>js基础 --原型链 › lic-blog</title>
   <meta name="author" content="triumphLic">
   
-  <meta name="description" content="定义纯函数就是，只要输入一致，那么输出一定一致。不受外部变量、环境影响。
-例子
-纯函数1234567const func = function(name) &amp;#123;  const words = &#39;hello&#39;  return words + name&amp;#125;func(&#39;lic&#39;) // h">
+  <meta name="description" content="定义要讲原型链的定义，首先得熟悉下面这几个概念
+
+js中万物皆对象即使是基本类型，也可以看作对象，new Number(12)、new String(&amp;apos;abc&amp;apos;)
+函数也是对象
+每个对象，都有一个 proto 属性a.__proto__ 它指向a的构造函数的原型对象
+每个函数对象">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="知识笔记 --纯函数"/>
+  <meta property="og:title" content="js基础 --原型链"/>
   <meta property="og:site_name" content="lic-blog"/>
 
   
@@ -48,7 +51,7 @@
     <header>
       
   
-    <h1 class="title">知识笔记 --纯函数</h1>
+    <h1 class="title">js基础 --原型链</h1>
   
 
       
@@ -57,20 +60,18 @@
     </header>
     <div class="entry">
       
-        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>纯函数就是，只要输入一致，那么输出一定一致。不受外部变量、环境影响。</p>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><em>例子</em></h2><ul>
-<li>纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br></pre></td></tr></table></figure></li>
-<li>非纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">words = <span class="string">'hi'</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hi lic</span></span><br></pre></td></tr></table></figure>
-
-</li>
+        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>要讲原型链的定义，首先得熟悉下面这几个概念</p>
+<ul>
+<li>js中万物皆对象<pre><code>即使是基本类型，也可以看作对象，new Number(12)、new String(&apos;abc&apos;)
+函数也是对象</code></pre></li>
+<li>每个对象，都有一个 <strong>proto</strong> 属性<pre><code>a.__proto__ 它指向a的构造函数的原型对象</code></pre></li>
+<li>每个函数对象，都有一个原型对象<pre><code>const func = new Function() 那么，func 具有一个原型对象，即func.prototype</code></pre></li>
+<li>函数的原型对象也是一个对象，那么它也有构造函数，所以它的 <strong>proto</strong> 指向这个原型对象的构造函数的原型对象<h4 id="这样一个由-proto-够成的链，就叫做-原型链"><a href="#这样一个由-proto-够成的链，就叫做-原型链" class="headerlink" title="这样一个由 __proto__ 够成的链，就叫做 原型链"></a>这样一个由 <code>__proto__</code> 够成的链，就叫做 <strong><em>原型链</em></strong></h4></li>
 </ul>
-<h2 id="纯函数的扩展"><a href="#纯函数的扩展" class="headerlink" title="纯函数的扩展"></a><em>纯函数的扩展</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> g = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> f = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> g(b)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> cf = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> g(b)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在上面的例子中<br>显而易见的是<code>g()</code>函数不是纯函数，<code>f()</code>函数也不是纯函数<br>但是，<code>cf()</code>函数却是纯函数，因为相同的输入，都会返回一个相同的函数。即使返回值是函数，那也符合纯函数的定义：输入一致，输出永远一致</p>
-<h2 id="能做什么"><a href="#能做什么" class="headerlink" title="能做什么"></a><em>能做什么</em></h2><p>因为输入一致的情况下输出是一致的，所以可以在函数内对输出做缓存,下面就是一个<code>memorize()</code>可以对一个纯函数做结果的缓存</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> memorize = <span class="function"><span class="keyword">function</span> (<span class="params">func</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> cache = &#123;&#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> key = <span class="built_in">JSON</span>.stringify(<span class="built_in">arguments</span>)</span><br><span class="line">    cache[key] = cache[key] || func.apply(<span class="literal">null</span>, <span class="built_in">Array</span>.from(<span class="built_in">arguments</span>))</span><br><span class="line">    <span class="keyword">return</span> cache[key]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><em>小结</em></h2><p>因为纯函数的定义囊括范围比较广，所以实际应用中，都是它的子集，例curry函数等比较出名</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> A = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.a = <span class="number">1</span></span><br><span class="line">  <span class="keyword">this</span>.b = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line">A.prototype.toString = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.a + <span class="keyword">this</span>.b + <span class="string">'_string'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> newA = <span class="keyword">new</span> A()</span><br><span class="line"><span class="built_in">console</span>.log(newA.a) <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(nweA.b) <span class="comment">// 2</span></span><br><span class="line"><span class="built_in">console</span>.log(newA.toString()) <span class="comment">// '3string'</span></span><br></pre></td></tr></table></figure>
+<p>其中newA自身是只有a,b属性的，没有toString方法<br>没有怎么办呢<br>它去它的 <strong>proto</strong> 去找<br>我们知道</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newA.__proro__ == A.prototype</span><br></pre></td></tr></table></figure>
+<p>就找到了toString方法，其中this指向的是调用方</p>
 
       
     </div>
@@ -116,23 +117,23 @@
   <ul class="entry">
     
       <li>
-        <a href="/2020/04/27/js-base-2/">知识笔记 --组合和管道</a>
+        <a href="/2020/04/27/functional-2/">函数式编程 --组合和管道</a>
       </li>
     
       <li>
-        <a href="/2020/04/22/js-base-1/">知识笔记 --函数的柯里化</a>
+        <a href="/2020/04/22/functional-1/">函数式编程 --函数的柯里化</a>
       </li>
     
       <li>
-        <a href="/2020/04/21/js-base-0/">知识笔记 --纯函数</a>
+        <a href="/2020/04/21/js-base-0/">js基础 --原型链</a>
       </li>
     
       <li>
-        <a href="/2020/04/21/wasm-2/">知识笔记 --WASM（二）</a>
+        <a href="/2020/04/21/functional-0/">函数式编程 --纯函数</a>
       </li>
     
       <li>
-        <a href="/2020/03/21/wasm-1/">知识笔记--WASM（一）</a>
+        <a href="/2020/04/21/wasm-2/">WASM（二）</a>
       </li>
     
   </ul>
