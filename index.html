@@ -45,16 +45,100 @@
     <header>
       
   
-    <h1 class="title"><a href="/2020/04/27/functional-2/">函数式编程 --组合和管道</a></h1>
+    <h1 class="title"><a href="/2020/04/30/js-base-1/">js基础 --类和继承</a></h1>
   
 
       
-        <time datetime="2020-04-27T06:28:22.000Z">2020-04-27</time>
+        <time datetime="2020-04-30T12:12:14.000Z">2020-04-30</time>
       
     </header>
     <div class="entry">
       
-        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2>
+        
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/25/js-base-0/">js基础 --原型链</a></h1>
+  
+
+      
+        <time datetime="2020-04-25T12:12:14.000Z">2020-04-25</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>要讲原型链的定义，首先得熟悉下面这几个概念</p>
+<ul>
+<li>js中万物皆对象<pre><code>即使是基本类型，也可以看作对象，new Number(12)、new String(&apos;abc&apos;)
+函数也是对象</code></pre></li>
+<li>每个对象，都有一个 <strong>proto</strong> 属性<pre><code>a.__proto__ 它指向a的构造函数的原型对象</code></pre></li>
+<li>每个函数对象，都有一个原型对象<pre><code>const func = new Function() 那么，func 具有一个原型对象，即func.prototype</code></pre></li>
+<li>函数的原型对象也是一个对象，那么它也有构造函数，所以它的 <strong>proto</strong> 指向这个原型对象的构造函数的原型对象<h4 id="这样一个由-proto-够成的链，就叫做-原型链"><a href="#这样一个由-proto-够成的链，就叫做-原型链" class="headerlink" title="这样一个由 __proto__ 够成的链，就叫做 原型链"></a>这样一个由 <code>__proto__</code> 够成的链，就叫做 <strong><em>原型链</em></strong></h4></li>
+</ul>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> A = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.a = <span class="number">1</span></span><br><span class="line">  <span class="keyword">this</span>.b = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line">A.prototype.toString = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.a + <span class="keyword">this</span>.b + <span class="string">'_string'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> newA = <span class="keyword">new</span> A()</span><br><span class="line"><span class="built_in">console</span>.log(newA.a) <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(nweA.b) <span class="comment">// 2</span></span><br><span class="line"><span class="built_in">console</span>.log(newA.toString()) <span class="comment">// '3string'</span></span><br></pre></td></tr></table></figure>
+<p>其中newA自身是只有a,b属性的，没有toString方法<br>没有怎么办呢<br>会去它的 <strong>proto</strong> 去找<br>我们知道</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newA.__proro__ == A.prototype</span><br></pre></td></tr></table></figure>
+<p>就找到了toString方法，其中this指向的是调用方</p>
+<h2 id="constructor-NaN"><a href="#constructor-NaN" class="headerlink" title="constructor"></a><em>constructor</em></h2><ul>
+<li>我们都知道 F.prototype.constructor === F<br>const f = new F() 其中 f.constructor === F.prototype.constructor = F<br>所以实例对象的constructor指向它的构造函数</li>
+</ul>
+<p>es6的class语法糖中有一个constructor函数，它又是另外一种意思，千万不要搞混</p>
+<h2 id="为什么需要"><a href="#为什么需要" class="headerlink" title="为什么需要"></a><em>为什么需要</em></h2><p>通过原型和原型链，js能够实现类和继承</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/23/functional-2/">函数式编程 --组合和管道</a></h1>
+  
+
+      
+        <time datetime="2020-04-23T06:28:22.000Z">2020-04-23</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>先看两段代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span> (<span class="params">name, age</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.name = name</span><br><span class="line">  <span class="keyword">this</span>.age = age</span><br><span class="line">&#125;</span><br><span class="line">Person.prototype.printMes = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="keyword">this</span>.name, <span class="keyword">this</span>.age)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> person = <span class="keyword">new</span> Person(<span class="string">'lic'</span>, <span class="string">'24'</span>)</span><br><span class="line">person.name <span class="comment">// lic</span></span><br><span class="line">person.age <span class="comment">// 24</span></span><br><span class="line">person.printMes() <span class="comment">// lic 24</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(name, age) &#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name</span><br><span class="line">    <span class="keyword">this</span>.age = age</span><br><span class="line">  &#125;</span><br><span class="line">  printMes() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name, age)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> person = <span class="keyword">new</span> Person(name, age)</span><br><span class="line">person.name <span class="comment">// lic</span></span><br><span class="line">person.age <span class="comment">// 24</span></span><br><span class="line">person.printMes() <span class="comment">// lic 24</span></span><br></pre></td></tr></table></figure>
+
+<p>这两段代码，一个是构造函数，一个是类写法。<em>他们完全等价。</em></p>
+<p>在es5里，class就是构造函数的另一种写法，即语法糖</p>
+
       
     </div>
       
@@ -91,48 +175,6 @@
 <h2 id="多参数的柯里化"><a href="#多参数的柯里化" class="headerlink" title="多参数的柯里化"></a><em>多参数的柯里化</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function">(<span class="params">func</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> func !== <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">'argument is not function!'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">innerFunc</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(args)</span><br><span class="line">    <span class="keyword">if</span> (func.length &gt; args.length) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> innerFunc.apply(<span class="literal">null</span>, args.concat(<span class="built_in">Array</span>.from(<span class="built_in">arguments</span>)))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> func.apply(<span class="literal">null</span>, args)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><em>小结</em></h2><p>柯里化的实现和原理都很好搞懂，就是在实践中，如果遇到问题能够运用它解决一些问题才是实在的</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/04/21/js-base-0/">js基础 --原型链</a></h1>
-  
-
-      
-        <time datetime="2020-04-21T12:12:14.000Z">2020-04-21</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>要讲原型链的定义，首先得熟悉下面这几个概念</p>
-<ul>
-<li>js中万物皆对象<pre><code>即使是基本类型，也可以看作对象，new Number(12)、new String(&apos;abc&apos;)
-函数也是对象</code></pre></li>
-<li>每个对象，都有一个 <strong>proto</strong> 属性<pre><code>a.__proto__ 它指向a的构造函数的原型对象</code></pre></li>
-<li>每个函数对象，都有一个原型对象<pre><code>const func = new Function() 那么，func 具有一个原型对象，即func.prototype</code></pre></li>
-<li>函数的原型对象也是一个对象，那么它也有构造函数，所以它的 <strong>proto</strong> 指向这个原型对象的构造函数的原型对象<h4 id="这样一个由-proto-够成的链，就叫做-原型链"><a href="#这样一个由-proto-够成的链，就叫做-原型链" class="headerlink" title="这样一个由 __proto__ 够成的链，就叫做 原型链"></a>这样一个由 <code>__proto__</code> 够成的链，就叫做 <strong><em>原型链</em></strong></h4></li>
-</ul>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> A = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.a = <span class="number">1</span></span><br><span class="line">  <span class="keyword">this</span>.b = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line">A.prototype.toString = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.a + <span class="keyword">this</span>.b + <span class="string">'_string'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> newA = <span class="keyword">new</span> A()</span><br><span class="line"><span class="built_in">console</span>.log(newA.a) <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(nweA.b) <span class="comment">// 2</span></span><br><span class="line"><span class="built_in">console</span>.log(newA.toString()) <span class="comment">// '3string'</span></span><br></pre></td></tr></table></figure>
-<p>其中newA自身是只有a,b属性的，没有toString方法<br>没有怎么办呢<br>它去它的 <strong>proto</strong> 去找<br>我们知道</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newA.__proro__ == A.prototype</span><br></pre></td></tr></table></figure>
-<p>就找到了toString方法，其中this指向的是调用方</p>
 
       
     </div>
@@ -292,7 +334,15 @@
   <ul class="entry">
     
       <li>
-        <a href="/2020/04/27/functional-2/">函数式编程 --组合和管道</a>
+        <a href="/2020/04/30/js-base-1/">js基础 --类和继承</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/25/js-base-0/">js基础 --原型链</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/23/functional-2/">函数式编程 --组合和管道</a>
       </li>
     
       <li>
@@ -300,15 +350,7 @@
       </li>
     
       <li>
-        <a href="/2020/04/21/js-base-0/">js基础 --原型链</a>
-      </li>
-    
-      <li>
         <a href="/2020/04/21/functional-0/">函数式编程 --纯函数</a>
-      </li>
-    
-      <li>
-        <a href="/2020/04/21/wasm-2/">WASM（二）</a>
       </li>
     
   </ul>
