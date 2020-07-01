@@ -45,6 +45,152 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/07/01/webpack-1/">MiniCssExtractPlugin问题</a></h1>
+  
+
+      
+        <time datetime="2020-07-01T12:26:16.000Z">2020-07-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="MiniCssExtractPlugin"><a href="#MiniCssExtractPlugin" class="headerlink" title="MiniCssExtractPlugin"></a>MiniCssExtractPlugin</h2><p>  css文件，在build的最后，需要生成css文件。</p>
+<p>  mode是production的情况下,关于css-loader的需要加MiniCssExtractPlugin.loader</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// loaders</span></span><br><span class="line">modules: &#123;</span><br><span class="line">  rules: [</span><br><span class="line">    &#123;</span><br><span class="line">      test: <span class="regexp">/.scss$/</span>,</span><br><span class="line">      use: [</span><br><span class="line">        MiniCssExtractPlugin.loader,</span><br><span class="line">        <span class="string">'style-loader'</span>,</span><br><span class="line">        <span class="string">'css-loader'</span>,</span><br><span class="line">        <span class="string">'scss-loader'</span>,</span><br><span class="line">        <span class="string">'postcss-loader'</span></span><br><span class="line">        ...</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  然后在build的webpack配置里加一个MiniCssExtractPlugin</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plugins: [</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// css打包成文件</span></span><br><span class="line">  <span class="keyword">new</span> MiniCssExtractPlugin(&#123;</span><br><span class="line">    filename: utils.assetsPath(<span class="string">'css/[name].[contenthash:8].css'</span>), <span class="comment">// contenthash根据内容生成哈希</span></span><br><span class="line">    allChunks: <span class="literal">false</span>,</span><br><span class="line">  &#125;),</span><br><span class="line">  ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h2 id="导致的问题"><a href="#导致的问题" class="headerlink" title="导致的问题"></a>导致的问题</h2><p>  提示：AAA 文件和 BBB 文件的引用顺序有问题<br>  这是MiniCssExtractPlugin的warning<br>  如果没有对css文件进行代码分割splitChunks，并且使用了sass-resources-loader设置了全局scss文件<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  loader:<span class="string">'sass-resources-loader'</span>,</span><br><span class="line">  options:&#123;</span><br><span class="line">    resources: [resolveResource(<span class="string">'AAA.scss'</span>), resolveResource(<span class="string">'BBB.scss'</span>)]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>  原因是没有把多次引用的css文件单独打成一个文件，引用错乱</p>
+<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>  利用splitChunks做代码分割，引用次数大于2的chunk单独打包成一个文件<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">  splitChunks: &#123;</span><br><span class="line">    maxSize: <span class="number">244</span> * <span class="number">1024</span>,</span><br><span class="line">    minChunks: <span class="number">2</span>, <span class="comment">// 最小 chunk ，默认1,引用次数大于它的打包</span></span><br><span class="line">    cacheGroups: &#123; <span class="comment">// 这里开始设置缓存的 chunks</span></span><br><span class="line">      commons: &#123;</span><br><span class="line">        chunks: <span class="string">'all'</span>, <span class="comment">// 必须三选一： "initial" | "all" | "async" 同步引用，异步引用还是所有</span></span><br><span class="line">        minSize: <span class="number">0</span>, <span class="comment">// 最小尺寸，默认0,</span></span><br><span class="line">        maxInitialRequests: <span class="number">5</span> <span class="comment">// 最大初始化请求书，默认1</span></span><br><span class="line">      &#125;,</span><br><span class="line">      vendor: &#123;</span><br><span class="line">        name: <span class="string">'vendor'</span>, <span class="comment">// 要缓存的 分隔出来的 chunk 名称</span></span><br><span class="line">        test: <span class="regexp">/node_modules/</span>, <span class="comment">// 正则规则验证，如果符合就提取 chunk</span></span><br><span class="line">        chunks: <span class="string">'all'</span>,</span><br><span class="line">        priority: <span class="number">-10</span>,</span><br><span class="line">        enforce: <span class="literal">true</span></span><br><span class="line">      &#125;,</span><br><span class="line">      styles: &#123;</span><br><span class="line">        name: <span class="string">'style'</span>,</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        chunks: <span class="string">'all'</span>,</span><br><span class="line">        enforce: <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  runtimeChunk: <span class="literal">true</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/06/22/vue-0-md/">newVue.md</a></h1>
+  
+
+      
+        <time datetime="2020-06-22T05:57:11.000Z">2020-06-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="new-Vue之后发生了什么"><a href="#new-Vue之后发生了什么" class="headerlink" title="new Vue之后发生了什么"></a>new Vue之后发生了什么</h2><p>  首先，vue创建的时候会提示选择版本:</p>
+<ul>
+<li>Runtime Only<br>一般选择这个版本，使用webpack的vue-loader编译成基本的html，js文件<br>它的Compiler过程放在了编译阶段</li>
+<li>Runtime + Compiler<br>运行时编译template，很耗性能</li>
+</ul>
+<h2 id="运行时编译的流程分析起来比较清晰"><a href="#运行时编译的流程分析起来比较清晰" class="headerlink" title="运行时编译的流程分析起来比较清晰"></a>运行时编译的流程分析起来比较清晰</h2><p>他分成几个阶段：</p>
+<ol>
+<li>创建compiler对象</li>
+<li></li>
+<li>调用$mount方法创建vnode</li>
+</ol>
+<h2 id="创建虚拟DOM"><a href="#创建虚拟DOM" class="headerlink" title="创建虚拟DOM"></a>创建虚拟DOM</h2><p>因为在 Vue.js 2.0 中，最终渲染都是通过 render 函数.<br>如果写 template 属性，则需要编译成 render 函数，那么这个编译过程会发生运行时，所以需要带有编译器的版本。</p>
+<ul>
+<li>无论是template 还是 string 还是 render 方式的模版， vue 都会先处理成render方式，进行编译</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">render: <span class="function">(<span class="params">createElement</span>) =&gt;</span> &#123;</span><br><span class="line">  createElement(<span class="string">'div'</span>, &#123;</span><br><span class="line">    attrs: &#123;</span><br><span class="line">      id: <span class="string">'app'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, children)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>vue 内部调用 vm._createElement()方法创建虚拟DOM</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/05/21/nginx/">nginx操作</a></h1>
+  
+
+      
+        <time datetime="2020-05-21T12:49:24.000Z">2020-05-21</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="nginx-编译"><a href="#nginx-编译" class="headerlink" title="nginx 编译"></a>nginx 编译</h2><p>  安装的nginx目录下执行 make &amp;&amp; make install + 编译文件需要放的路径</p>
+<h2 id="nginx-启动-暂停-重载"><a href="#nginx-启动-暂停-重载" class="headerlink" title="nginx 启动 暂停 重载"></a>nginx 启动 暂停 重载</h2><ul>
+<li><p>启动<br>nginx的编译后文件内执行：<br>./sbin/nginx -c conf/nginx.conf</p>
+</li>
+<li><p>操作<br>nginx -s<br>nginx -s stop 立刻停止服务<br>nginx -s quit 优雅停止服务(进行中的web请求执行完在结束)<br>nginx -s reload 重载配置文件<br>nginx -s reopen 重新开始记录日志文件</p>
+<p>停止一般使用stop </p>
+<p>改了nginx.conf内容之后，执行nginx -s reload 就行了</p>
+</li>
+</ul>
+<h2 id="配置nginx-conf"><a href="#配置nginx-conf" class="headerlink" title="配置nginx.conf"></a>配置nginx.conf</h2>
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/05/06/js-base-3/">js基础 -- 执行环境，执行上下文，变量环境，词法环境，作用域相关</a></h1>
   
 
@@ -112,7 +258,25 @@
     </header>
     <div class="entry">
       
-        <h2 id="webpack的基本知识"><a href="#webpack的基本知识" class="headerlink" title="webpack的基本知识"></a>webpack的基本知识</h2>
+        <h2 id="webpack"><a href="#webpack" class="headerlink" title="webpack"></a>webpack</h2><p>webpack 是基于<em>事件流</em>的编程范例</p>
+<p>基于Tapable</p>
+<h2 id="Tapable"><a href="#Tapable" class="headerlink" title="Tapable"></a>Tapable</h2><p>控制webpack钩子函数的发布订阅，支撑着webpack的事件流</p>
+<ul>
+<li>同步钩子</li>
+<li>异步钩子</li>
+</ul>
+<h2 id="webpack的编译过程"><a href="#webpack的编译过程" class="headerlink" title="webpack的编译过程"></a>webpack的编译过程</h2><ul>
+<li><p>执行npm run build/dev</p>
+</li>
+<li><p>运行webpack包下面的bin文件夹下的webpack.js<br>  webpack4把webpack和webpack-cli分成了两个包，之前在一起<br>  这个文件里的逻辑比较简单，判断是否安装webpack-cli包或者webpack-command（轻量级webpack-cli）包<br>  有且只有一个cli包，就去webpack-cli包下执行bin文件的cli.js文件</p>
+</li>
+<li><p>运行webpack-cli包下bin文件夹cli.js文件<br>  它主要读取webpack的option配置文件<br>  生成options，然后使用webpack包lib文件夹下的weback.js创建compiler实例</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">let</span> lastHash = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">let</span> compiler;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	compiler = webpack(options);</span><br><span class="line">&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">	<span class="keyword">if</span> (err.name === <span class="string">"WebpackOptionsValidationError"</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (argv.color) <span class="built_in">console</span>.error(<span class="string">`\u001b[1m\u001b[31m<span class="subst">$&#123;err.message&#125;</span>\u001b[39m\u001b[22m`</span>);</span><br><span class="line">		<span class="keyword">else</span> <span class="built_in">console</span>.error(err.message);</span><br><span class="line">		<span class="comment">// eslint-disable-next-line no-process-exit</span></span><br><span class="line">		process.exit(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">throw</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>webpack/lib/webpack.js<br>这个文件暴露webpack这个方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="function">(<span class="params">options, callback</span>) =&gt;</span> &#123; ... &#125;</span><br><span class="line">exports = <span class="built_in">module</span>.exports = webpack;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
       
     </div>
       
@@ -495,166 +659,11 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/04/21/functional-0/">函数式编程 --纯函数</a></h1>
-  
-
-      
-        <time datetime="2020-04-21T12:12:14.000Z">2020-04-21</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>纯函数就是，只要输入一致，那么输出一定一致。不受外部变量、环境影响。</p>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><em>例子</em></h2><ul>
-<li>纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br></pre></td></tr></table></figure></li>
-<li>非纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">words = <span class="string">'hi'</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hi lic</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h2 id="纯函数的扩展"><a href="#纯函数的扩展" class="headerlink" title="纯函数的扩展"></a><em>纯函数的扩展</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> g = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> f = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> g(b)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> cf = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> g(b)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在上面的例子中<br>显而易见的是<code>g()</code>函数不是纯函数，<code>f()</code>函数也不是纯函数<br>但是，<code>cf()</code>函数却是纯函数，因为相同的输入，都会返回一个相同的函数。即使返回值是函数，那也符合纯函数的定义：输入一致，输出永远一致</p>
-<h2 id="能做什么"><a href="#能做什么" class="headerlink" title="能做什么"></a><em>能做什么</em></h2><p>因为输入一致的情况下输出是一致的，所以可以在函数内对输出做缓存,下面就是一个<code>memorize()</code>可以对一个纯函数做结果的缓存</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> memorize = <span class="function"><span class="keyword">function</span> (<span class="params">func</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> cache = &#123;&#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> key = <span class="built_in">JSON</span>.stringify(<span class="built_in">arguments</span>)</span><br><span class="line">    cache[key] = cache[key] || func.apply(<span class="literal">null</span>, <span class="built_in">Array</span>.from(<span class="built_in">arguments</span>))</span><br><span class="line">    <span class="keyword">return</span> cache[key]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><em>小结</em></h2><p>因为纯函数的定义囊括范围比较广，所以实际应用中，都是它的子集，例curry函数等比较出名</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/04/21/wasm-2/">WASM（二）</a></h1>
-  
-
-      
-        <time datetime="2020-04-21T10:49:24.000Z">2020-04-21</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="实践把c-文件编译成wasm文件"><a href="#实践把c-文件编译成wasm文件" class="headerlink" title="实践把c++文件编译成wasm文件"></a><em>实践把c++文件编译成wasm文件</em></h2><ul>
-<li><p>使用官方推荐的Emscripten进行编译</p>
-</li>
-<li><p>安装docker使用docker镜像操作</p>
-</li>
-</ul>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/03/21/wasm-1/">WASM（一）</a></h1>
-  
-
-      
-        <time datetime="2020-03-21T10:49:24.000Z">2020-03-21</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="js-暴露出来的问题"><a href="#js-暴露出来的问题" class="headerlink" title="js 暴露出来的问题"></a><em>js 暴露出来的问题</em></h2><p>语法太灵活导致开发大型web比较困难<br>性能足以满足一些大运算需求</p>
-<h2 id="三巨头的探索"><a href="#三巨头的探索" class="headerlink" title="三巨头的探索"></a><em>三巨头的探索</em></h2><ul>
-<li>微软：typescript（JavaScript的一个严格超集）（js+静态类型检查）<pre><code>仍然是编译成js在浏览器中执行</code></pre></li>
-<li>V8，利用JIT提升编译执行速度，并且做到了，提升10倍<pre><code>现如今web应用的瓶颈早已不在于js，而在于DOM
-为什么使用JIT: 毕竟javascript是动态语言类型，不仅是弱类型甚至number都只有一种类型。</code></pre></li>
-<li>Mozilla 的 asmjs<pre><code>asm.js（相当于支持了强类型js，ts的子集）诞生了，JIT =&gt; AOT （运行时编译 和 编译后运行）</code></pre></li>
-<li>三巨头（Google、MicroSoft、Apple）觉得asmjs思路蛮好，联合起来，一同共建WebAssembly生态。<pre><code>与asmjs不同的是：WebAssembly是一份字节码标准，以字节码的形式依赖虚拟机在浏览器中运行。不是汇编，只是看起来像。</code></pre></li>
-</ul>
-<h2 id="WASM是为了解决js性能问题吗？"><a href="#WASM是为了解决js性能问题吗？" class="headerlink" title="WASM是为了解决js性能问题吗？"></a><em>WASM是为了解决js性能问题吗？</em></h2><p><strong>首先，WASM确实是为了解决js性能问题才诞生的。</strong></p>
-<p><em>WASM能做什么？</em><br>不仅仅是能在未来造轮子的时候提供更高性能的方式。<br>而且，能把<strong>其他语言的轮子</strong>移植到web上使用。编译成WASM然后web直接使用，就像AUTOCAD做的一样，沉淀三十年的代码直接移植到web端。</p>
-<h2 id="WebAssembly-原理"><a href="#WebAssembly-原理" class="headerlink" title="WebAssembly 原理"></a><em>WebAssembly 原理</em></h2><ul>
-<li><p><strong>基本概念</strong></p>
-<pre><code>高级语言：高度封装的汇编语言
-汇编语言（符号语言）：直接操作寄存器和存储器，汇编语言指令是机器指令的一种符号表示，不同平台之间不可直接移植。
-机器码：是一种指令集的体系。这种指令集，称机器码（machine code），是电脑的CPU可直接解读的数据，它是计算机的设计者通过计算机的硬件结构赋予计算机的操作功能。</code></pre></li>
-<li><p><strong>LLVM（底层虚拟机）</strong></p>
-<pre><code>做什么的：高级语言编译成它能识别的的语言（LLVM IR），然后它就能把 LLVM IR 编译成各架构 CPU 对应机器码。
-对于WASM来说，只要能编译成LLVM IR的高级语言，就能被编译成WebAssembly字节码</code></pre></li>
-</ul>
-<p>目前能编译成 WebAssembly 字节码的高级语言有：<br>AssemblyScript:语法和 TypeScript 一致、c\c++、Rust、Kotlin、Golang。</p>
-<h2 id="对比JS，WebAssembly-有如下优点："><a href="#对比JS，WebAssembly-有如下优点：" class="headerlink" title="对比JS，WebAssembly 有如下优点："></a><em>对比JS，WebAssembly 有如下优点：</em></h2><ul>
-<li>体积小<pre><code>由于浏览器运行时只加载编译成的字节码，一样的逻辑比用字符串描述的 JS 文件体积要小很多；</code></pre></li>
-<li>加载快<pre><code>由于文件体积小，再加上无需解释执行，WebAssembly 能更快的加载并实例化，减少运行前的等待时间；</code></pre></li>
-<li>兼容性问题少<pre><code>WebAssembly 是非常底层的字节码规范，制订好后很少变动，就算以后发生变化,也只需在从高级语言编译成字节码过程中做兼容。可能出现兼容性问题的地方在于 JS 和 WebAssembly 桥接的 JS 接口。</code></pre></li>
-</ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>如今技术出现的越来越多，但是实际上在工作中能够用到的，越并不是那么多。其实很多大厂所输出的一些技术，都是有业务场景的，有业务做推动。而不是凭空造轮子。所以总结下来适合自己的才是最好的。当然不是说不要了解新技术，了解新技术跟上步伐是十分必要的。我们现在不用，不代表不需要了解。相反，以后再遇到类似的业务场景时，我们就会多一种选择，可以更加从容的对待。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
 
 <nav id="pagination">
   
+  
+    <a href="/page/2/" class="alignright next">Next</a>
   
   <div class="clearfix"></div>
 </nav></div></div>
@@ -670,6 +679,18 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/01/webpack-1/">MiniCssExtractPlugin问题</a>
+      </li>
+    
+      <li>
+        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/21/nginx/">nginx操作</a>
+      </li>
     
       <li>
         <a href="/2020/05/06/js-base-3/">js基础 -- 执行环境，执行上下文，变量环境，词法环境，作用域相关</a>

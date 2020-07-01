@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>MiniCssExtractPlugin问题 › lic-blog</title>
+  <meta name="author" content="triumphLic">
+  
+  <meta name="description" content="MiniCssExtractPlugin  css文件，在build的最后，需要生成css文件。
+  mode是production的情况下,关于css-loader的需要加MiniCssExtractPlugin.loader
+  1234567891011121314151617// loade">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="MiniCssExtractPlugin问题"/>
+  <meta property="og:site_name" content="lic-blog"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="lic-blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">lic-blog</a></h1>
+  <h2><a href="/"></a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">MiniCssExtractPlugin问题</h1>
+  
+
+      
+        <time datetime="2020-07-01T12:26:16.000Z">2020-07-01</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="MiniCssExtractPlugin"><a href="#MiniCssExtractPlugin" class="headerlink" title="MiniCssExtractPlugin"></a>MiniCssExtractPlugin</h2><p>  css文件，在build的最后，需要生成css文件。</p>
+<p>  mode是production的情况下,关于css-loader的需要加MiniCssExtractPlugin.loader</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// loaders</span></span><br><span class="line">modules: &#123;</span><br><span class="line">  rules: [</span><br><span class="line">    &#123;</span><br><span class="line">      test: <span class="regexp">/.scss$/</span>,</span><br><span class="line">      use: [</span><br><span class="line">        MiniCssExtractPlugin.loader,</span><br><span class="line">        <span class="string">'style-loader'</span>,</span><br><span class="line">        <span class="string">'css-loader'</span>,</span><br><span class="line">        <span class="string">'scss-loader'</span>,</span><br><span class="line">        <span class="string">'postcss-loader'</span></span><br><span class="line">        ...</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  然后在build的webpack配置里加一个MiniCssExtractPlugin</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plugins: [</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// css打包成文件</span></span><br><span class="line">  <span class="keyword">new</span> MiniCssExtractPlugin(&#123;</span><br><span class="line">    filename: utils.assetsPath(<span class="string">'css/[name].[contenthash:8].css'</span>), <span class="comment">// contenthash根据内容生成哈希</span></span><br><span class="line">    allChunks: <span class="literal">false</span>,</span><br><span class="line">  &#125;),</span><br><span class="line">  ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h2 id="导致的问题"><a href="#导致的问题" class="headerlink" title="导致的问题"></a>导致的问题</h2><p>  提示：AAA 文件和 BBB 文件的引用顺序有问题<br>  这是MiniCssExtractPlugin的warning<br>  如果没有对css文件进行代码分割splitChunks，并且使用了sass-resources-loader设置了全局scss文件<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  loader:<span class="string">'sass-resources-loader'</span>,</span><br><span class="line">  options:&#123;</span><br><span class="line">    resources: [resolveResource(<span class="string">'AAA.scss'</span>), resolveResource(<span class="string">'BBB.scss'</span>)]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>  原因是没有把多次引用的css文件单独打成一个文件，引用错乱</p>
+<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>  利用splitChunks做代码分割，引用次数大于2的chunk单独打包成一个文件<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">  splitChunks: &#123;</span><br><span class="line">    maxSize: <span class="number">244</span> * <span class="number">1024</span>,</span><br><span class="line">    minChunks: <span class="number">2</span>, <span class="comment">// 最小 chunk ，默认1,引用次数大于它的打包</span></span><br><span class="line">    cacheGroups: &#123; <span class="comment">// 这里开始设置缓存的 chunks</span></span><br><span class="line">      commons: &#123;</span><br><span class="line">        chunks: <span class="string">'all'</span>, <span class="comment">// 必须三选一： "initial" | "all" | "async" 同步引用，异步引用还是所有</span></span><br><span class="line">        minSize: <span class="number">0</span>, <span class="comment">// 最小尺寸，默认0,</span></span><br><span class="line">        maxInitialRequests: <span class="number">5</span> <span class="comment">// 最大初始化请求书，默认1</span></span><br><span class="line">      &#125;,</span><br><span class="line">      vendor: &#123;</span><br><span class="line">        name: <span class="string">'vendor'</span>, <span class="comment">// 要缓存的 分隔出来的 chunk 名称</span></span><br><span class="line">        test: <span class="regexp">/node_modules/</span>, <span class="comment">// 正则规则验证，如果符合就提取 chunk</span></span><br><span class="line">        chunks: <span class="string">'all'</span>,</span><br><span class="line">        priority: <span class="number">-10</span>,</span><br><span class="line">        enforce: <span class="literal">true</span></span><br><span class="line">      &#125;,</span><br><span class="line">      styles: &#123;</span><br><span class="line">        name: <span class="string">'style'</span>,</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        chunks: <span class="string">'all'</span>,</span><br><span class="line">        enforce: <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  runtimeChunk: <span class="literal">true</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 20:48:26
+ * @Description  : 描述信息
+ -->
+
+<div class="widget tag">
+  <h3 class="title">目录</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/01/webpack-1/">MiniCssExtractPlugin问题</a>
+      </li>
+    
+      <li>
+        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/21/nginx/">nginx操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/06/js-base-3/">js基础 -- 执行环境，执行上下文，变量环境，词法环境，作用域相关</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/04/webpack-0/">webpack</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/02/js-base-2/">js基础 --原型相关方法，Object，Reflect</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/30/js-base-1/">js基础 --类和继承</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/25/js-base-0/">js基础 --原型链</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/23/functional-2/">函数式编程 --组合和管道</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/22/functional-1/">函数式编程 --函数的柯里化</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/21/functional-0/">函数式编程 --纯函数</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/21/wasm-2/">WASM（二）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/21/wasm-1/">WASM（一）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 triumphLic
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+</body>
+</html>
+
