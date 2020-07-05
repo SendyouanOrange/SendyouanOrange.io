@@ -45,7 +45,82 @@
     <header>
       
   
-    <h1 class="title"><a href="/2020/07/03/css-0/">css-BFC</a></h1>
+    <h1 class="title"><a href="/2020/07/03/base-1/">css:box-shadow</a></h1>
+  
+
+      
+        <time datetime="2020-07-03T09:36:45.000Z">2020-07-03</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="ie8以上"><a href="#ie8以上" class="headerlink" title="ie8以上"></a><em>ie8以上</em></h2><h2 id="box-shadow-怎么产生的"><a href="#box-shadow-怎么产生的" class="headerlink" title="box-shadow 怎么产生的"></a><em>box-shadow 怎么产生的</em></h2><ol>
+<li>首先在元素下面生成一个一样的大小的，位置重叠的，颜色等同于《color》的div</li>
+<li>四边向外或者向内做高斯模糊，在blur-radius长度内做完模糊，类似正态分布，只是边就算是坐标0点</li>
+<li>根据xy-offset偏移量移动</li>
+<li>删除和真实div重合部分</li>
+</ol>
+<h2 id="box-shadow-的属性较多"><a href="#box-shadow-的属性较多" class="headerlink" title="box-shadow 的属性较多"></a>box-shadow 的属性较多</h2><ul>
+<li>‘inset’ 有则阴影在边框内部，阴影会在边框之内 (即使是透明边框）、背景之上、内容之下</li>
+<li>x-offset 向右偏移量</li>
+<li>y-offset 向下偏移量</li>
+<li>blur-radius 模糊半径。值越大，模糊面积越大。 默认0，此时阴影边缘是锐利的，不能是负的。（高斯模糊）</li>
+<li>spread-radius 那个根据真实的div产生的虚拟元素的大小扩展半径</li>
+<li>color</li>
+</ul>
+<h2 id="内阴影，四边阴影，双边阴影"><a href="#内阴影，四边阴影，双边阴影" class="headerlink" title="内阴影，四边阴影，双边阴影"></a>内阴影，四边阴影，双边阴影</h2><ul>
+<li><p>内阴影</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>四边阴影</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>相临边阴影</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">   box-shadow: 10px 10px 10px 0px #000; // 向右和向下分别移动10px，模糊半径也是10px，刚好被真实div盖住两边</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h2 id="单边阴影"><a href="#单边阴影" class="headerlink" title="单边阴影"></a>单边阴影</h2>  <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">10px</span> <span class="number">10px</span> -<span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  这个也好懂了。</p>
+<ol>
+<li>首先四边模糊半径10px；</li>
+<li>然后向下偏移10px；</li>
+<li>四边阴影长度分别是： 上右下左： 0 10px 20px 10px;</li>
+<li>然后-10px的阴影扩展长度；(各减去10)</li>
+<li>四边阴影长度分别是： 上右下左： -10px 0px 10px 0px;</li>
+</ol>
+<h2 id="多阴影规则"><a href="#多阴影规则" class="headerlink" title="多阴影规则"></a>多阴影规则</h2><p>  逗号隔开，最左的阴影在最上层，覆盖右侧写的阴影样式</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/07/03/base-0/">css:BFC</a></h1>
   
 
       
@@ -127,7 +202,7 @@
     <header>
       
   
-    <h1 class="title"><a href="/2020/07/02/webpack-2/">webpack文件处理</a></h1>
+    <h1 class="title"><a href="/2020/07/02/webpack-2/">webpack:文件处理</a></h1>
   
 
       
@@ -139,7 +214,9 @@
         <h2 id="file-loader"><a href="#file-loader" class="headerlink" title="file-loader"></a>file-loader</h2><p>  作用是移动文件，原始文件名加哈希值放在指定文件夹</p>
 <h2 id="url-loader"><a href="#url-loader" class="headerlink" title="url-loader"></a>url-loader</h2><p>  options: {<br>    limit: 10000,<br>    name: utils.assetsPath(‘img/[name].[contenthash:8].[ext]’)<br>  }</p>
 <p>  小于limit的文件打包成base64</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
+<h2 id="无损压缩"><a href="#无损压缩" class="headerlink" title="无损压缩"></a>无损压缩</h2><p>  image-webpack-loader</p>
+<p>  注意点就是，mac上 npm yarn都按不上，cnpm按的上</p>
+
       
     </div>
       
@@ -167,7 +244,7 @@
     <header>
       
   
-    <h1 class="title"><a href="/2020/07/01/webpack-1/">MiniCssExtractPlugin问题</a></h1>
+    <h1 class="title"><a href="/2020/07/01/webpack-1/">webpack:MiniCssExtractPlugin问题</a></h1>
   
 
       
@@ -375,7 +452,7 @@
     <header>
       
   
-    <h1 class="title"><a href="/2020/05/04/webpack-0/">webpack</a></h1>
+    <h1 class="title"><a href="/2020/05/04/webpack-0/">webpack:基础知识</a></h1>
   
 
       
@@ -633,61 +710,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/04/25/js-base-0/">js基础 --原型链</a></h1>
-  
-
-      
-        <time datetime="2020-04-25T12:12:14.000Z">2020-04-25</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>要讲原型链的定义，首先得熟悉下面这几个概念</p>
-<ul>
-<li>js中万物皆对象<pre><code>即使是基本类型，也可以看作对象，new Number(12)、new String(&apos;abc&apos;)
-函数也是对象</code></pre></li>
-<li>每个对象，都有一个 <strong>proto</strong> 属性<pre><code>a.__proto__ 它指向a的构造函数的原型对象</code></pre></li>
-<li>每个函数对象，都有一个原型对象<pre><code>const func = new Function() 那么，func 具有一个原型对象，即func.prototype</code></pre></li>
-<li>函数的原型对象也是一个对象，那么它也有构造函数，所以它的 <strong>proto</strong> 指向这个原型对象的构造函数的原型对象</li>
-<li>需要注意的是，<strong>proto</strong>在es6才写进规范，浏览器的支持有一定兼容问题，可以用Object.getPrototypeOf()函数<h4 id="这样一个由-proto-够成的链，就叫做-原型链"><a href="#这样一个由-proto-够成的链，就叫做-原型链" class="headerlink" title="这样一个由 __proto__ 够成的链，就叫做 原型链"></a>这样一个由 <code>__proto__</code> 够成的链，就叫做 <strong><em>原型链</em></strong></h4></li>
-</ul>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> A = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.a = <span class="number">1</span></span><br><span class="line">  <span class="keyword">this</span>.b = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line">A.prototype.toString = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.a + <span class="keyword">this</span>.b + <span class="string">'_string'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> newA = <span class="keyword">new</span> A()</span><br><span class="line"><span class="built_in">console</span>.log(newA.a) <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(nweA.b) <span class="comment">// 2</span></span><br><span class="line"><span class="built_in">console</span>.log(newA.toString()) <span class="comment">// '3string'</span></span><br></pre></td></tr></table></figure>
-<p>其中newA自身是只有a,b属性的，没有toString方法<br>没有怎么办呢<br>会去它的 <strong>proto</strong> 去找<br>我们知道</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newA.__proro__ == A.prototype</span><br></pre></td></tr></table></figure>
-<p>就找到了toString方法，其中this指向的是调用方</p>
-<h2 id="constructor-NaN"><a href="#constructor-NaN" class="headerlink" title="constructor"></a><em>constructor</em></h2><ul>
-<li>我们都知道 F.prototype.constructor === F<br>const f = new F() 其中 f.constructor === F.prototype.constructor = F<br>所以实例对象的constructor指向它的构造函数</li>
-</ul>
-<p>es6的class语法糖中有一个constructor函数，它又是另外一种意思，千万不要搞混</p>
-<h2 id="为什么需要"><a href="#为什么需要" class="headerlink" title="为什么需要"></a><em>为什么需要</em></h2><p>通过原型和原型链，js能够实现类和继承</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
 
 <nav id="pagination">
   
@@ -710,15 +732,19 @@
   <ul class="entry">
     
       <li>
-        <a href="/2020/07/03/css-0/">css-BFC</a>
+        <a href="/2020/07/03/base-1/">css:box-shadow</a>
       </li>
     
       <li>
-        <a href="/2020/07/02/webpack-2/">webpack文件处理</a>
+        <a href="/2020/07/03/base-0/">css:BFC</a>
       </li>
     
       <li>
-        <a href="/2020/07/01/webpack-1/">MiniCssExtractPlugin问题</a>
+        <a href="/2020/07/02/webpack-2/">webpack:文件处理</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/01/webpack-1/">webpack:MiniCssExtractPlugin问题</a>
       </li>
     
       <li>
@@ -734,7 +760,7 @@
       </li>
     
       <li>
-        <a href="/2020/05/04/webpack-0/">webpack</a>
+        <a href="/2020/05/04/webpack-0/">webpack:基础知识</a>
       </li>
     
       <li>
