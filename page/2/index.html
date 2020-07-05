@@ -45,6 +45,214 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/05/02/js-base-2/">js基础 --原型相关方法，Object，Reflect</a></h1>
+  
+
+      
+        <time datetime="2020-05-02T07:12:14.000Z">2020-05-02</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="原型相关的方法们"><a href="#原型相关的方法们" class="headerlink" title="原型相关的方法们"></a>原型相关的方法们</h2><ul>
+<li><p><strong>isPrototypeOf()</strong><br>用于测试一个对象是否存在于另一个对象的原型链上。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Date</span>.prototype.isPrototypeOf(<span class="keyword">new</span> <span class="built_in">Date</span>()) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Object.getPrototypeOf()</strong><br>返回原型对象<br>给定对象的原型。如果没有继承属性，则返回 null 。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getPrototypeOf(<span class="keyword">new</span> <span class="built_in">Date</span>()) === <span class="built_in">Date</span>.prototype <span class="comment">// true</span></span><br></pre></td></tr></table></figure></li>
+<li><p><strong>hasOwnProperty()</strong><br>方法会返回一个布尔值，指示对象自身属性中是否具有指定的属性（也就是，是否有指定的键）。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Date</span>.prototype.hasOwnProperty(<span class="string">'getTime'</span>)</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>Object.keys()</strong><br><strong>for…in 也是只遍历可枚举属性</strong><br>方法会返回一个由一个给定对象的自身可枚举属性组成的<em>数组</em>，数组中属性名的排列顺序和正常循环遍历该对象时返回的顺序一致 。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123; <span class="number">0</span>: <span class="string">"a"</span>, <span class="number">1</span>: <span class="string">"b"</span>, <span class="number">2</span>: <span class="string">"c"</span>&#125;</span><br><span class="line"><span class="built_in">Object</span>.keys(obj).sort() <span class="comment">// ["0", "1", "2"]</span></span><br></pre></td></tr></table></figure>
+<p>只会显示出<strong>可枚举</strong>的属性</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.keys(<span class="built_in">Date</span>.prototype) <span class="comment">// []</span></span><br></pre></td></tr></table></figure>
+<p>如果需要把不可枚举的也列出来，就用到下面的方法了</p>
+</li>
+<li><p><strong>Object.getOwnPropertyName()</strong><br>方法返回一个由指定对象的所有自身属性的属性名（包括不可枚举属性但不包括Symbol值作为名称的属性）组成的数组</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyNames(<span class="built_in">Date</span>.prototype) <span class="comment">// ["constructor", "toString", "toDateString", .....]</span></span><br></pre></td></tr></table></figure></li>
+<li><p>Reflect和原型相关的方法：</p>
+<ol>
+<li>Reflect.getPrototypeOf()</li>
+<li>Reflect.setPrototypeOf()</li>
+<li>Reflect.ownKeys()</li>
+<li>Reflect.has()</li>
+</ol>
+</li>
+</ul>
+<h2 id="属性描述相关方法"><a href="#属性描述相关方法" class="headerlink" title="属性描述相关方法"></a>属性描述相关方法</h2><ul>
+<li><strong>Object.getOwnPropertyDescriptor(obj, prop)</strong><br>方法返回指定对象上一个自有属性对应的属性描述符。（自有属性指的是直接赋予该对象的属性，不需要从原型链上进行查找的属性）<br>有则返回该属性的<em>属性描述符</em>，无则返回undefined<br><strong>属性描述：</strong><ul>
+<li>value // 属性的值</li>
+<li>writable // 是否可改变， Boolean</li>
+<li>get // 该属性<em>访问器</em>函数，可以为undefined</li>
+<li>set // 该属性的<em>设置器</em>函数，可以为undefined</li>
+<li>enumerable // 该属性可以被枚举，Object。keys() 可以找出来</li>
+<li>configurable // 该属性的<em>属性描述</em>是否可以被更改或者删除<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(<span class="built_in">Date</span>.prototype, <span class="string">'getTime'</span>)</span><br><span class="line"><span class="comment">// &#123;writable: true, enumerable: false, configurable: true, value: ƒ&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><strong>Object.getOwnPropertyDescriptors(obj)</strong><br>获取一个对象自身所有属性的属性描述<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptors(<span class="built_in">Date</span>)</span><br><span class="line"><span class="comment">// &#123;</span></span><br><span class="line">  UTC: &#123;<span class="attr">writable</span>: <span class="literal">true</span>, <span class="attr">enumerable</span>: <span class="literal">false</span>, <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">value</span>: ƒ&#125;,</span><br><span class="line">  length: &#123;<span class="attr">value</span>: <span class="number">7</span>, <span class="attr">writable</span>: <span class="literal">false</span>, <span class="attr">enumerable</span>: <span class="literal">false</span>, <span class="attr">configurable</span>: <span class="literal">true</span>&#125;,</span><br><span class="line">  name: &#123;<span class="attr">value</span>: <span class="string">"Date"</span>, <span class="attr">writable</span>: <span class="literal">false</span>, <span class="attr">enumerable</span>: <span class="literal">false</span>, <span class="attr">configurable</span>: <span class="literal">true</span>&#125;,</span><br><span class="line">  now: &#123;<span class="attr">writable</span>: <span class="literal">true</span>, <span class="attr">enumerable</span>: <span class="literal">false</span>, <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">value</span>: ƒ&#125;,</span><br><span class="line">  parse: &#123;<span class="attr">writable</span>: <span class="literal">true</span>, <span class="attr">enumerable</span>: <span class="literal">false</span>, <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">value</span>: ƒ&#125;,</span><br><span class="line">  prototype: &#123;<span class="attr">value</span>: &#123;…&#125;, <span class="attr">writable</span>: <span class="literal">false</span>, <span class="attr">enumerable</span>: <span class="literal">false</span>, <span class="attr">configurable</span>: <span class="literal">false</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><strong>Object.getOwnPropertySymbols()</strong><br>顾名思义</li>
+<li><strong>a.propertyIsEnumerable(‘b’)</strong><br>判断a的属性b是否可枚举，返回值Boolean<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = [<span class="number">0</span>]</span><br><span class="line">a.propertyIsEnumerable(<span class="number">0</span>) <span class="comment">// true</span></span><br><span class="line">a.propertyIsEnumerable(<span class="string">'length'</span>) <span class="comment">// false</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Object.defineProperties(object, props)</strong><br>直接在一个对象上定义新的属性s或修改现有属性s，并返回该对象。<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;&#125;</span><br><span class="line"><span class="built_in">Object</span>.defineProperties(obj, &#123;</span><br><span class="line">  <span class="string">'property1'</span>: &#123;</span><br><span class="line">    value: <span class="literal">true</span>,</span><br><span class="line">    writable: <span class="literal">true</span>,</span><br><span class="line">    <span class="keyword">set</span>: ...</span><br><span class="line">    <span class="keyword">get</span>: ...</span><br><span class="line">    enumerable: ...</span><br><span class="line">    configurable: ...</span><br><span class="line">  &#125;,</span><br><span class="line">  'property2': &#123;</span><br><span class="line">    value: <span class="string">'Hello'</span>,</span><br><span class="line">    writable: <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li><strong>Object.defineProperty(prop)</strong><br>会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> object1 = &#123;&#125;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(object1, <span class="string">'property1'</span>, &#123;</span><br><span class="line">  value: <span class="number">42</span>,</span><br><span class="line">  writable: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li><strong>Reflect中与属性描述相关的方法</strong><ol>
+<li>Reflect.defineProperty()</li>
+<li>Reflect.deleteProperty()</li>
+<li>Reflect.getOwnPropertyDescriptor()</li>
+<li>Reflect.isExtensible() // 是否可扩展</li>
+<li>Reflect.preventExtensions() // 禁止扩展</li>
+</ol>
+</li>
+</ul>
+<h2 id="Reflect"><a href="#Reflect" class="headerlink" title="Reflect"></a>Reflect</h2><h3 id="为什么要出现它"><a href="#为什么要出现它" class="headerlink" title="为什么要出现它"></a>为什么要出现它</h3><ul>
+<li><p>有一些方法，不属于Object，属于javascript语言内部的方法，从Object上拿出来放在Reflect上面</p>
+</li>
+<li><p>Object上调用错误情况抛错的，改成返回false</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(target, property, attributes);</span><br><span class="line">  <span class="comment">// success</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="comment">// failure</span></span><br><span class="line">&#125;</span><br><span class="line">变成 ：</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">Reflect</span>.defineProperty(target, property, attributes)) &#123;</span><br><span class="line">  <span class="comment">// success</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// failure</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 语意更加清楚</span></span><br></pre></td></tr></table></figure></li>
+<li><p>把命令式的调用改成函数式调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'name'</span> <span class="keyword">in</span> <span class="built_in">Object</span> <span class="comment">//true</span></span><br><span class="line">改成</span><br><span class="line"><span class="built_in">Reflect</span>.has(<span class="built_in">Object</span>, <span class="string">'name'</span>)</span><br></pre></td></tr></table></figure></li>
+<li><p>它和Proxy相辅相成，在Proxy里面有的方法，它都有</p>
+<h3 id="有那些方法"><a href="#有那些方法" class="headerlink" title="有那些方法"></a>有那些方法</h3></li>
+<li><p><strong>Reflect.apply(target, thisArgument, argumentsList)</strong><br>参数： 目标函数  target函数调用时绑定的this对象。 target函数调用时传入的实参列表，该参数应该是一个类数组的对象。</p>
+</li>
+<li><p><strong>Reflect.construct(target, args, newTarget)</strong><br>行为有点像 new 操作符 构造函数 ， 相当于运行 new target(…args)<br><em>Reflect.construct 和 Object.create</em><br>在Reflect出现之前，会使用：</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">v1</span> (<span class="params"></span>) </span>&#123; <span class="keyword">this</span>.name = <span class="string">'v1'</span> &#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">v2</span> (<span class="params"></span>) </span>&#123; <span class="keyword">this</span>.name = <span class="string">'v2'</span> &#125;</span><br><span class="line"><span class="keyword">var</span> v2p = <span class="built_in">Object</span>.create(v2.prototype)</span><br><span class="line">v1.apply(v2p, args)</span><br></pre></td></tr></table></figure>
+<p>  它与下面的等价</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Reflect</span>.construct(v1, args, v2)</span><br></pre></td></tr></table></figure>
+<p>虽然两种方式的结构相同，但是过程是不一样的。</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">OneClass</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'OneClass'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span>.target);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">OtherClass</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'OtherClass'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">new</span>.target);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="built_in">Reflect</span>.construct(OneClass, args);</span><br><span class="line"><span class="comment">// 输出:</span></span><br><span class="line"><span class="comment">//     OneClass</span></span><br><span class="line"><span class="comment">//     function OneClass &#123; ... &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="built_in">Reflect</span>.construct(OneClass, args, OtherClass);</span><br><span class="line"><span class="comment">// 输出:</span></span><br><span class="line"><span class="comment">//     OneClass</span></span><br><span class="line"><span class="comment">//     function OtherClass &#123; ... &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj3 = <span class="built_in">Object</span>.create(OtherClass.prototype);</span><br><span class="line">OneClass.apply(obj3, args);</span><br><span class="line"><span class="comment">// 输出:</span></span><br><span class="line"><span class="comment">//     OneClass</span></span><br><span class="line"><span class="comment">//     undefined</span></span><br></pre></td></tr></table></figure>
+<p>关于new.target:<br>  使用new.target伪属性，您可以检测是否使用new运算符调用了函数或构造函数。<br>  在使用new运算符调用的构造函数和函数中，new.target返回对该构造函数或函数的引用。 在正常的函数调用中，new.target是未定义的。<br>可以在一个构造函数中，使用下面的判断，看是否是按照构造函数调用的</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Func</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">new</span>.target) &#123; <span class="keyword">throw</span> <span class="string">'must be called with new'</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>Reflect.defineProperty(target, key, attrs)</strong><br>等同于Object.defineProperty(obj, prop)<br><em>不同之处</em>就是<br>  Object.defineProperty</p>
+<pre><code>如果成功，返回对象
+如果失败，抛出TypeError</code></pre><p>  Reflect.defineProperty</p>
+<pre><code>返回成功与否的Boolean值</code></pre><p>Vue2的观察者模式就是用它实现的</p>
+</li>
+<li><p><strong>Reflect.deleteProperty(target, key)</strong><br>删除属性<br>和 delete objet.key 类似<br>但是现在改成了函数，不是命令式调用</p>
+</li>
+<li><p><strong>Reflect.get(obj,key)、Reflect.set()</strong><br>Reflect.get和点操作符没啥区别, 第一个参数不是对象，会抛出TypeError错误<br>Reflect.set第一个参数不是对象也会抛出TypeError的错误。设置成功与否会返回Boolean值</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="string">"duck"</span>, <span class="string">"duck"</span>, <span class="string">"duck"</span>]</span><br><span class="line"><span class="built_in">Reflect</span>.set(arr, <span class="number">2</span>, <span class="string">"goose"</span>) <span class="comment">// true</span></span><br><span class="line">arr[<span class="number">2</span>] <span class="comment">// "goose"</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;&#125;</span><br><span class="line"><span class="built_in">Reflect</span>.set(obj) <span class="comment">// 没有第二个参数，相当于给添加了一个键名和键值都是undefined的属性</span></span><br><span class="line"><span class="built_in">Reflect</span>.getOwnPropertyDescriptor(obj, <span class="string">'undefined'</span>)</span><br><span class="line"><span class="comment">//&#123;value: undefined, writable: true, enumerable: true, configurable: true&#125;</span></span><br></pre></td></tr></table></figure></li>
+<li><p><strong>Reflect.getOwnPropertyDescriptor(obj, key)</strong><br>行为和Obj.getOwnPropertyDescriptor()一致<br>如果在对象中存在，则返回给定的属性的属性描述符。否则返回 undefined。<br>第一个参数不是对象抛出TypeError</p>
+</li>
+<li><p><strong>Reflect.getPrototypeOf(obj)</strong><br>获取对象的原型对象</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Reflect</span>.getPrototypeOf(<span class="keyword">new</span> <span class="built_in">Date</span>()) === <span class="built_in">Date</span>.prototype <span class="comment">// true</span></span><br></pre></td></tr></table></figure></li>
+<li><p><strong>Reflect.has(obj, key)</strong><br>行为和 in 一致， 改成了方法调用<br>返回布尔值，第一个参数不是对象，抛出TypeError</p>
+</li>
+<li><p><strong>Reflect.isExtensible(obj)</strong><br>判断对象是否可以扩展<br>返回布尔值，参数不是对象返回TypeError</p>
+</li>
+<li><p><strong>Reflect.ownKeys()</strong><br>返回对象本身的属性列表，数组</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Reflect</span>.ownKeys(<span class="built_in">Date</span>.prototype)</span><br><span class="line"><span class="comment">// ["constructor", "toString", "toDateString", "toTimeString", "toISOString", "toUTCString", "toGMTString", "getDate", "setDate", "getDay", "getFullYear", "setFullYear", "getHours", "setHours", "getMilliseconds", "setMilliseconds", "getMinutes", "setMinutes", "getMonth", "setMonth", "getSeconds", "setSeconds", "getTime", "setTime", "getTimezoneOffset", "getUTCDate", "setUTCDate", "getUTCDay", "getUTCFullYear", "setUTCFullYear", "getUTCHours", "setUTCHours", "getUTCMilliseconds", "setUTCMilliseconds", "getUTCMinutes", "setUTCMinutes", "getUTCMonth", "setUTCMonth", "getUTCSeconds", "setUTCSeconds", "valueOf", "getYear", "setYear", "toJSON", "toLocaleString", "toLocaleDateString", "toLocaleTimeString", Symbol(Symbol.toPrimitive)]</span></span><br></pre></td></tr></table></figure></li>
+<li><p><strong>Reflect.preventExtensions(obj)</strong><br>更改对象为不可扩展</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> object1 = &#123;&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Reflect</span>.isExtensible(object1));</span><br><span class="line"><span class="comment">// true</span></span><br><span class="line"><span class="built_in">Reflect</span>.preventExtensions(object1);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Reflect</span>.isExtensible(object1));</span><br><span class="line"><span class="comment">//false</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Reflect.setPrototype(obj, prototypeObj)</strong><br>给一个对象设置原型对象</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Reflect</span>.setPrototypeOf(object1, <span class="built_in">Object</span>.prototype)</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/30/js-base-1/">js基础 --类和继承</a></h1>
+  
+
+      
+        <time datetime="2020-04-30T12:12:14.000Z">2020-04-30</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="类"><a href="#类" class="headerlink" title="类"></a><em>类</em></h2><p>先看两段代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span> (<span class="params">name, age</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.name = name</span><br><span class="line">  <span class="keyword">this</span>.age = age</span><br><span class="line">&#125;</span><br><span class="line">Person.prototype.printMes = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="keyword">this</span>.name, <span class="keyword">this</span>.age)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> person = <span class="keyword">new</span> Person(<span class="string">'lic'</span>, <span class="string">'24'</span>)</span><br><span class="line">person.name <span class="comment">// lic</span></span><br><span class="line">person.age <span class="comment">// 24</span></span><br><span class="line">person.printMes() <span class="comment">// lic 24</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person1</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(name, age) &#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name</span><br><span class="line">    <span class="keyword">this</span>.age = age</span><br><span class="line">  &#125;</span><br><span class="line">  printMes() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name, age)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> person1 = <span class="keyword">new</span> Person1(name, age)</span><br><span class="line">person1.name <span class="comment">// lic</span></span><br><span class="line">person1.age <span class="comment">// 24</span></span><br><span class="line">person1.printMes() <span class="comment">// lic 24</span></span><br></pre></td></tr></table></figure>
+
+<p>这两段代码，一个是构造函数写法，一个是类写法。<em>他们完全等价。</em></p>
+<p>在js里，class就是构造函数的另一种写法，即语法糖</p>
+<p>同样的，用class构造出的实例对象person1也有如下属性：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">person1.__proto__ == Person1.prototype</span><br><span class="line">person1.constructor == Person1</span><br></pre></td></tr></table></figure>
+
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a><em>继承</em></h2><h3 id="es5怎么实现的继承"><a href="#es5怎么实现的继承" class="headerlink" title="es5怎么实现的继承"></a><em>es5怎么实现的继承</em></h3><p>首先得有一个父类</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Father</span> (<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 实例属性</span></span><br><span class="line">  <span class="keyword">this</span>.name = name || <span class="string">'li'</span></span><br><span class="line">  <span class="comment">// 实例方法 </span></span><br><span class="line">  <span class="keyword">this</span>.print = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'name: '</span>, <span class="keyword">this</span>.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">Father.prototype.prototypePrint = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'prototype print name: '</span>, <span class="keyword">this</span>.name)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继承方式比较多，只介绍两中比较常用和业内认可的继承方式</p>
+<ul>
+<li>组合继承</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Son</span> (<span class="params">name, age</span>) </span>&#123;</span><br><span class="line">  Father.call(<span class="keyword">this</span>, name)</span><br><span class="line">  <span class="keyword">this</span>.age = age || <span class="number">15</span></span><br><span class="line">&#125;</span><br><span class="line">Son.prototype = <span class="keyword">new</span> Father()</span><br><span class="line">Son.prototype.constructor = Son <span class="comment">// 防止原型链污染，指回去</span></span><br><span class="line">Son.prototype.print = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Func Son:'</span>, <span class="keyword">this</span>.name, <span class="keyword">this</span>.age)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> son = <span class="keyword">new</span> Son(<span class="string">'lic'</span>, <span class="number">13</span>)</span><br><span class="line">son.print() <span class="comment">// name:  lic</span></span><br><span class="line">son.prototypePrint() <span class="comment">// prototype print name:  lic</span></span><br><span class="line">son.name <span class="comment">// lic</span></span><br><span class="line">son.age <span class="comment">// 13</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>寄生组合继承<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Son</span> (<span class="params">name, age</span>) </span>&#123;</span><br><span class="line">  Father.call(<span class="keyword">this</span>, name)</span><br><span class="line">  <span class="keyword">this</span>.age = <span class="number">12</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">combinePrototype</span> (<span class="params">subF, superF</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> prototype = <span class="built_in">Object</span>(superF.prototype) <span class="comment">// 其实就是多了一个这个，我们只要父类的原型拷贝</span></span><br><span class="line">  prototype.constructor = subF</span><br><span class="line">  subF.prototype = prototype</span><br><span class="line">&#125;</span><br><span class="line">combinePrototype(Son, Father)</span><br><span class="line"><span class="keyword">const</span> son = <span class="keyword">new</span> Son(<span class="string">'lic'</span>, <span class="number">13</span>)</span><br><span class="line">son.print() <span class="comment">// name:  lic</span></span><br><span class="line">son.prototypePrint() <span class="comment">// prototype print name:  lic</span></span><br><span class="line">son.name <span class="comment">// lic</span></span><br><span class="line">son.age <span class="comment">// 13</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="es6的继承"><a href="#es6的继承" class="headerlink" title="es6的继承"></a><em>es6的继承</em></h3><p>es6通过extends关键字进行继承</p>
+<p>首先定义一个父类Father</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Father</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(name) &#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name || <span class="string">'lic'</span></span><br><span class="line">  &#125;</span><br><span class="line">  prototypePrint () &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'father:'</span>, <span class="keyword">this</span>.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Son</span> <span class="keyword">extends</span> <span class="title">Father</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span> (name, age) &#123;</span><br><span class="line">    <span class="keyword">super</span>(name)</span><br><span class="line">    <span class="keyword">this</span>.age = age || <span class="number">12</span></span><br><span class="line">  &#125;</span><br><span class="line">  sonPrint() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'son: '</span>, <span class="keyword">this</span>.name, <span class="keyword">this</span>.age)</span><br><span class="line">  &#125;</span><br><span class="line">  staticPrint() &#123;</span><br><span class="line">    <span class="keyword">this</span>.prototypePrint()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> son = <span class="keyword">new</span> Son()</span><br><span class="line">son.prototypePrint() <span class="comment">// father: lic</span></span><br><span class="line">son.sonPrint() <span class="comment">// son:  lic 12</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是</p>
+<ul>
+<li><p>constructor函数</p>
+<pre><code>它代表对实例对象本身写属性方法，class的属性方法相当于写在了构造函数的原型对象上。
+它一定存在，没有会默认生成一个</code></pre></li>
+<li><p>super关键字</p>
+<ol>
+<li>在contructor中做函数使用的时候，super()调用会生成一个空对象，作为context来调用父类的constructor，返回this对象，作为子类constructor的context继续调用构造函数。</li>
+<li>作为对象，它就代指向父类</li>
+</ol>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a><em>总结</em></h2><p>ES5 的继承，实质是先创造子类的实例对象this，然后再将父类的方法添加到this上面（Parent.apply(this)）。ES6 的继承机制完全不同，实质是先将父类实例对象的属性和方法，加到this上面（所以必须先调用super方法），然后再用子类的构造函数修改this。</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/25/js-base-0/">js基础 --原型链</a></h1>
   
 
@@ -369,6 +577,14 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/05/base-3/">css:两栏、三栏、圣杯、双飞翼布局</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/05/base-2/">css:盒模型，box-sizing应用场景</a>
+      </li>
     
       <li>
         <a href="/2020/07/03/base-1/">css:box-shadow</a>
