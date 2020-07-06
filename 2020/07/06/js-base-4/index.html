@@ -3,21 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>css:盒模型，box-sizing应用场景 › lic-blog</title>
+  <title>js基础 --js执行机制和event loop › lic-blog</title>
   <meta name="author" content="triumphLic">
   
-  <meta name="description" content="盒模型的属性  由内向外：    content -&amp;gt; padding 内边距 -&amp;gt; border 边框 -&amp;gt; margin 外边距
-  盒子模型只包括两种：
-
-标准盒模型
-怪异盒模型
-
-标准盒模型  width、height  在标准盒模型中，width是content的宽度, ">
+  <meta name="description" content="js执行机制首先，js是单线程的，它从诞生就是单线程的。
+为什么不能是多线程？浏览器两个线程同时操作Dom，就没得玩了
+tip： html5的web worker标准，允许js脚本创建多个线程，但是完全被主线程控制，且不能操作Dom
+任务队列  单线程意味着，一个时间，js只能做一件事，做一个任务。">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="css:盒模型，box-sizing应用场景"/>
+  <meta property="og:title" content="js基础 --js执行机制和event loop"/>
   <meta property="og:site_name" content="lic-blog"/>
 
   
@@ -52,37 +49,41 @@
     <header>
       
   
-    <h1 class="title">css:盒模型，box-sizing应用场景</h1>
+    <h1 class="title">js基础 --js执行机制和event loop</h1>
   
 
       
-        <time datetime="2020-07-05T10:33:41.000Z">2020-07-05</time>
+        <time datetime="2020-07-06T13:01:10.000Z">2020-07-06</time>
       
     </header>
     <div class="entry">
       
-        <h2 id="盒模型的属性"><a href="#盒模型的属性" class="headerlink" title="盒模型的属性"></a>盒模型的属性</h2><p>  由内向外：<br>    content -&gt; padding 内边距 -&gt; border 边框 -&gt; margin 外边距</p>
-<p>  盒子模型只包括两种：</p>
-<ul>
-<li>标准盒模型</li>
-<li>怪异盒模型</li>
+        <h2 id="js执行机制"><a href="#js执行机制" class="headerlink" title="js执行机制"></a>js执行机制</h2><p>首先，<em>js是单线程的</em>，它从诞生就是单线程的。</p>
+<p>为什么不能是多线程？浏览器两个线程同时操作Dom，就没得玩了</p>
+<p>tip： html5的web worker标准，允许js脚本创建多个线程，但是完全被主线程控制，且不能操作Dom</p>
+<h2 id="任务队列"><a href="#任务队列" class="headerlink" title="任务队列"></a>任务队列</h2><p>  单线程意味着，一个时间，js只能做一件事，做一个任务。</p>
+<p>  那么，js执行就得排队</p>
+<p>  如果，所有的任务都一件一件顺序执行，那么有一些Ajax请求很耗时，不能等到它执行完再走下一个任务。</p>
+<h4 id="所以，js的任务分成了两种，同步任务-amp-异步任务"><a href="#所以，js的任务分成了两种，同步任务-amp-异步任务" class="headerlink" title="所以，js的任务分成了两种，同步任务 &amp; 异步任务"></a>所以，js的任务分成了两种，同步任务 &amp; 异步任务</h4><ul>
+<li><p>同步任务： 在主线程上执行，只有上一个任务完成了，才会执行下一个任务，形成了一个执行栈</p>
+</li>
+<li><p>异步任务： 不进入主进程执行，被推入<strong>异步队列</strong>（task queue），只有任务队列通知主线程某个任务需要执行了，才会进入主线程执行</p>
+</li>
 </ul>
-<h2 id="标准盒模型"><a href="#标准盒模型" class="headerlink" title="标准盒模型"></a>标准盒模型</h2><p>  <strong>width、height</strong><br>  在标准盒模型中，width是content的宽度, height 是content的高度</p>
-<h2 id="怪异盒模型"><a href="#怪异盒模型" class="headerlink" title="怪异盒模型"></a>怪异盒模型</h2><p>  <strong>width、height</strong><br>  在怪异盒模型中，width是content + padding + border的宽度, height 是content的高度</p>
-<p>  <strong>触发怪异盒模型的方式</strong></p>
-<ul>
-<li>在ie6、7、8下html文件缺少<!DOCTYPE html></li>
-<li>box-sizing: border-box 开启div的怪异盒模型</li>
-</ul>
-<h2 id="box-sizing"><a href="#box-sizing" class="headerlink" title="box-sizing"></a>box-sizing</h2><p>  它的取值：</p>
-<ul>
-<li>content-box 默认，标准盒模型</li>
-<li>border-box 怪异盒模型</li>
-<li>padding-box 兼容巨差</li>
-</ul>
-<p>  为啥没有margin-box,如果设置了，会和现在很多标准冲突，最简单的例子就是background怎么办</p>
-<h2 id="弹性盒子FlexBox"><a href="#弹性盒子FlexBox" class="headerlink" title="弹性盒子FlexBox"></a>弹性盒子FlexBox</h2><p>  display: flex<br>  省略，天天用就行了</p>
-
+<h3 id="所以js的异步执行模式就是这样的："><a href="#所以js的异步执行模式就是这样的：" class="headerlink" title="所以js的异步执行模式就是这样的："></a>所以js的异步执行模式就是这样的：</h3><pre><code>* 同步任务，生成执行栈，一个一个顺序执行
+* 异步任务被挂起，推到**异步队列**，等待执行
+* 执行栈所有内容执行完，主线程读取“异步队列”的需要执行的任务，推到执行栈中执行
+* 重复上面三步</code></pre><h2 id="事件和回调函数"><a href="#事件和回调函数" class="headerlink" title="事件和回调函数"></a>事件和回调函数</h2><p>  <strong>异步任务队列</strong>，是一个<strong>事件的队列</strong>，无论是IO设备触发的事件，还是ajax事件，都是事件。</p>
+<p>  每个事件都需要设置一个<strong>回调函数</strong>，它会被用来推到执行栈执行</p>
+<p>  这些事件一触发，就相当于给“异步队列”通知说： ”我的回调函数可以被推到执行栈执行了！“</p>
+<p>  只要主线程的执行栈一清空，任务队列第一个事件的回调函数就被推到主线程的执行栈执行了</p>
+<h2 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h2><p>  上面介绍的</p>
+<pre><code>主线程的执行栈清空、执行完之后，需要从异步任务队列中读取任务，这个过程是循环的：所以叫事件循环Event Loop</code></pre><p>  主线程运行的时候，产生堆（存放数据）栈（执行js任务）</p>
+<p>  执行栈任务执行的同时，会调用一些IO的API，Ajax的API去产生新的异步任务，并且添加到异步任务队列中</p>
+<p>  某一时刻执行栈中的代码，一定在异步任务队列执行前执行</p>
+<h2 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h2><p>  setTimeout() &amp;&amp; setInterval()</p>
+<p>  setTimeout(fn,0)的含义是，指定某个任务在主线程最早可得的空闲时间执行，也就是说，尽可能早得执行。它在”任务队列”的尾部添加一个事件，因此要等到同步任务和”任务队列”现有的事件都处理完，才会得到执行。</p>
+<h2 id="宏任务、微任务"><a href="#宏任务、微任务" class="headerlink" title="宏任务、微任务"></a>宏任务、微任务</h2>
       
     </div>
       

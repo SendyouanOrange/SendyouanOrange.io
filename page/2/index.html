@@ -45,6 +45,68 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/05/06/js-base-3/">js基础 -- 执行环境，执行上下文，变量环境，词法环境，作用域相关</a></h1>
+  
+
+      
+        <time datetime="2020-05-06T14:12:14.000Z">2020-05-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="乱七八糟概念一大堆，理一理"><a href="#乱七八糟概念一大堆，理一理" class="headerlink" title="乱七八糟概念一大堆，理一理"></a>乱七八糟概念一大堆，理一理</h2><h2 id="明确的概念"><a href="#明确的概念" class="headerlink" title="明确的概念"></a>明确的概念</h2><ul>
+<li>作用域: 因为javascript是<em>静态作用域</em>，所以作用域在js预编译阶段，也可以说写完代码，就明确了作用域（this，是动态作用域的）</li>
+<li>执行环境、执行上下文： 指的是代码<em>执行</em>阶段，才会产生创建的</li>
+</ul>
+<h3 id="执行环境"><a href="#执行环境" class="headerlink" title="执行环境"></a>执行环境</h3><p>  执行环境定义了变量或函数有权访问的其他数据，决定了它们各自的行为。<br>  分成：</p>
+<ul>
+<li><p>全局执行环境</p>
+</li>
+<li><p>函数执行环境</p>
+</li>
+<li><p><em>每个执行环境都有三个</em>组件<em>：*</em></p>
+</li>
+</ul>
+<ol>
+<li>执行上下文，this就指向执行上下文对象</li>
+<li>词法环境</li>
+<li>变量环境</li>
+</ol>
+<h3 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h3><p>  分成全局执行上下文和函数执行上下文<br>  js执行的时候，有一个执行上下文栈，在遇到新的函数执行就会把新的执行函数的上下文推到执行上下文栈里，执行结束弹出</p>
+<h3 id="词法环境对象"><a href="#词法环境对象" class="headerlink" title="词法环境对象"></a>词法环境对象</h3><p>  环境记录器<br>  环境记录器分为两种：</p>
+<ol>
+<li>声明式环境记录器，存在于函数作用域中，存储变量、函数、参数。</li>
+<li>对象式环境记录器，存在于全局作用域和块级作用域中，存储变量、函数。</li>
+</ol>
+<h3 id="变量环境对象"><a href="#变量环境对象" class="headerlink" title="变量环境对象"></a>变量环境对象</h3><p>###</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/05/04/webpack-0/">webpack:基础知识</a></h1>
   
 
@@ -632,6 +694,10 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/06/js-base-4/">js基础 --js执行机制和event loop</a>
+      </li>
     
       <li>
         <a href="/2020/07/06/base-4/">js:x=y=0;a.x=a={n:1}</a>

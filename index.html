@@ -45,6 +45,68 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/07/06/js-base-4/">js基础 --js执行机制和event loop</a></h1>
+  
+
+      
+        <time datetime="2020-07-06T13:01:10.000Z">2020-07-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="js执行机制"><a href="#js执行机制" class="headerlink" title="js执行机制"></a>js执行机制</h2><p>首先，<em>js是单线程的</em>，它从诞生就是单线程的。</p>
+<p>为什么不能是多线程？浏览器两个线程同时操作Dom，就没得玩了</p>
+<p>tip： html5的web worker标准，允许js脚本创建多个线程，但是完全被主线程控制，且不能操作Dom</p>
+<h2 id="任务队列"><a href="#任务队列" class="headerlink" title="任务队列"></a>任务队列</h2><p>  单线程意味着，一个时间，js只能做一件事，做一个任务。</p>
+<p>  那么，js执行就得排队</p>
+<p>  如果，所有的任务都一件一件顺序执行，那么有一些Ajax请求很耗时，不能等到它执行完再走下一个任务。</p>
+<h4 id="所以，js的任务分成了两种，同步任务-amp-异步任务"><a href="#所以，js的任务分成了两种，同步任务-amp-异步任务" class="headerlink" title="所以，js的任务分成了两种，同步任务 &amp; 异步任务"></a>所以，js的任务分成了两种，同步任务 &amp; 异步任务</h4><ul>
+<li><p>同步任务： 在主线程上执行，只有上一个任务完成了，才会执行下一个任务，形成了一个执行栈</p>
+</li>
+<li><p>异步任务： 不进入主进程执行，被推入<strong>异步队列</strong>（task queue），只有任务队列通知主线程某个任务需要执行了，才会进入主线程执行</p>
+</li>
+</ul>
+<h3 id="所以js的异步执行模式就是这样的："><a href="#所以js的异步执行模式就是这样的：" class="headerlink" title="所以js的异步执行模式就是这样的："></a>所以js的异步执行模式就是这样的：</h3><pre><code>* 同步任务，生成执行栈，一个一个顺序执行
+* 异步任务被挂起，推到**异步队列**，等待执行
+* 执行栈所有内容执行完，主线程读取“异步队列”的需要执行的任务，推到执行栈中执行
+* 重复上面三步</code></pre><h2 id="事件和回调函数"><a href="#事件和回调函数" class="headerlink" title="事件和回调函数"></a>事件和回调函数</h2><p>  <strong>异步任务队列</strong>，是一个<strong>事件的队列</strong>，无论是IO设备触发的事件，还是ajax事件，都是事件。</p>
+<p>  每个事件都需要设置一个<strong>回调函数</strong>，它会被用来推到执行栈执行</p>
+<p>  这些事件一触发，就相当于给“异步队列”通知说： ”我的回调函数可以被推到执行栈执行了！“</p>
+<p>  只要主线程的执行栈一清空，任务队列第一个事件的回调函数就被推到主线程的执行栈执行了</p>
+<h2 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h2><p>  上面介绍的</p>
+<pre><code>主线程的执行栈清空、执行完之后，需要从异步任务队列中读取任务，这个过程是循环的：所以叫事件循环Event Loop</code></pre><p>  主线程运行的时候，产生堆（存放数据）栈（执行js任务）</p>
+<p>  执行栈任务执行的同时，会调用一些IO的API，Ajax的API去产生新的异步任务，并且添加到异步任务队列中</p>
+<p>  某一时刻执行栈中的代码，一定在异步任务队列执行前执行</p>
+<h2 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h2><p>  setTimeout() &amp;&amp; setInterval()</p>
+<p>  setTimeout(fn,0)的含义是，指定某个任务在主线程最早可得的空闲时间执行，也就是说，尽可能早得执行。它在”任务队列”的尾部添加一个事件，因此要等到同步任务和”任务队列”现有的事件都处理完，才会得到执行。</p>
+<h2 id="宏任务、微任务"><a href="#宏任务、微任务" class="headerlink" title="宏任务、微任务"></a>宏任务、微任务</h2>
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/07/06/base-4/">js:x=y=0;a.x=a={n:1}</a></h1>
   
 
@@ -143,7 +205,7 @@
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">header</span>, <span class="selector-tag">footer</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">60px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">overflow</span>: scroll;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span> <span class="number">100px</span> <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span>, <span class="selector-class">.right</span>, <span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">300px</span>;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: blue;</span><br><span class="line">  <span class="attribute">left</span>: -<span class="number">200px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.right</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: yellow;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">100px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="圣杯布局其中比较重要的点："><a href="#圣杯布局其中比较重要的点：" class="headerlink" title="圣杯布局其中比较重要的点："></a><strong>圣杯布局其中比较重要的点：</strong></h3><ul>
 <li>container 容器需要设置成BFC，子元素都是浮动元素，container不设置成BFC在普通文档流中不占位</li>
-<li>margin-left: -100%; // 为了浮动元素left能够到和main同一行，参考文章<br><a href="https://www.cnblogs.com/2050/archive/2012/08/13/2636467.html" target="_blank" rel="noopener">https://www.cnblogs.com/2050/archive/2012/08/13/2636467.html</a><br>负边距可以<ol>
+<li>margin-left: -100%; // 为了浮动元素left能够到和main同一行，<a href="https://www.cnblogs.com/2050/archive/2012/08/13/2636467.html" target="__blank">参考文章</a><br>负边距可以<ol>
 <li>让元素变大</li>
 <li>让浮动元素重叠，后写的元素可以显示在先写的元素前（<strong>！！！这就是圣杯和双飞翼的关键！！！</strong>）</li>
 </ol>
@@ -589,68 +651,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/06/js-base-3/">js基础 -- 执行环境，执行上下文，变量环境，词法环境，作用域相关</a></h1>
-  
-
-      
-        <time datetime="2020-05-06T14:12:14.000Z">2020-05-06</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="乱七八糟概念一大堆，理一理"><a href="#乱七八糟概念一大堆，理一理" class="headerlink" title="乱七八糟概念一大堆，理一理"></a>乱七八糟概念一大堆，理一理</h2><h2 id="明确的概念"><a href="#明确的概念" class="headerlink" title="明确的概念"></a>明确的概念</h2><ul>
-<li>作用域: 因为javascript是<em>静态作用域</em>，所以作用域在js预编译阶段，也可以说写完代码，就明确了作用域（this，是动态作用域的）</li>
-<li>执行环境、执行上下文： 指的是代码<em>执行</em>阶段，才会产生创建的</li>
-</ul>
-<h3 id="执行环境"><a href="#执行环境" class="headerlink" title="执行环境"></a>执行环境</h3><p>  执行环境定义了变量或函数有权访问的其他数据，决定了它们各自的行为。<br>  分成：</p>
-<ul>
-<li><p>全局执行环境</p>
-</li>
-<li><p>函数执行环境</p>
-</li>
-<li><p><em>每个执行环境都有三个</em>组件<em>：*</em></p>
-</li>
-</ul>
-<ol>
-<li>执行上下文，this就指向执行上下文对象</li>
-<li>词法环境</li>
-<li>变量环境</li>
-</ol>
-<h3 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h3><p>  分成全局执行上下文和函数执行上下文<br>  js执行的时候，有一个执行上下文栈，在遇到新的函数执行就会把新的执行函数的上下文推到执行上下文栈里，执行结束弹出</p>
-<h3 id="词法环境对象"><a href="#词法环境对象" class="headerlink" title="词法环境对象"></a>词法环境对象</h3><p>  环境记录器<br>  环境记录器分为两种：</p>
-<ol>
-<li>声明式环境记录器，存在于函数作用域中，存储变量、函数、参数。</li>
-<li>对象式环境记录器，存在于全局作用域和块级作用域中，存储变量、函数。</li>
-</ol>
-<h3 id="变量环境对象"><a href="#变量环境对象" class="headerlink" title="变量环境对象"></a>变量环境对象</h3><p>###</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
 
 <nav id="pagination">
   
@@ -671,6 +671,10 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/06/js-base-4/">js基础 --js执行机制和event loop</a>
+      </li>
     
       <li>
         <a href="/2020/07/06/base-4/">js:x=y=0;a.x=a={n:1}</a>
