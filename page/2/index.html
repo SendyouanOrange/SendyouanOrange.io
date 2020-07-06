@@ -45,6 +45,61 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/05/04/webpack-0/">webpack:基础知识</a></h1>
+  
+
+      
+        <time datetime="2020-05-03T16:00:00.000Z">2020-05-04</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="webpack"><a href="#webpack" class="headerlink" title="webpack"></a>webpack</h2><p>webpack 是基于<em>事件流</em>的编程范例</p>
+<p>基于Tapable</p>
+<h2 id="Tapable"><a href="#Tapable" class="headerlink" title="Tapable"></a>Tapable</h2><p>控制webpack钩子函数的发布订阅，支撑着webpack的事件流</p>
+<ul>
+<li>同步钩子</li>
+<li>异步钩子</li>
+</ul>
+<h2 id="webpack的编译过程"><a href="#webpack的编译过程" class="headerlink" title="webpack的编译过程"></a>webpack的编译过程</h2><ul>
+<li><p>执行npm run build/dev</p>
+</li>
+<li><p>运行webpack包下面的bin文件夹下的webpack.js<br>  webpack4把webpack和webpack-cli分成了两个包，之前在一起<br>  这个文件里的逻辑比较简单，判断是否安装webpack-cli包或者webpack-command（轻量级webpack-cli）包<br>  有且只有一个cli包，就去webpack-cli包下执行bin文件的cli.js文件</p>
+</li>
+<li><p>运行webpack-cli包下bin文件夹cli.js文件<br>  它主要读取webpack的option配置文件<br>  生成options，然后使用webpack包lib文件夹下的weback.js创建compiler实例</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">let</span> lastHash = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">let</span> compiler;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	compiler = webpack(options);</span><br><span class="line">&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">	<span class="keyword">if</span> (err.name === <span class="string">"WebpackOptionsValidationError"</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (argv.color) <span class="built_in">console</span>.error(<span class="string">`\u001b[1m\u001b[31m<span class="subst">$&#123;err.message&#125;</span>\u001b[39m\u001b[22m`</span>);</span><br><span class="line">		<span class="keyword">else</span> <span class="built_in">console</span>.error(err.message);</span><br><span class="line">		<span class="comment">// eslint-disable-next-line no-process-exit</span></span><br><span class="line">		process.exit(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">throw</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>webpack/lib/webpack.js<br>这个文件暴露webpack这个方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="function">(<span class="params">options, callback</span>) =&gt;</span> &#123; ... &#125;</span><br><span class="line">exports = <span class="built_in">module</span>.exports = webpack;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/05/02/js-base-2/">js基础 --原型相关方法，Object，Reflect</a></h1>
   
 
@@ -577,6 +632,10 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/06/base-4/">js:x=y=0;a.x=a={n:1}</a>
+      </li>
     
       <li>
         <a href="/2020/07/05/base-3/">css:两栏、三栏、圣杯、双飞翼布局</a>

@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>js:x=y=0;a.x=a={n:1} › lic-blog</title>
+  <meta name="author" content="triumphLic">
+  
+  <meta name="description" content="这个面试题诞生以来就被各种讨论，记录一下自己的想法
+var x = y = 1;  这个表达式可以被拆成  123var x // 变量声明提升y = 1 // 隐式创建一个全局变量x = y // 赋值语句
+  需要注意的就是 y = 1 表达式隐式的创建了全局对象y
+a.x = a = { n:">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="js:x=y=0;a.x=a={n:1}"/>
+  <meta property="og:site_name" content="lic-blog"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="lic-blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">lic-blog</a></h1>
+  <h2><a href="/"></a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">js:x=y=0;a.x=a={n:1}</h1>
+  
+
+      
+        <time datetime="2020-07-06T02:17:17.000Z">2020-07-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <p><em>这个面试题诞生以来就被各种讨论，记录一下自己的想法</em></p>
+<h2 id="var-x-y-1"><a href="#var-x-y-1" class="headerlink" title="var x = y = 1;"></a>var x = y = 1;</h2><p>  这个表达式可以被拆成<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="comment">// 变量声明提升</span></span><br><span class="line">y = <span class="number">1</span> <span class="comment">// 隐式创建一个全局变量</span></span><br><span class="line">x = y <span class="comment">// 赋值语句</span></span><br></pre></td></tr></table></figure></p>
+<p>  需要注意的就是 y = 1 表达式隐式的创建了全局对象y</p>
+<h2 id="a-x-a-n-2"><a href="#a-x-a-n-2" class="headerlink" title="a.x = a = { n: 2 }"></a>a.x = a = { n: 2 }</h2><p>  这段代码不好分析，网上一堆深奥的答案。</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+
+<p>  最开始理解，会觉得a的值应该是这样：<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  n: <span class="number">2</span>,</span><br><span class="line">  x: &#123;</span><br><span class="line">    n: <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>  额，完全不是</p>
+<p>  a打印出来是： { n: 2 }</p>
+<p>  怎么都不好分析。不如把代码改写成这样</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">var</span> b = a <span class="comment">// 缓存一下初始的a</span></span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(a) <span class="comment">// &#123; n: 2 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(b) <span class="comment">// &#123; n: 1, x: &#123; n: 2 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>  <strong>这个表达式和 var x = y = 1 的区别是：</strong></p>
+<ul>
+<li><h3 id="var-x-…-就是一个初始化赋值语句的左半边"><a href="#var-x-…-就是一个初始化赋值语句的左半边" class="headerlink" title="var x = … 就是一个初始化赋值语句的左半边"></a>var x = … 就是一个初始化赋值语句的左半边</h3><p>而</p>
+</li>
+<li><h3 id="a-x-本身就是一个语句。"><a href="#a-x-本身就是一个语句。" class="headerlink" title="a.x 本身就是一个语句。"></a>a.x 本身就是一个语句。</h3><ol>
+<li>根据js从左到右的执行顺序，会先执行a.x（即取a的值，当前是 { n: 1 }, a.x= 等到给a.x赋值）</li>
+<li>然后 a被赋了新的对象地址，把之前的a覆盖了</li>
+<li>a.x 等待赋值，右侧 a = { n :2 }这个值。</li>
+<li>可是刚刚1.这个阶段的a已经被覆盖了，a.x = { n: 2}执行之后也没有意义了。{ n: 1 } 这个值的指针被指到别的地了</li>
+<li>打印出b, 发现b是原来的a的值，并且x也被赋值了。说明只是1. 这一步的赋值影响不到新的a了</li>
+</ol>
+</li>
+</ul>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 20:48:26
+ * @Description  : 描述信息
+ -->
+
+<div class="widget tag">
+  <h3 class="title">目录</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/06/base-4/">js:x=y=0;a.x=a={n:1}</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/05/base-3/">css:两栏、三栏、圣杯、双飞翼布局</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/05/base-2/">css:盒模型，box-sizing应用场景</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/03/base-1/">css:box-shadow</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/03/base-0/">css:BFC</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/02/webpack-2/">webpack:文件处理</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/01/webpack-1/">webpack:MiniCssExtractPlugin问题</a>
+      </li>
+    
+      <li>
+        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/21/nginx/">nginx操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/06/js-base-3/">js基础 -- 执行环境，执行上下文，变量环境，词法环境，作用域相关</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/04/webpack-0/">webpack:基础知识</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/02/js-base-2/">js基础 --原型相关方法，Object，Reflect</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/30/js-base-1/">js基础 --类和继承</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/25/js-base-0/">js基础 --原型链</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/23/functional-2/">函数式编程 --组合和管道</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/22/functional-1/">函数式编程 --函数的柯里化</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/21/functional-0/">函数式编程 --纯函数</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/21/wasm-2/">WASM（二）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/21/wasm-1/">WASM（一）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 triumphLic
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+</body>
+</html>
+
