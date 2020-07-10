@@ -69,21 +69,22 @@ eval code：放在eval的代码。
 <li>module：模块代码</li>
 <li>eval code：放在eval的代码。</li>
 </ul>
-<h2 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h2><p>js预编译一个可执行代码块，会生成一个执行上下文<br>它分成三个部分：</p>
+<h2 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h2><p>js预编译一个可执行代码块，会生成一个执行上下文<br>它分成四个部分：</p>
 <ul>
-<li>变量环境 VariableEnvironment 存放var function 定义的变量</li>
-<li>词法环境 LexicalEnvironment 存放let const class 定义的变量</li>
+<li>outer 它是外部词法环境的引用</li>
+<li>变量环境记录 VariableEnvironment 存放var function 定义的变量</li>
+<li>词法环境记录 LexicalEnvironment 存放let const class 定义的变量</li>
 <li>ThisBinding 就是<strong>this</strong></li>
 </ul>
 <h2 id="词法环境"><a href="#词法环境" class="headerlink" title="词法环境"></a>词法环境</h2><p>上面的变量环境和词法环境，其实不用细分，都称为词法环境</p>
 <p>词法环境有 两个组成部分：</p>
 <ul>
 <li>对外部词法环境的引用outer</li>
-<li>环境记录（Environment Record），这个就是真正登记变量的地方。</li>
+<li>词法环境环境（Environment Record），（变量环境记录，词法环境记录的统称）这个就是真正登记变量的地方。</li>
 </ul>
 <p>通过outer可以访问<br>在ES6中，词法环境链，就是其实就是<strong>作用域链</strong></p>
 <p>词法环境和我们写的代码相对应，代码写成什么样子，词法环境就是什么样的，所以说js是词法作用域的（静态作用域）</p>
-<p>词法环境就可以说是作用域了吧</p>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><p>函数作用域还是块级作用域</p>
 
       
     </div>
@@ -137,6 +138,10 @@ eval code：放在eval的代码。
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/08/js-base-5/">js基础:this指向call、apply、bind</a>
+      </li>
     
       <li>
         <a href="/2020/07/06/js-base-4/">js基础--js执行机制</a>

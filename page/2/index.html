@@ -45,6 +45,52 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/05/21/nginx/">nginx操作</a></h1>
+  
+
+      
+        <time datetime="2020-05-21T12:49:24.000Z">2020-05-21</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="nginx-编译"><a href="#nginx-编译" class="headerlink" title="nginx 编译"></a>nginx 编译</h2><p>  安装的nginx目录下执行 make &amp;&amp; make install + 编译文件需要放的路径</p>
+<h2 id="nginx-启动-暂停-重载"><a href="#nginx-启动-暂停-重载" class="headerlink" title="nginx 启动 暂停 重载"></a>nginx 启动 暂停 重载</h2><ul>
+<li><p>启动<br>nginx的编译后文件内执行：<br>./sbin/nginx -c conf/nginx.conf</p>
+</li>
+<li><p>操作<br>nginx -s<br>nginx -s stop 立刻停止服务<br>nginx -s quit 优雅停止服务(进行中的web请求执行完在结束)<br>nginx -s reload 重载配置文件<br>nginx -s reopen 重新开始记录日志文件</p>
+<p>停止一般使用stop </p>
+<p>改了nginx.conf内容之后，执行nginx -s reload 就行了</p>
+</li>
+</ul>
+<h2 id="配置nginx-conf"><a href="#配置nginx-conf" class="headerlink" title="配置nginx.conf"></a>配置nginx.conf</h2>
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/05/06/js-base-3/">js基础 -- 执行上下文，变量环境，词法环境，作用域相关</a></h1>
   
 
@@ -61,21 +107,22 @@
 <li>module：模块代码</li>
 <li>eval code：放在eval的代码。</li>
 </ul>
-<h2 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h2><p>js预编译一个可执行代码块，会生成一个执行上下文<br>它分成三个部分：</p>
+<h2 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h2><p>js预编译一个可执行代码块，会生成一个执行上下文<br>它分成四个部分：</p>
 <ul>
-<li>变量环境 VariableEnvironment 存放var function 定义的变量</li>
-<li>词法环境 LexicalEnvironment 存放let const class 定义的变量</li>
+<li>outer 它是外部词法环境的引用</li>
+<li>变量环境记录 VariableEnvironment 存放var function 定义的变量</li>
+<li>词法环境记录 LexicalEnvironment 存放let const class 定义的变量</li>
 <li>ThisBinding 就是<strong>this</strong></li>
 </ul>
 <h2 id="词法环境"><a href="#词法环境" class="headerlink" title="词法环境"></a>词法环境</h2><p>上面的变量环境和词法环境，其实不用细分，都称为词法环境</p>
 <p>词法环境有 两个组成部分：</p>
 <ul>
 <li>对外部词法环境的引用outer</li>
-<li>环境记录（Environment Record），这个就是真正登记变量的地方。</li>
+<li>词法环境环境（Environment Record），（变量环境记录，词法环境记录的统称）这个就是真正登记变量的地方。</li>
 </ul>
 <p>通过outer可以访问<br>在ES6中，词法环境链，就是其实就是<strong>作用域链</strong></p>
 <p>词法环境和我们写的代码相对应，代码写成什么样子，词法环境就是什么样的，所以说js是词法作用域的（静态作用域）</p>
-<p>词法环境就可以说是作用域了吧</p>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><p>函数作用域还是块级作用域</p>
 
       
     </div>
@@ -608,74 +655,13 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/03/21/wasm-1/">WASM（一）</a></h1>
-  
-
-      
-        <time datetime="2020-03-21T10:49:24.000Z">2020-03-21</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="js-暴露出来的问题"><a href="#js-暴露出来的问题" class="headerlink" title="js 暴露出来的问题"></a><em>js 暴露出来的问题</em></h2><p>语法太灵活导致开发大型web比较困难<br>性能足以满足一些大运算需求</p>
-<h2 id="三巨头的探索"><a href="#三巨头的探索" class="headerlink" title="三巨头的探索"></a><em>三巨头的探索</em></h2><ul>
-<li>微软：typescript（JavaScript的一个严格超集）（js+静态类型检查）<pre><code>仍然是编译成js在浏览器中执行</code></pre></li>
-<li>V8，利用JIT提升编译执行速度，并且做到了，提升10倍<pre><code>现如今web应用的瓶颈早已不在于js，而在于DOM
-为什么使用JIT: 毕竟javascript是动态语言类型，不仅是弱类型甚至number都只有一种类型。</code></pre></li>
-<li>Mozilla 的 asmjs<pre><code>asm.js（相当于支持了强类型js，ts的子集）诞生了，JIT =&gt; AOT （运行时编译 和 编译后运行）</code></pre></li>
-<li>三巨头（Google、MicroSoft、Apple）觉得asmjs思路蛮好，联合起来，一同共建WebAssembly生态。<pre><code>与asmjs不同的是：WebAssembly是一份字节码标准，以字节码的形式依赖虚拟机在浏览器中运行。不是汇编，只是看起来像。</code></pre></li>
-</ul>
-<h2 id="WASM是为了解决js性能问题吗？"><a href="#WASM是为了解决js性能问题吗？" class="headerlink" title="WASM是为了解决js性能问题吗？"></a><em>WASM是为了解决js性能问题吗？</em></h2><p><strong>首先，WASM确实是为了解决js性能问题才诞生的。</strong></p>
-<p><em>WASM能做什么？</em><br>不仅仅是能在未来造轮子的时候提供更高性能的方式。<br>而且，能把<strong>其他语言的轮子</strong>移植到web上使用。编译成WASM然后web直接使用，就像AUTOCAD做的一样，沉淀三十年的代码直接移植到web端。</p>
-<h2 id="WebAssembly-原理"><a href="#WebAssembly-原理" class="headerlink" title="WebAssembly 原理"></a><em>WebAssembly 原理</em></h2><ul>
-<li><p><strong>基本概念</strong></p>
-<pre><code>高级语言：高度封装的汇编语言
-汇编语言（符号语言）：直接操作寄存器和存储器，汇编语言指令是机器指令的一种符号表示，不同平台之间不可直接移植。
-机器码：是一种指令集的体系。这种指令集，称机器码（machine code），是电脑的CPU可直接解读的数据，它是计算机的设计者通过计算机的硬件结构赋予计算机的操作功能。</code></pre></li>
-<li><p><strong>LLVM（底层虚拟机）</strong></p>
-<pre><code>做什么的：高级语言编译成它能识别的的语言（LLVM IR），然后它就能把 LLVM IR 编译成各架构 CPU 对应机器码。
-对于WASM来说，只要能编译成LLVM IR的高级语言，就能被编译成WebAssembly字节码</code></pre></li>
-</ul>
-<p>目前能编译成 WebAssembly 字节码的高级语言有：<br>AssemblyScript:语法和 TypeScript 一致、c\c++、Rust、Kotlin、Golang。</p>
-<h2 id="对比JS，WebAssembly-有如下优点："><a href="#对比JS，WebAssembly-有如下优点：" class="headerlink" title="对比JS，WebAssembly 有如下优点："></a><em>对比JS，WebAssembly 有如下优点：</em></h2><ul>
-<li>体积小<pre><code>由于浏览器运行时只加载编译成的字节码，一样的逻辑比用字符串描述的 JS 文件体积要小很多；</code></pre></li>
-<li>加载快<pre><code>由于文件体积小，再加上无需解释执行，WebAssembly 能更快的加载并实例化，减少运行前的等待时间；</code></pre></li>
-<li>兼容性问题少<pre><code>WebAssembly 是非常底层的字节码规范，制订好后很少变动，就算以后发生变化,也只需在从高级语言编译成字节码过程中做兼容。可能出现兼容性问题的地方在于 JS 和 WebAssembly 桥接的 JS 接口。</code></pre></li>
-</ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>如今技术出现的越来越多，但是实际上在工作中能够用到的，越并不是那么多。其实很多大厂所输出的一些技术，都是有业务场景的，有业务做推动。而不是凭空造轮子。所以总结下来适合自己的才是最好的。当然不是说不要了解新技术，了解新技术跟上步伐是十分必要的。我们现在不用，不代表不需要了解。相反，以后再遇到类似的业务场景时，我们就会多一种选择，可以更加从容的对待。</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
 
 <nav id="pagination">
   
     <a href="/" class="alignleft prev">Prev</a>
   
+  
+    <a href="/page/3/" class="alignright next">Next</a>
   
   <div class="clearfix"></div>
 </nav></div></div>
@@ -691,6 +677,10 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/07/08/js-base-5/">js基础:this指向call、apply、bind</a>
+      </li>
     
       <li>
         <a href="/2020/07/06/js-base-4/">js基础--js执行机制</a>
