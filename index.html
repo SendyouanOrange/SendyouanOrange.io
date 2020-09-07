@@ -45,6 +45,219 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a></h1>
+  
+
+      
+        <time datetime="2020-09-07T13:14:41.000Z">2020-09-07</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="什么地方的概念-—-浏览器渲染流程"><a href="#什么地方的概念-—-浏览器渲染流程" class="headerlink" title="什么地方的概念 — 浏览器渲染流程"></a>什么地方的概念 — 浏览器渲染流程</h2><p>首先我们需要知道浏览器渲染一个页面的时：</p>
+<ul>
+<li><strong>生成DOM树</strong>。<ul>
+<li>html是超文本标记语言，它是一个文件，代码片段，需要被浏览器html解释器解释成DOM树</li>
+<li>即document这个对象，他的结构和html是一样的，但是它存储在内存中，可以被js操作</li>
+</ul>
+</li>
+<li><strong>生成CSS层叠样式表</strong>。<ul>
+<li>根据“继承”“层叠（我理解就是权重比较选择，这里的层叠意义和即将要讲的不一样）”，生成每个元素的最终Computed的属性值。</li>
+<li>document.stylesheets可以打印查看</li>
+</ul>
+</li>
+<li><strong>生成布局树</strong>。<ul>
+<li>DOM树和CSS层叠样式表合起来并不能开始渲染，还得生成布局树。</li>
+<li>布局树，根据DOM树和CSS树生成。<ul>
+<li>它舍去了DOM树中不需要渲染的节点（head，script标签内容）</li>
+<li>去除不需要渲染的DOM节点（display:none）。</li>
+</ul>
+</li>
+<li>然后根据DOM树和CSS层叠样式表生成</li>
+</ul>
+</li>
+<li><strong>生成图层</strong><ul>
+<li>它就是这次要讲的内容</li>
+<li>通过浏览器的Chrome的layer工具可以查看浏览器渲染内容的层级结构</li>
+<li>并不是每个Dom节点都会生成一层图层，没有单独图层的Dom节点图层和父节点一致</li>
+<li>什么样的Dom节点会生成单独的图层呢？<ul>
+<li>拥有<strong>层叠上下文属性</strong>的Dom节点会生成一个图层</li>
+<li>需要被裁剪的Dom会生成一个图层，overflow: auto; 超出的内容不显示，需要裁剪出来显示的部分，这时候显示的部分就会产生一个图层</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>根据图层，生成绘制指令列表</strong><ul>
+<li>首先，计算机怎么绘制这个图层呢，需要一个个指令，比如先在什么位置画一个矩形，填充什么颜色，很想事canvas的画图，一条条指令。</li>
+<li>这个指令合集生成之后，并不会立即进行绘制</li>
+<li>交给了渲染进程的合成线程去操作</li>
+</ul>
+</li>
+<li><strong>栅格化</strong><ul>
+<li>合成线程首先会把图层分为一个个的图块。</li>
+<li>然后<strong>栅格化</strong>，什么是栅格化（<strong>其实就是生成位图，甚至可以叫它位图化</strong>）</li>
+<li>栅格化的过程是会根据是否靠近视窗口的优先级进行</li>
+<li>栅格化是渲染进程维护了一个线程池专门进行的，因为比较耗时，现代浏览器都会开启<strong>GPU加速，生成的位图缓存在GPU内存中</strong></li>
+</ul>
+</li>
+<li><strong>合成和显示</strong><ul>
+<li>一旦栅格化之后，就是产生了位图之后，会提交给合成线程一个命令</li>
+<li>这个命令把位图放在内存中，然后显示到屏幕上</li>
+</ul>
+</li>
+</ul>
+<p>以上，就是浏览器渲染的整个流程了</p>
+<h2 id="层叠上下文"><a href="#层叠上下文" class="headerlink" title="层叠上下文"></a>层叠上下文</h2><p>上面浏览器渲染的过程中，其他的概念都比较好理解，就是其中生成图层的时候的<strong>拥有层叠上下文的dom，到底是个什么东西？</strong></p>
+<p>和<a href="http://triumphlic.xyz/2020/07/03/base-0/">块级格式化上下文（BFC）</a>一样，它是一个概念，比较抽象，不太好理解。</p>
+<p>首先谈谈我没有深入了解这部分知识之前的理解：</p>
+<ul>
+<li>觉得z-index就是层级的唯一控制字段</li>
+<li>不知道什么是层叠上下文元素</li>
+<li>不知道什么是层叠水平</li>
+<li>没听说过层叠顺序</li>
+</ul>
+<h2 id="概念理解"><a href="#概念理解" class="headerlink" title="概念理解"></a>概念理解</h2><ul>
+<li><p>什么是层叠上下文元素</p>
+<ul>
+<li><p>首先一个树型dom</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dom = &#123;</span><br><span class="line">  x: &#123;</span><br><span class="line">      z-index: <span class="number">2</span>,</span><br><span class="line">      a: &#123; z-index: <span class="number">2</span> &#125;,</span><br><span class="line">      b: &#123; z-index: <span class="number">3</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  y: &#123;</span><br><span class="line">    z-index: <span class="number">1</span>,</span><br><span class="line">    c: &#123; z-index: <span class="number">100</span> &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果x,y是层叠上下文元素，上面这个dom最终渲染的图层b,a在c的上面</p>
+</li>
+<li><p>所以，可以这么理解，层叠上下文元素，是内部的层叠水平和外界没有关系的dom元素，内部元素的层叠水平是根据当前所在的层叠上下文元素的基础上计算的</p>
+</li>
+</ul>
+</li>
+<li><p>层叠水平</p>
+<pre><code>其实就是层级的高低，根据上面的解释，可以理解为：层叠水平是基于当前所在的层叠上下文元素的</code></pre></li>
+<li><p>层叠的规则</p>
+<ul>
+<li>同一个层叠上下文内，根据z-index大小决定层级水平</li>
+<li>相同的z-index层级是覆盖逻辑</li>
+</ul>
+</li>
+</ul>
+<h2 id="怎么产生层级上下文"><a href="#怎么产生层级上下文" class="headerlink" title="怎么产生层级上下文"></a>怎么产生层级上下文</h2><ul>
+<li>根元素，和根元素是BFC一样，跟元素也是一个层级上下文元素</li>
+<li>给定position除了static值，并且设置了z-index属性的元素</li>
+<li>css3的一些属性也会产生层级上下文<ul>
+<li>父节点是flex布局，所有z-index不是auto的自元素都是层级上下文元素</li>
+<li>透明度不是1的元素opacity !== 1</li>
+<li>transform属性</li>
+<li>mix-blend-mode（这个属性表示当前元素和父元素背景怎么融合显示，比如三元素合成白色之类的）</li>
+<li>filter不为空 （<strong>根元素</strong>增加filter: grayscale(100%);秒变黑白屏）</li>
+<li>will-change以上的属性 关于<a href="https://www.zhangxinxu.com/wordpress/2015/11/css3-will-change-improve-paint/" target="_blank" rel="noopener">will-change</a>的文章，可以适当的使用开启GPU加速</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/08/25/service-0/">CentOS8搭建nexus</a></h1>
+  
+
+      
+        <time datetime="2020-08-25T07:38:09.000Z">2020-08-25</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="CentOS"><a href="#CentOS" class="headerlink" title="CentOS"></a>CentOS</h2><p>  linux系统发行版之一，买服务器的时候综合很多意见，统一被推荐这个系统</p>
+<h2 id="云服务"><a href="#云服务" class="headerlink" title="云服务"></a>云服务</h2><p>  买了阿里云的云服务，创建服务跟着教程走就行，选择centos8系统</p>
+<h2 id="mac的相关配置"><a href="#mac的相关配置" class="headerlink" title="mac的相关配置"></a>mac的相关配置</h2><ul>
+<li><p>首先需要一个iterm2</p>
+</li>
+<li><p>给iterm2下载一个lrzsz的插件用来给服务器上传文件</p>
+</li>
+<li><p>使用lrzsz上传包时候一定要等待完，别猴急不然上传一半也是可以解压的，完了后续操作也是白搭（血泪史）</p>
+</li>
+</ul>
+<h2 id="java的jre、jdk安装"><a href="#java的jre、jdk安装" class="headerlink" title="java的jre、jdk安装"></a>java的jre、jdk安装</h2><p>  我用的是centos自带的yum安装的（尽量不要使用这个方式，不可控不清楚具体文件位置，环境变量改写位置）</p>
+<h2 id="安装maven"><a href="#安装maven" class="headerlink" title="安装maven"></a>安装maven</h2><ul>
+<li>下载安装包</li>
+<li>上传到服务器</li>
+<li>当前用户目录下执行<strong>tar -zxvf apache-maven-3.5.4-bin.tar.gz</strong>解压文件</li>
+<li><strong>mv apache-maven-3.5.4 /usr/local</strong> 移动到local文件夹内</li>
+<li>vim /etc/profile 尾部添加<pre><code>MAVEN_HOME=/usr/local/apache-maven-3.5.4
+export MAVEN_HOME</code></pre></li>
+<li>mvn -v查看maven版本信息</li>
+<li>完成</li>
+</ul>
+<h2 id="安装Nexus"><a href="#安装Nexus" class="headerlink" title="安装Nexus"></a>安装Nexus</h2><ul>
+<li>下载安装包（我在官网下的）</li>
+<li>tar -zxvf nexus-3.13.0-01-unix.tar.gz</li>
+<li>mv nexus-3.13.0-01 /usr/local</li>
+<li>cd /usr/local/nexus-3.13.0-01/bin</li>
+<li>./nexus start</li>
+<li>服务器的nexus服务就起来了，默认跑在了8081端口上</li>
+</ul>
+<h2 id="开放服务器相应端口"><a href="#开放服务器相应端口" class="headerlink" title="开放服务器相应端口"></a>开放服务器相应端口</h2><p>我买的是阿里云的CentOS服务</p>
+<ul>
+<li>控制台侧边栏找到网络与安全/安全组</li>
+<li>创建安全组</li>
+<li>开放8081端口</li>
+</ul>
+<h2 id="访问自己的nexus服务"><a href="#访问自己的nexus服务" class="headerlink" title="访问自己的nexus服务"></a>访问自己的nexus服务</h2><p>阿里元IP地址+端口号访问</p>
+<ul>
+<li>增加除了admin之外的账号，邮箱+密码//这个也用来上传包（npm login登录用）</li>
+<li>创建仓库npm（proxy，hosted，group）</li>
+<li>本机nrm add 一个新的仓库，使用group的地址</li>
+<li>npm login 登录</li>
+<li>上传</li>
+</ul>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/07/08/js-base-5/">js基础:this指向call、apply、bind</a></h1>
   
 
@@ -621,106 +834,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/07/01/webpack-1/">webpack:MiniCssExtractPlugin问题</a></h1>
-  
-
-      
-        <time datetime="2020-07-01T12:26:16.000Z">2020-07-01</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="MiniCssExtractPlugin"><a href="#MiniCssExtractPlugin" class="headerlink" title="MiniCssExtractPlugin"></a>MiniCssExtractPlugin</h2><p>  css文件，在build的最后，需要生成css文件。</p>
-<p>  mode是production的情况下,关于css-loader的需要加MiniCssExtractPlugin.loader</p>
-  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// loaders</span></span><br><span class="line">modules: &#123;</span><br><span class="line">  rules: [</span><br><span class="line">    &#123;</span><br><span class="line">      test: <span class="regexp">/.scss$/</span>,</span><br><span class="line">      use: [</span><br><span class="line">        MiniCssExtractPlugin.loader,</span><br><span class="line">        <span class="string">'style-loader'</span>,</span><br><span class="line">        <span class="string">'css-loader'</span>,</span><br><span class="line">        <span class="string">'scss-loader'</span>,</span><br><span class="line">        <span class="string">'postcss-loader'</span></span><br><span class="line">        ...</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>  然后在build的webpack配置里加一个MiniCssExtractPlugin</p>
-  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plugins: [</span><br><span class="line">  ...</span><br><span class="line">  <span class="comment">// css打包成文件</span></span><br><span class="line">  <span class="keyword">new</span> MiniCssExtractPlugin(&#123;</span><br><span class="line">    filename: utils.assetsPath(<span class="string">'css/[name].[contenthash:8].css'</span>), <span class="comment">// contenthash根据内容生成哈希</span></span><br><span class="line">    allChunks: <span class="literal">false</span>,</span><br><span class="line">  &#125;),</span><br><span class="line">  ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<h2 id="导致的问题"><a href="#导致的问题" class="headerlink" title="导致的问题"></a>导致的问题</h2><p>  提示：AAA 文件和 BBB 文件的引用顺序有问题<br>  这是MiniCssExtractPlugin的warning<br>  如果没有对css文件进行代码分割splitChunks，并且使用了sass-resources-loader设置了全局scss文件<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  loader:<span class="string">'sass-resources-loader'</span>,</span><br><span class="line">  options:&#123;</span><br><span class="line">    resources: [resolveResource(<span class="string">'AAA.scss'</span>), resolveResource(<span class="string">'BBB.scss'</span>)]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>  原因是没有把多次引用的css文件单独打成一个文件，引用错乱</p>
-<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>  利用splitChunks做代码分割，引用次数大于2的chunk单独打包成一个文件<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">  splitChunks: &#123;</span><br><span class="line">    maxSize: <span class="number">244</span> * <span class="number">1024</span>,</span><br><span class="line">    minChunks: <span class="number">2</span>, <span class="comment">// 最小 chunk ，默认1,引用次数大于它的打包</span></span><br><span class="line">    cacheGroups: &#123; <span class="comment">// 这里开始设置缓存的 chunks</span></span><br><span class="line">      commons: &#123;</span><br><span class="line">        chunks: <span class="string">'all'</span>, <span class="comment">// 必须三选一： "initial" | "all" | "async" 同步引用，异步引用还是所有</span></span><br><span class="line">        minSize: <span class="number">0</span>, <span class="comment">// 最小尺寸，默认0,</span></span><br><span class="line">        maxInitialRequests: <span class="number">5</span> <span class="comment">// 最大初始化请求书，默认1</span></span><br><span class="line">      &#125;,</span><br><span class="line">      vendor: &#123;</span><br><span class="line">        name: <span class="string">'vendor'</span>, <span class="comment">// 要缓存的 分隔出来的 chunk 名称</span></span><br><span class="line">        test: <span class="regexp">/node_modules/</span>, <span class="comment">// 正则规则验证，如果符合就提取 chunk</span></span><br><span class="line">        chunks: <span class="string">'all'</span>,</span><br><span class="line">        priority: <span class="number">-10</span>,</span><br><span class="line">        enforce: <span class="literal">true</span></span><br><span class="line">      &#125;,</span><br><span class="line">      styles: &#123;</span><br><span class="line">        name: <span class="string">'style'</span>,</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        chunks: <span class="string">'all'</span>,</span><br><span class="line">        enforce: <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  runtimeChunk: <span class="literal">true</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/06/22/vue-0-md/">newVue.md</a></h1>
-  
-
-      
-        <time datetime="2020-06-22T05:57:11.000Z">2020-06-22</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="new-Vue之后发生了什么"><a href="#new-Vue之后发生了什么" class="headerlink" title="new Vue之后发生了什么"></a>new Vue之后发生了什么</h2><p>  首先，vue创建的时候会提示选择版本:</p>
-<ul>
-<li>Runtime Only<br>一般选择这个版本，使用webpack的vue-loader编译成基本的html，js文件<br>它的Compiler过程放在了编译阶段</li>
-<li>Runtime + Compiler<br>运行时编译template，很耗性能</li>
-</ul>
-<h2 id="运行时编译的流程分析起来比较清晰"><a href="#运行时编译的流程分析起来比较清晰" class="headerlink" title="运行时编译的流程分析起来比较清晰"></a>运行时编译的流程分析起来比较清晰</h2><p>他分成几个阶段：</p>
-<ol>
-<li>创建compiler对象</li>
-<li></li>
-<li>调用$mount方法创建vnode</li>
-</ol>
-<h2 id="创建虚拟DOM"><a href="#创建虚拟DOM" class="headerlink" title="创建虚拟DOM"></a>创建虚拟DOM</h2><p>因为在 Vue.js 2.0 中，最终渲染都是通过 render 函数.<br>如果写 template 属性，则需要编译成 render 函数，那么这个编译过程会发生运行时，所以需要带有编译器的版本。</p>
-<ul>
-<li>无论是template 还是 string 还是 render 方式的模版， vue 都会先处理成render方式，进行编译</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">render: <span class="function">(<span class="params">createElement</span>) =&gt;</span> &#123;</span><br><span class="line">  createElement(<span class="string">'div'</span>, &#123;</span><br><span class="line">    attrs: &#123;</span><br><span class="line">      id: <span class="string">'app'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, children)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>vue 内部调用 vm._createElement()方法创建虚拟DOM</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
 
 <nav id="pagination">
   
@@ -741,6 +854,14 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/25/service-0/">CentOS8搭建nexus</a>
+      </li>
     
       <li>
         <a href="/2020/07/08/js-base-5/">js基础:this指向call、apply、bind</a>

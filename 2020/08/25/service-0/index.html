@@ -3,21 +3,22 @@
 <head>
   <meta charset="utf-8">
   
-  <title>css:box-shadow › lic-blog</title>
+  <title>CentOS8搭建nexus › lic-blog</title>
   <meta name="author" content="triumphLic">
   
-  <meta name="description" content="ie8以上box-shadow 怎么产生的
-首先在元素下面生成一个一样的大小的，位置重叠的，颜色等同于《color》的div
-四边向外或者向内做高斯模糊，在blur-radius长度内做完模糊，类似正态分布，只是边就算是坐标0点
-根据xy-offset偏移量移动
-删除和真实div重合部分
+  <meta name="description" content="CentOS  linux系统发行版之一，买服务器的时候综合很多意见，统一被推荐这个系统
+云服务  买了阿里云的云服务，创建服务跟着教程走就行，选择centos8系统
+mac的相关配置
+首先需要一个iterm2
 
-box-">
+给iterm2下载一个lrzsz的插件用来给服务器上传文件
+
+使用lrzsz上传包时候">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="css:box-shadow"/>
+  <meta property="og:title" content="CentOS8搭建nexus"/>
   <meta property="og:site_name" content="lic-blog"/>
 
   
@@ -52,53 +53,58 @@ box-">
     <header>
       
   
-    <h1 class="title">css:box-shadow</h1>
+    <h1 class="title">CentOS8搭建nexus</h1>
   
 
       
-        <time datetime="2020-07-03T09:36:45.000Z">2020-07-03</time>
+        <time datetime="2020-08-25T07:38:09.000Z">2020-08-25</time>
       
     </header>
     <div class="entry">
       
-        <h2 id="ie8以上"><a href="#ie8以上" class="headerlink" title="ie8以上"></a><em>ie8以上</em></h2><h2 id="box-shadow-怎么产生的"><a href="#box-shadow-怎么产生的" class="headerlink" title="box-shadow 怎么产生的"></a><em>box-shadow 怎么产生的</em></h2><ol>
-<li>首先在元素下面生成一个一样的大小的，位置重叠的，颜色等同于《color》的div</li>
-<li>四边向外或者向内做高斯模糊，在blur-radius长度内做完模糊，类似正态分布，只是边就算是坐标0点</li>
-<li>根据xy-offset偏移量移动</li>
-<li>删除和真实div重合部分</li>
-</ol>
-<h2 id="box-shadow-的属性较多"><a href="#box-shadow-的属性较多" class="headerlink" title="box-shadow 的属性较多"></a>box-shadow 的属性较多</h2><ul>
-<li>‘inset’ 有则阴影在边框内部，阴影会在边框之内 (即使是透明边框）、背景之上、内容之下</li>
-<li>x-offset 向右偏移量</li>
-<li>y-offset 向下偏移量</li>
-<li>blur-radius 模糊半径。值越大，模糊面积越大。 默认0，此时阴影边缘是锐利的，不能是负的。（高斯模糊）</li>
-<li>spread-radius 那个根据真实的div产生的虚拟元素的大小扩展半径</li>
-<li>color</li>
-</ul>
-<h2 id="内阴影，四边阴影，双边阴影"><a href="#内阴影，四边阴影，双边阴影" class="headerlink" title="内阴影，四边阴影，双边阴影"></a>内阴影，四边阴影，双边阴影</h2><ul>
-<li><p>内阴影</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h2 id="CentOS"><a href="#CentOS" class="headerlink" title="CentOS"></a>CentOS</h2><p>  linux系统发行版之一，买服务器的时候综合很多意见，统一被推荐这个系统</p>
+<h2 id="云服务"><a href="#云服务" class="headerlink" title="云服务"></a>云服务</h2><p>  买了阿里云的云服务，创建服务跟着教程走就行，选择centos8系统</p>
+<h2 id="mac的相关配置"><a href="#mac的相关配置" class="headerlink" title="mac的相关配置"></a>mac的相关配置</h2><ul>
+<li><p>首先需要一个iterm2</p>
 </li>
-<li><p>四边阴影</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<li><p>给iterm2下载一个lrzsz的插件用来给服务器上传文件</p>
 </li>
-<li><p>相临边阴影</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">   box-shadow: 10px 10px 10px 0px #000; // 向右和向下分别移动10px，模糊半径也是10px，刚好被真实div盖住两边</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+<li><p>使用lrzsz上传包时候一定要等待完，别猴急不然上传一半也是可以解压的，完了后续操作也是白搭（血泪史）</p>
 </li>
 </ul>
-<h2 id="单边阴影"><a href="#单边阴影" class="headerlink" title="单边阴影"></a>单边阴影</h2>  <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">10px</span> <span class="number">10px</span> -<span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>  这个也好懂了。</p>
-<ol>
-<li>首先四边模糊半径10px；</li>
-<li>然后向下偏移10px；</li>
-<li>四边阴影长度分别是： 上右下左： 0 10px 20px 10px;</li>
-<li>然后-10px的阴影扩展长度；(各减去10)</li>
-<li>四边阴影长度分别是： 上右下左： -10px 0px 10px 0px;</li>
-</ol>
-<h2 id="多阴影规则"><a href="#多阴影规则" class="headerlink" title="多阴影规则"></a>多阴影规则</h2><p>  逗号隔开，最左的阴影在最上层，覆盖右侧写的阴影样式</p>
+<h2 id="java的jre、jdk安装"><a href="#java的jre、jdk安装" class="headerlink" title="java的jre、jdk安装"></a>java的jre、jdk安装</h2><p>  我用的是centos自带的yum安装的（尽量不要使用这个方式，不可控不清楚具体文件位置，环境变量改写位置）</p>
+<h2 id="安装maven"><a href="#安装maven" class="headerlink" title="安装maven"></a>安装maven</h2><ul>
+<li>下载安装包</li>
+<li>上传到服务器</li>
+<li>当前用户目录下执行<strong>tar -zxvf apache-maven-3.5.4-bin.tar.gz</strong>解压文件</li>
+<li><strong>mv apache-maven-3.5.4 /usr/local</strong> 移动到local文件夹内</li>
+<li>vim /etc/profile 尾部添加<pre><code>MAVEN_HOME=/usr/local/apache-maven-3.5.4
+export MAVEN_HOME</code></pre></li>
+<li>mvn -v查看maven版本信息</li>
+<li>完成</li>
+</ul>
+<h2 id="安装Nexus"><a href="#安装Nexus" class="headerlink" title="安装Nexus"></a>安装Nexus</h2><ul>
+<li>下载安装包（我在官网下的）</li>
+<li>tar -zxvf nexus-3.13.0-01-unix.tar.gz</li>
+<li>mv nexus-3.13.0-01 /usr/local</li>
+<li>cd /usr/local/nexus-3.13.0-01/bin</li>
+<li>./nexus start</li>
+<li>服务器的nexus服务就起来了，默认跑在了8081端口上</li>
+</ul>
+<h2 id="开放服务器相应端口"><a href="#开放服务器相应端口" class="headerlink" title="开放服务器相应端口"></a>开放服务器相应端口</h2><p>我买的是阿里云的CentOS服务</p>
+<ul>
+<li>控制台侧边栏找到网络与安全/安全组</li>
+<li>创建安全组</li>
+<li>开放8081端口</li>
+</ul>
+<h2 id="访问自己的nexus服务"><a href="#访问自己的nexus服务" class="headerlink" title="访问自己的nexus服务"></a>访问自己的nexus服务</h2><p>阿里元IP地址+端口号访问</p>
+<ul>
+<li>增加除了admin之外的账号，邮箱+密码//这个也用来上传包（npm login登录用）</li>
+<li>创建仓库npm（proxy，hosted，group）</li>
+<li>本机nrm add 一个新的仓库，使用group的地址</li>
+<li>npm login 登录</li>
+<li>上传</li>
+</ul>
 
       
     </div>

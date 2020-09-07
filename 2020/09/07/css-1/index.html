@@ -1,0 +1,329 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>层叠上下文（内附浏览器渲染流程） › lic-blog</title>
+  <meta name="author" content="triumphLic">
+  
+  <meta name="description" content="什么地方的概念 — 浏览器渲染流程首先我们需要知道浏览器渲染一个页面的时：
+
+生成DOM树。
+html是超文本标记语言，它是一个文件，代码片段，需要被浏览器html解释器解释成DOM树
+即document这个对象，他的结构和html是一样的，但是它存储在内存中，可以被js操作
+
+
+生成CSS层叠样式">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="层叠上下文（内附浏览器渲染流程）"/>
+  <meta property="og:site_name" content="lic-blog"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="lic-blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">lic-blog</a></h1>
+  <h2><a href="/"></a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">层叠上下文（内附浏览器渲染流程）</h1>
+  
+
+      
+        <time datetime="2020-09-07T13:14:41.000Z">2020-09-07</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="什么地方的概念-—-浏览器渲染流程"><a href="#什么地方的概念-—-浏览器渲染流程" class="headerlink" title="什么地方的概念 — 浏览器渲染流程"></a>什么地方的概念 — 浏览器渲染流程</h2><p>首先我们需要知道浏览器渲染一个页面的时：</p>
+<ul>
+<li><strong>生成DOM树</strong>。<ul>
+<li>html是超文本标记语言，它是一个文件，代码片段，需要被浏览器html解释器解释成DOM树</li>
+<li>即document这个对象，他的结构和html是一样的，但是它存储在内存中，可以被js操作</li>
+</ul>
+</li>
+<li><strong>生成CSS层叠样式表</strong>。<ul>
+<li>根据“继承”“层叠（我理解就是权重比较选择，这里的层叠意义和即将要讲的不一样）”，生成每个元素的最终Computed的属性值。</li>
+<li>document.stylesheets可以打印查看</li>
+</ul>
+</li>
+<li><strong>生成布局树</strong>。<ul>
+<li>DOM树和CSS层叠样式表合起来并不能开始渲染，还得生成布局树。</li>
+<li>布局树，根据DOM树和CSS树生成。<ul>
+<li>它舍去了DOM树中不需要渲染的节点（head，script标签内容）</li>
+<li>去除不需要渲染的DOM节点（display:none）。</li>
+</ul>
+</li>
+<li>然后根据DOM树和CSS层叠样式表生成</li>
+</ul>
+</li>
+<li><strong>生成图层</strong><ul>
+<li>它就是这次要讲的内容</li>
+<li>通过浏览器的Chrome的layer工具可以查看浏览器渲染内容的层级结构</li>
+<li>并不是每个Dom节点都会生成一层图层，没有单独图层的Dom节点图层和父节点一致</li>
+<li>什么样的Dom节点会生成单独的图层呢？<ul>
+<li>拥有<strong>层叠上下文属性</strong>的Dom节点会生成一个图层</li>
+<li>需要被裁剪的Dom会生成一个图层，overflow: auto; 超出的内容不显示，需要裁剪出来显示的部分，这时候显示的部分就会产生一个图层</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>根据图层，生成绘制指令列表</strong><ul>
+<li>首先，计算机怎么绘制这个图层呢，需要一个个指令，比如先在什么位置画一个矩形，填充什么颜色，很想事canvas的画图，一条条指令。</li>
+<li>这个指令合集生成之后，并不会立即进行绘制</li>
+<li>交给了渲染进程的合成线程去操作</li>
+</ul>
+</li>
+<li><strong>栅格化</strong><ul>
+<li>合成线程首先会把图层分为一个个的图块。</li>
+<li>然后<strong>栅格化</strong>，什么是栅格化（<strong>其实就是生成位图，甚至可以叫它位图化</strong>）</li>
+<li>栅格化的过程是会根据是否靠近视窗口的优先级进行</li>
+<li>栅格化是渲染进程维护了一个线程池专门进行的，因为比较耗时，现代浏览器都会开启<strong>GPU加速，生成的位图缓存在GPU内存中</strong></li>
+</ul>
+</li>
+<li><strong>合成和显示</strong><ul>
+<li>一旦栅格化之后，就是产生了位图之后，会提交给合成线程一个命令</li>
+<li>这个命令把位图放在内存中，然后显示到屏幕上</li>
+</ul>
+</li>
+</ul>
+<p>以上，就是浏览器渲染的整个流程了</p>
+<h2 id="层叠上下文"><a href="#层叠上下文" class="headerlink" title="层叠上下文"></a>层叠上下文</h2><p>上面浏览器渲染的过程中，其他的概念都比较好理解，就是其中生成图层的时候的<strong>拥有层叠上下文的dom，到底是个什么东西？</strong></p>
+<p>和<a href="http://triumphlic.xyz/2020/07/03/base-0/">块级格式化上下文（BFC）</a>一样，它是一个概念，比较抽象，不太好理解。</p>
+<p>首先谈谈我没有深入了解这部分知识之前的理解：</p>
+<ul>
+<li>觉得z-index就是层级的唯一控制字段</li>
+<li>不知道什么是层叠上下文元素</li>
+<li>不知道什么是层叠水平</li>
+<li>没听说过层叠顺序</li>
+</ul>
+<h2 id="概念理解"><a href="#概念理解" class="headerlink" title="概念理解"></a>概念理解</h2><ul>
+<li><p>什么是层叠上下文元素</p>
+<ul>
+<li><p>首先一个树型dom</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dom = &#123;</span><br><span class="line">  x: &#123;</span><br><span class="line">      z-index: <span class="number">2</span>,</span><br><span class="line">      a: &#123; z-index: <span class="number">2</span> &#125;,</span><br><span class="line">      b: &#123; z-index: <span class="number">3</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  y: &#123;</span><br><span class="line">    z-index: <span class="number">1</span>,</span><br><span class="line">    c: &#123; z-index: <span class="number">100</span> &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果x,y是层叠上下文元素，上面这个dom最终渲染的图层b,a在c的上面</p>
+</li>
+<li><p>所以，可以这么理解，层叠上下文元素，是内部的层叠水平和外界没有关系的dom元素，内部元素的层叠水平是根据当前所在的层叠上下文元素的基础上计算的</p>
+</li>
+</ul>
+</li>
+<li><p>层叠水平</p>
+<pre><code>其实就是层级的高低，根据上面的解释，可以理解为：层叠水平是基于当前所在的层叠上下文元素的</code></pre></li>
+<li><p>层叠的规则</p>
+<ul>
+<li>同一个层叠上下文内，根据z-index大小决定层级水平</li>
+<li>相同的z-index层级是覆盖逻辑</li>
+</ul>
+</li>
+</ul>
+<h2 id="怎么产生层级上下文"><a href="#怎么产生层级上下文" class="headerlink" title="怎么产生层级上下文"></a>怎么产生层级上下文</h2><ul>
+<li>根元素，和根元素是BFC一样，跟元素也是一个层级上下文元素</li>
+<li>给定position除了static值，并且设置了z-index属性的元素</li>
+<li>css3的一些属性也会产生层级上下文<ul>
+<li>父节点是flex布局，所有z-index不是auto的自元素都是层级上下文元素</li>
+<li>透明度不是1的元素opacity !== 1</li>
+<li>transform属性</li>
+<li>mix-blend-mode（这个属性表示当前元素和父元素背景怎么融合显示，比如三元素合成白色之类的）</li>
+<li>filter不为空 （<strong>根元素</strong>增加filter: grayscale(100%);秒变黑白屏）</li>
+<li>will-change以上的属性 关于<a href="https://www.zhangxinxu.com/wordpress/2015/11/css3-will-change-improve-paint/" target="_blank" rel="noopener">will-change</a>的文章，可以适当的使用开启GPU加速</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 20:48:26
+ * @Description  : 描述信息
+ -->
+
+<div class="widget tag">
+  <h3 class="title">目录</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/25/service-0/">CentOS8搭建nexus</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/08/js-base-5/">js基础:this指向call、apply、bind</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/06/js-base-4/">js基础--js执行机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/06/base-4/">js:x=y=0;a.x=a={n:1}</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/05/base-3/">css:两栏、三栏、圣杯、双飞翼布局</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/05/base-2/">css:盒模型，box-sizing应用场景</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/03/base-1/">css:box-shadow</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/03/base-0/">css:BFC</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/02/webpack-2/">webpack:文件处理</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/01/webpack-1/">webpack:MiniCssExtractPlugin问题</a>
+      </li>
+    
+      <li>
+        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/21/nginx/">nginx操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/06/js-base-3/">js基础 -- 执行上下文，变量环境，词法环境，作用域相关</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/04/webpack-0/">webpack:基础知识</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/02/js-base-2/">js基础 --原型相关方法，Object，Reflect</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/30/js-base-1/">js基础 --类和继承</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/25/js-base-0/">js基础 --原型链</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/23/functional-2/">函数式编程 --组合和管道</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/22/functional-1/">函数式编程 --函数的柯里化</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/21/functional-0/">函数式编程 --纯函数</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/21/wasm-2/">WASM（二）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/21/wasm-1/">WASM（一）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 triumphLic
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+</body>
+</html>
+
