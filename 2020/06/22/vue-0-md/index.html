@@ -3,19 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>newVue.md › lic-blog</title>
+  <title>vue的基本概览.md › lic-blog</title>
   <meta name="author" content="triumphLic">
   
-  <meta name="description" content="new Vue之后发生了什么  首先，vue创建的时候会提示选择版本:
+  <meta name="description" content="new Vue之后发生了什么首先，vue创建的时候会提示选择版本:
 
 Runtime Only一般选择这个版本，使用webpack的vue-loader编译成基本的html，js文件它的Compiler过程放在了编译阶段
+
 Runtime + Compiler运行时编译template，很耗性能
+
 ">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="newVue.md"/>
+  <meta property="og:title" content="vue的基本概览.md"/>
   <meta property="og:site_name" content="lic-blog"/>
 
   
@@ -50,7 +52,7 @@ Runtime + Compiler运行时编译template，很耗性能
     <header>
       
   
-    <h1 class="title">newVue.md</h1>
+    <h1 class="title">vue的基本概览.md</h1>
   
 
       
@@ -59,16 +61,18 @@ Runtime + Compiler运行时编译template，很耗性能
     </header>
     <div class="entry">
       
-        <h2 id="new-Vue之后发生了什么"><a href="#new-Vue之后发生了什么" class="headerlink" title="new Vue之后发生了什么"></a>new Vue之后发生了什么</h2><p>  首先，vue创建的时候会提示选择版本:</p>
+        <h2 id="new-Vue之后发生了什么"><a href="#new-Vue之后发生了什么" class="headerlink" title="new Vue之后发生了什么"></a>new Vue之后发生了什么</h2><p>首先，vue创建的时候会提示选择版本:</p>
 <ul>
-<li>Runtime Only<br>一般选择这个版本，使用webpack的vue-loader编译成基本的html，js文件<br>它的Compiler过程放在了编译阶段</li>
-<li>Runtime + Compiler<br>运行时编译template，很耗性能</li>
+<li><p>Runtime Only<br>一般选择这个版本，使用webpack的vue-loader编译成基本的html，js文件<br>它的Compiler过程放在了编译阶段</p>
+</li>
+<li><p>Runtime + Compiler<br>运行时编译template，很耗性能</p>
+</li>
 </ul>
 <h2 id="运行时编译的流程分析起来比较清晰"><a href="#运行时编译的流程分析起来比较清晰" class="headerlink" title="运行时编译的流程分析起来比较清晰"></a>运行时编译的流程分析起来比较清晰</h2><p>他分成几个阶段：</p>
 <ol>
 <li>创建compiler对象</li>
-<li></li>
-<li>调用$mount方法创建vnode</li>
+<li>把其他写法的诸如template写法改成render函数</li>
+<li>调用$mount方法创建VNode</li>
 </ol>
 <h2 id="创建虚拟DOM"><a href="#创建虚拟DOM" class="headerlink" title="创建虚拟DOM"></a>创建虚拟DOM</h2><p>因为在 Vue.js 2.0 中，最终渲染都是通过 render 函数.<br>如果写 template 属性，则需要编译成 render 函数，那么这个编译过程会发生运行时，所以需要带有编译器的版本。</p>
 <ul>
@@ -132,6 +136,14 @@ Runtime + Compiler运行时编译template，很耗性能
   <ul class="entry">
     
       <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
       </li>
     
@@ -176,7 +188,7 @@ Runtime + Compiler运行时编译template，很耗性能
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>

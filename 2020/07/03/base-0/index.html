@@ -7,8 +7,8 @@
   <meta name="author" content="triumphLic">
   
   <meta name="description" content="Block Formatting Content
-定义  块级格式化上下文
-  首先明确几个定义
+定义中文名：块级格式化上下文
+首先明确几个定义
 
 普通流普通流元素，行内元素横向排列，超出换行。块级元素独占一行。上至下排列。
 
@@ -64,50 +64,45 @@
     <div class="entry">
       
         <p>Block Formatting Content</p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>  块级格式化上下文</p>
-<p>  首先明确几个定义</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>中文名：块级格式化上下文</p>
+<p>首先明确几个定义</p>
 <ul>
 <li><p>普通流<br>普通流元素，行内元素横向排列，超出换行。块级元素独占一行。上至下排列。</p>
 </li>
 <li><p>浮动<br>在浮动布局中，元素首先在正常文档流位置，然后根据浮动方向，尽可能的向这个方向移动。渲染效果和文字环绕效果类似。</p>
 </li>
 <li><p>绝对定位<br>绝对定位的元素完全<em>脱离了文档流</em>，不会占用普通文档流的位置，根据定位信息确定位置，在另外的层级。</p>
-<h3 id="BFC属于普通流元素"><a href="#BFC属于普通流元素" class="headerlink" title="BFC属于普通流元素"></a>BFC属于普通流元素</h3><p>它可以被视作一个完全和外界隔离的独立容器，<em>不会对外界产生影响</em></p>
 </li>
 </ul>
+<h3 id="BFC属于普通流元素"><a href="#BFC属于普通流元素" class="headerlink" title="BFC属于普通流元素"></a>BFC属于普通流元素</h3><p>  它可以被视作一个完全和外界隔离的独立容器，<em>不会对外界产生影响</em></p>
 <h2 id="触发元素的BFC"><a href="#触发元素的BFC" class="headerlink" title="触发元素的BFC"></a>触发元素的BFC</h2><ul>
-<li><p>root元素</p>
-</li>
-<li><p>display: inline-block; table-cell; flex;</p>
-</li>
-<li><p>float 除了none不设置之外的</p>
-</li>
-<li><p>position: fixed; absolute; 绝对定位元素</p>
-</li>
-<li><p>overflow: visible 之外的值 auto scroll hidden</p>
-<p>可以知道，这些元素的内部无论怎么变化折腾，都不会对外界元素产生影响。<br>也就可以理解为什么overflow:visible 会被排除在外了。</p>
-</li>
+<li>root元素</li>
+<li>display: inline-block; table-cell; flex;</li>
+<li>float 除了none不设置之外的</li>
+<li>position: fixed; absolute; 绝对定位元素</li>
+<li>overflow: visible 之外的值 auto scroll hidden</li>
 </ul>
-<h2 id="BFC内部"><a href="#BFC内部" class="headerlink" title="BFC内部"></a>BFC内部</h2><p>  root元素都是BFC，可以说整个DOM文档流都是BFC内部元素。</p>
-<p>  刚刚说了BFC不会对外部元素影响。</p>
-<p>  那么它内部的非BFC元素还是会互相影响的。</p>
-<p>  互相影响会出现的问题</p>
+<p>可以知道，这些元素的内部无论怎么变化折腾，都不会对外界元素产生影响。<br>也就可以理解为什么overflow:visible 会被排除在外了。</p>
+<h2 id="BFC内部"><a href="#BFC内部" class="headerlink" title="BFC内部"></a>BFC内部</h2><p>root元素都是BFC，可以说整个DOM文档流都是BFC内部元素。</p>
+<p>刚刚说了BFC不会对外部元素影响。</p>
+<p>那么它内部的非BFC元素还是会互相影响的。</p>
+<p>互相影响会出现的问题</p>
 <ul>
 <li>上下边距margint融合问题</li>
 <li>浮动（怎么清除浮动）</li>
 <li>占用其他元素内容区域（float）</li>
 </ul>
-<h2 id="BFC可以做什么"><a href="#BFC可以做什么" class="headerlink" title="BFC可以做什么"></a>BFC可以做什么</h2><p>  通过给元素设置成BFC，解决问题：</p>
+<h2 id="BFC可以做什么"><a href="#BFC可以做什么" class="headerlink" title="BFC可以做什么"></a>BFC可以做什么</h2><p>通过给元素设置成BFC，解决问题：</p>
 <ul>
 <li><p>上下边距融合问题<br>根据BFC特性，只要把其中一个元素设置成BFC（增加overflow:hidden），它就不会对外界元素产生影响。</p>
 </li>
 <li><p>清除浮动<br>给浮动元素设置成BFC，即使它子元素只有浮动元素。也会被撑起来。因为BFC的内部元素不应该超出自己的元素内部。</p>
 </li>
 <li><p>两栏布局<br>左侧元素float。右侧元素的一部分会被浮动元素占据，形成环绕效果。</p>
-<p>给右侧元素设置成BFC，可以实现两栏布局。</p>
-<p>左右都是BFC不会互相影响。</p>
 </li>
 </ul>
+<p>给右侧元素设置成BFC，可以实现两栏布局。</p>
+<p>左右都是BFC不会互相影响。</p>
 
       
     </div>
@@ -163,6 +158,14 @@
   <ul class="entry">
     
       <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
       </li>
     
@@ -207,7 +210,7 @@
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>

@@ -63,7 +63,7 @@ tip： html5的web worker标准，允许js脚本创建多个线程，但是完�
 <p>为什么不能是多线程？浏览器两个线程同时操作Dom，就没得玩了</p>
 <p>tip： html5的web worker标准，允许js脚本创建多个线程，但是完全被主线程控制，且不能操作Dom</p>
 <h2 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h2><p>  js的运行环境一定不是单线程的。</p>
-<p>  浏览器中，常驻线程就有桑哥： js执行主线程，GUI渲染线程，事件监听线程。<br>  还有http请求线程，定时器线程</p>
+<p>  浏览器中，常驻线程就三个： js执行主线程，GUI渲染线程，事件监听线程。<br>  还有http请求线程，定时器线程</p>
 <p>  Dom渲染时，js线程会被挂起。</p>
 <h2 id="线程和进程"><a href="#线程和进程" class="headerlink" title="线程和进程"></a>线程和进程</h2><p>  进程是CPU分配资源的最小单位，线程是资源执行的最小单位。</p>
 <p>  一个进程没有线程就不能执行，那就只是静止的资源。</p>
@@ -192,6 +192,14 @@ tip： html5的web worker标准，允许js脚本创建多个线程，但是完�
   <ul class="entry">
     
       <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
       </li>
     
@@ -236,7 +244,7 @@ tip： html5的web worker标准，允许js脚本创建多个线程，但是完�
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>

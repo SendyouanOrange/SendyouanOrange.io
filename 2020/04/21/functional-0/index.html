@@ -8,7 +8,9 @@
   
   <meta name="description" content="定义纯函数就是，只要输入一致，那么输出一定一致。不受外部变量、环境影响。
 例子
-纯函数1234567const func = function(name) &amp;#123;  const words = &#39;hello&#39;  return words + name&amp;#125;func(&#39;lic&#39;) // h">
+纯函数
+
+1234567const func = function(name) &amp;#123;  const words = &#39;hello&#39;  return words + name&amp;#125;func(&#39;lic&#39;) //">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -59,11 +61,15 @@
       
         <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>纯函数就是，只要输入一致，那么输出一定一致。不受外部变量、环境影响。</p>
 <h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><em>例子</em></h2><ul>
-<li>纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br></pre></td></tr></table></figure></li>
-<li>非纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">words = <span class="string">'hi'</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hi lic</span></span><br></pre></td></tr></table></figure>
-
-</li>
+<li>纯函数</li>
 </ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>非纯函数</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">words = <span class="string">'hi'</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hi lic</span></span><br></pre></td></tr></table></figure>
+
 <h2 id="纯函数的扩展"><a href="#纯函数的扩展" class="headerlink" title="纯函数的扩展"></a><em>纯函数的扩展</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> g = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> f = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> g(b)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> cf = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> g(b)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在上面的例子中<br>显而易见的是<code>g()</code>函数不是纯函数，<code>f()</code>函数也不是纯函数<br>但是，<code>cf()</code>函数却是纯函数，因为相同的输入，都会返回一个相同的函数。即使返回值是函数，那也符合纯函数的定义：输入一致，输出永远一致</p>
@@ -126,6 +132,14 @@
   <ul class="entry">
     
       <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
       </li>
     
@@ -170,7 +184,7 @@
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>

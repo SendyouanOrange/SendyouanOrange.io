@@ -45,6 +45,130 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a></h1>
+  
+
+      
+        <time datetime="2020-10-21T08:08:09.000Z">2020-10-21</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="浏览器缓存策略"><a href="#浏览器缓存策略" class="headerlink" title="浏览器缓存策略"></a>浏览器缓存策略</h2><ul>
+<li>强制缓存<ul>
+<li>强制缓存返回的状态码也是200，只不过会标记出from memory cache 或者 from disk cache</li>
+<li>匹配了强制缓存的情况下，不需要向服务器发送请求来验证，可以直接从缓存读取数据</li>
+</ul>
+</li>
+<li>协商缓存<ul>
+<li>协商缓存是请求了一遍服务器，如果内容没有变，则会返回状态码304（not modified）否则返回状态码200，相当于重新请求</li>
+</ul>
+</li>
+</ul>
+<h2 id="强制缓存"><a href="#强制缓存" class="headerlink" title="强制缓存"></a>强制缓存</h2><ul>
+<li>cache-control<ul>
+<li>public 路由器啥的都能缓存</li>
+<li>private 只能浏览器缓存</li>
+<li>no-cache 客户端缓存，但是得走协商缓存</li>
+<li>no-store 不缓存</li>
+<li>max-age=xxx 缓存在xxx之间后失效</li>
+</ul>
+</li>
+<li>expires(到期时间)<ul>
+<li>服务器返回数据给的缓存到期时间，但是不准确，毕竟客户端和服务端时间本来就不一样</li>
+<li>http1.1之后就cache-control的权重就比它大了</li>
+</ul>
+</li>
+</ul>
+<p>cache-control非no-cache|no-store，&amp; （max-age倒计时没到 ｜ expires没到时）<br>如果击中了强制缓存，浏览器直接使用缓存数据:</p>
+<ul>
+<li><p>缓存数据是js或者图片数据，http请求返回状态码200，标示from memory cache</p>
+</li>
+<li><p>缓存数据是css文件，http请求返回状态码200，标示from disk cache</p>
+</li>
+</ul>
+<p>原因是：浏览器会吧js或者图片文件缓存到内存中，css文件缓存到硬盘中，所以浏览器重绘的代价也比较大</p>
+<h2 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h2><ol>
+<li><p>强制缓存缓存没有命中，会走协商缓存</p>
+</li>
+<li><p>cache-control：no-cache 直接走协商缓存</p>
+</li>
+</ol>
+<ul>
+<li>if-modified-since</li>
+<li>if-none-matched</li>
+<li>Etag 标示符</li>
+</ul>
+<p>顾名思义的headers</p>
+<ul>
+<li>缓存没有变化， http请求服务器返回状态码304</li>
+<li>缓存有变化，http请求返回200，相当于重新请求</li>
+</ul>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/09/07/vue-1/">vue-1</a></h1>
+  
+
+      
+        <time datetime="2020-09-07T15:05:38.000Z">2020-09-07</time>
+      
+    </header>
+    <div class="entry">
+      
+        
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a></h1>
   
 
@@ -334,7 +458,7 @@ export MAVEN_HOME</code></pre></li>
 <p>为什么不能是多线程？浏览器两个线程同时操作Dom，就没得玩了</p>
 <p>tip： html5的web worker标准，允许js脚本创建多个线程，但是完全被主线程控制，且不能操作Dom</p>
 <h2 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h2><p>  js的运行环境一定不是单线程的。</p>
-<p>  浏览器中，常驻线程就有桑哥： js执行主线程，GUI渲染线程，事件监听线程。<br>  还有http请求线程，定时器线程</p>
+<p>  浏览器中，常驻线程就三个： js执行主线程，GUI渲染线程，事件监听线程。<br>  还有http请求线程，定时器线程</p>
 <p>  Dom渲染时，js线程会被挂起。</p>
 <h2 id="线程和进程"><a href="#线程和进程" class="headerlink" title="线程和进程"></a>线程和进程</h2><p>  进程是CPU分配资源的最小单位，线程是资源执行的最小单位。</p>
 <p>  一个进程没有线程就不能执行，那就只是静止的资源。</p>
@@ -445,22 +569,28 @@ export MAVEN_HOME</code></pre></li>
     </header>
     <div class="entry">
       
-        <p><em>这个面试题诞生以来就被各种讨论，记录一下自己的想法</em></p>
-<h2 id="var-x-y-1"><a href="#var-x-y-1" class="headerlink" title="var x = y = 1;"></a>var x = y = 1;</h2><p>  这个表达式可以被拆成<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="comment">// 变量声明提升</span></span><br><span class="line">y = <span class="number">1</span> <span class="comment">// 隐式创建一个全局变量</span></span><br><span class="line">x = y <span class="comment">// 赋值语句</span></span><br></pre></td></tr></table></figure></p>
-<p>  需要注意的就是 y = 1 表达式隐式的创建了全局对象y</p>
-<h2 id="a-x-a-n-2"><a href="#a-x-a-n-2" class="headerlink" title="a.x = a = { n: 2 }"></a>a.x = a = { n: 2 }</h2><p>  这段代码不好分析，网上一堆深奥的答案。</p>
-  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+        <p>TIP:<em>这个面试题诞生以来就被各种讨论，记录一下自己的想法</em></p>
+<h2 id="var-x-y-1"><a href="#var-x-y-1" class="headerlink" title="var x = y = 1"></a>var x = y = 1</h2><p>这个表达式可以被拆成</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="comment">// 变量声明提升</span></span><br><span class="line">y = <span class="number">1</span> <span class="comment">// 隐式创建一个全局变量</span></span><br><span class="line">x = y <span class="comment">// 赋值语句</span></span><br></pre></td></tr></table></figure>
 
-<p>  最开始理解，会觉得a的值应该是这样：<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  n: <span class="number">2</span>,</span><br><span class="line">  x: &#123;</span><br><span class="line">    n: <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>  额，完全不是</p>
-<p>  a打印出来是： { n: 2 }</p>
-<p>  怎么都不好分析。不如把代码改写成这样</p>
-  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">var</span> b = a <span class="comment">// 缓存一下初始的a</span></span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(a) <span class="comment">// &#123; n: 2 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(b) <span class="comment">// &#123; n: 1, x: &#123; n: 2 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的就是 y = 1 表达式隐式的创建了全局对象y</p>
+<h2 id="a-x-a-n-2"><a href="#a-x-a-n-2" class="headerlink" title="a.x = a = { n: 2 }"></a>a.x = a = { n: 2 }</h2><p>这段代码不好分析，网上一堆深奥的答案。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
 
-<p>  <strong>这个表达式和 var x = y = 1 的区别是：</strong></p>
+<p>最开始理解，会觉得a的值应该是这样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  n: <span class="number">2</span>,</span><br><span class="line">  x: &#123;</span><br><span class="line">    n: <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>额，完全不是</p>
+<p>a打印出来是： { n: 2 }</p>
+<p>怎么都不好分析。不如把代码改写成这样</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">var</span> b = a <span class="comment">// 缓存一下初始的a</span></span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(a) <span class="comment">// &#123; n: 2 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(b) <span class="comment">// &#123; n: 1, x: &#123; n: 2 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>这个表达式和 var x = y = 1 的区别是：</strong></p>
 <ul>
-<li><h3 id="var-x-…-就是一个初始化赋值语句的左半边"><a href="#var-x-…-就是一个初始化赋值语句的左半边" class="headerlink" title="var x = … 就是一个初始化赋值语句的左半边"></a>var x = … 就是一个初始化赋值语句的左半边</h3><p>而</p>
-</li>
+<li><h3 id="var-x-…-就是一个初始化赋值语句的左半边"><a href="#var-x-…-就是一个初始化赋值语句的左半边" class="headerlink" title="var x = … 就是一个初始化赋值语句的左半边"></a>var x = … 就是一个初始化赋值语句的左半边</h3></li>
+</ul>
+<p>而</p>
+<ul>
 <li><h3 id="a-x-本身就是一个语句。"><a href="#a-x-本身就是一个语句。" class="headerlink" title="a.x 本身就是一个语句。"></a>a.x 本身就是一个语句。</h3><ol>
 <li>根据js从左到右的执行顺序，会先执行a.x（即取a的值，当前是 { n: 1 }, a.x= 等到给a.x赋值）</li>
 <li>然后 a被赋了新的对象地址，把之前的a覆盖了</li>
@@ -508,51 +638,57 @@ export MAVEN_HOME</code></pre></li>
     <div class="entry">
       
         <h2 id="左侧固定，右侧自适应"><a href="#左侧固定，右侧自适应" class="headerlink" title="左侧固定，右侧自适应"></a>左侧固定，右侧自适应</h2><ul>
-<li><p>float + margin</p>
+<li>float + margin</li>
+</ul>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">margin-left</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>或者利用BFC<br>把main元素变成BFC，left就不会占用main的空间，左右隔开</p>
-</li>
-<li><p>position + margin</p>
+<ul>
+<li>position + margin</li>
+</ul>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">left</span>:  <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">margin-left</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>flex</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">flex</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">flex</span>: <span class="number">1</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>flex</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">flex</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">flex</span>: <span class="number">1</span> <span class="number">1</span> auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>flex 布局的item其中<br>flex： a b c</p>
 <p>a: flex-grow: 存在剩余空间是否放大<br>b: flex-shrink: 空间不够是否要缩小<br>c: flex-basics: 不缩小放大的占据主轴空间大小</p>
-</li>
-</ul>
-<h2 id="三栏布局"><a href="#三栏布局" class="headerlink" title="三栏布局"></a>三栏布局</h2><p>  <strong>左右固定，中间自适应</strong>，其实就是两列布局的翻版</p>
-<p>  其中特别的出现了<em>圣杯布局<em>和</em>双飞翼布局</em> </p>
-<h2 id="圣杯布局-amp-双飞翼布局"><a href="#圣杯布局-amp-双飞翼布局" class="headerlink" title="圣杯布局 &amp; 双飞翼布局"></a>圣杯布局 &amp; 双飞翼布局</h2><p>  <strong>他们可以让中间内容区域首先渲染</strong></p>
-<p>  圣杯布局和双飞翼布局：</p>
-<p>  自元素都是float，父元素BFC</p>
+<h2 id="三栏布局"><a href="#三栏布局" class="headerlink" title="三栏布局"></a>三栏布局</h2><p><strong>左右固定，中间自适应</strong>，其实就是两列布局的翻版</p>
+<p>其中特别的出现了<em>圣杯布局<em>和</em>双飞翼布局</em> </p>
+<h2 id="圣杯布局-amp-双飞翼布局"><a href="#圣杯布局-amp-双飞翼布局" class="headerlink" title="圣杯布局 &amp; 双飞翼布局"></a>圣杯布局 &amp; 双飞翼布局</h2><p>tip: <strong>他们可以让中间内容区域首先渲染</strong></p>
+<p>圣杯布局和双飞翼布局：</p>
+<p>自元素都是float，父元素BFC</p>
 <ul>
-<li><h3 id="圣杯布局"><a href="#圣杯布局" class="headerlink" title="圣杯布局"></a>圣杯布局</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">header</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Header内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>中间弹性区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>左边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>右边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Footer内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<li><h3 id="圣杯布局"><a href="#圣杯布局" class="headerlink" title="圣杯布局"></a>圣杯布局</h3></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">header</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Header内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>中间弹性区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>左边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>右边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Footer内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>其中css为：</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">header</span>, <span class="selector-tag">footer</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">60px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">overflow</span>: scroll;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span> <span class="number">100px</span> <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span>, <span class="selector-class">.right</span>, <span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">300px</span>;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: blue;</span><br><span class="line">  <span class="attribute">left</span>: -<span class="number">200px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.right</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: yellow;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">100px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h3 id="圣杯布局其中比较重要的点："><a href="#圣杯布局其中比较重要的点：" class="headerlink" title="圣杯布局其中比较重要的点："></a><strong>圣杯布局其中比较重要的点：</strong></h3><ul>
-<li>container 容器需要设置成BFC，子元素都是浮动元素，container不设置成BFC在普通文档流中不占位</li>
-<li>margin-left: -100%; // 为了浮动元素left能够到和main同一行，<a href="https://www.cnblogs.com/2050/archive/2012/08/13/2636467.html" target="__blank">参考文章</a><br>负边距可以<ol>
+<li><p>container 容器需要设置成BFC，子元素都是浮动元素，container不设置成BFC在普通文档流中不占位</p>
+</li>
+<li><p>margin-left: -100%; // 为了浮动元素left能够到和main同一行，<a href="https://www.cnblogs.com/2050/archive/2012/08/13/2636467.html" target="__blank">参考文章</a><br>负边距可以</p>
+<ol>
 <li>让元素变大</li>
 <li>让浮动元素重叠，后写的元素可以显示在先写的元素前（<strong>！！！这就是圣杯和双飞翼的关键！！！</strong>）</li>
 </ol>
 </li>
-<li>position:relative + left 可以使这个元素水平偏移，top，bottom =&gt; 垂直偏移</li>
-</ul>
+<li><p>position:relative + left 可以使这个元素水平偏移，top，bottom =&gt; 垂直偏移</p>
 </li>
+<li><h3 id="双飞翼布局"><a href="#双飞翼布局" class="headerlink" title="双飞翼布局"></a>双飞翼布局</h3></li>
 </ul>
-<ul>
-<li><h3 id="双飞翼布局"><a href="#双飞翼布局" class="headerlink" title="双飞翼布局"></a>双飞翼布局</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">header</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Header内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"innner"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h4</span>&gt;</span>中间弹性区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>左边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>右边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Footer内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">header</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Header内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"innner"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h4</span>&gt;</span>中间弹性区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>左边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>右边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Footer内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>可以清楚的看到，它比圣杯布局多了一个inner的元素</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">  <span class="selector-tag">header</span>,</span><br><span class="line"><span class="selector-tag">footer</span> &#123;</span><br><span class="line">	<span class="attribute">height</span>: <span class="number">60px</span>;</span><br><span class="line">	<span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">	<span class="attribute">overflow</span>: scroll;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.left</span>,</span><br><span class="line"><span class="selector-class">.right</span>,</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">	<span class="attribute">height</span>: <span class="number">300px</span>;</span><br><span class="line">	<span class="attribute">float</span>: left;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">	<span class="attribute">background-color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.inner</span> &#123;</span><br><span class="line">	<span class="attribute">margin</span>: <span class="number">0</span> <span class="number">100px</span> <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">	<span class="attribute">background-color</span>: coral;</span><br><span class="line">	<span class="attribute">min-height</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">	<span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">	<span class="attribute">background-color</span>: transparent;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.right</span> &#123;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">	<span class="attribute">background-color</span>: transparent;</span><br><span class="line">	<span class="attribute">margin-left</span>: -<span class="number">100px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">header</span>,</span><br><span class="line"><span class="selector-tag">footer</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">60px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">overflow</span>: scroll;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.left</span>,</span><br><span class="line"><span class="selector-class">.right</span>,</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">300px</span>;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.inner</span> &#123;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">100px</span> <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: coral;</span><br><span class="line">  <span class="attribute">min-height</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: transparent;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.right</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: transparent;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="双飞翼布局其中比较重要的点："><a href="#双飞翼布局其中比较重要的点：" class="headerlink" title="双飞翼布局其中比较重要的点："></a><strong>双飞翼布局其中比较重要的点：</strong></h3><ul>
 <li>比圣杯布局多了一个inner元素，这个元素的<strong>宽度不设置</strong></li>
 <li>去除圣杯布局的定位信息</li>
-</ul>
-</li>
 </ul>
 
       
@@ -591,27 +727,29 @@ export MAVEN_HOME</code></pre></li>
     </header>
     <div class="entry">
       
-        <h2 id="盒模型的属性"><a href="#盒模型的属性" class="headerlink" title="盒模型的属性"></a>盒模型的属性</h2><p>  由内向外：<br>    content -&gt; padding 内边距 -&gt; border 边框 -&gt; margin 外边距</p>
-<p>  盒子模型只包括两种：</p>
+        <h2 id="盒模型的属性"><a href="#盒模型的属性" class="headerlink" title="盒模型的属性"></a>盒模型的属性</h2><p>由内向外：<br>  content -&gt; padding 内边距 -&gt; border 边框 -&gt; margin 外边距</p>
+<p>盒子模型只包括两种：</p>
 <ul>
 <li>标准盒模型</li>
 <li>怪异盒模型</li>
 </ul>
 <h2 id="标准盒模型"><a href="#标准盒模型" class="headerlink" title="标准盒模型"></a>标准盒模型</h2><p>  <strong>width、height</strong><br>  在标准盒模型中，width是content的宽度, height 是content的高度</p>
-<h2 id="怪异盒模型"><a href="#怪异盒模型" class="headerlink" title="怪异盒模型"></a>怪异盒模型</h2><p>  <strong>width、height</strong><br>  在怪异盒模型中，width是content + padding + border的宽度, height 是content的高度</p>
-<p>  <strong>触发怪异盒模型的方式</strong></p>
+<h2 id="怪异盒模型"><a href="#怪异盒模型" class="headerlink" title="怪异盒模型"></a>怪异盒模型</h2><p><strong>width、height</strong><br>在怪异盒模型中，width是content + padding + border的宽度, height 是content的高度</p>
 <ul>
+<li><strong>触发怪异盒模型的方式</strong><ul>
 <li>在ie6、7、8下html文件缺少<!DOCTYPE html></li>
 <li>box-sizing: border-box 开启div的怪异盒模型</li>
 </ul>
-<h2 id="box-sizing"><a href="#box-sizing" class="headerlink" title="box-sizing"></a>box-sizing</h2><p>  它的取值：</p>
+</li>
+</ul>
+<h2 id="box-sizing"><a href="#box-sizing" class="headerlink" title="box-sizing"></a>box-sizing</h2><p>它的取值：</p>
 <ul>
 <li>content-box 默认，标准盒模型</li>
 <li>border-box 怪异盒模型</li>
 <li>padding-box 兼容巨差</li>
 </ul>
-<p>  为啥没有margin-box,如果设置了，会和现在很多标准冲突，最简单的例子就是background怎么办</p>
-<h2 id="弹性盒子FlexBox"><a href="#弹性盒子FlexBox" class="headerlink" title="弹性盒子FlexBox"></a>弹性盒子FlexBox</h2><p>  display: flex<br>  省略，天天用就行了</p>
+<p>为啥没有margin-box,如果设置了，会和现在很多标准冲突，最简单的例子就是background怎么办</p>
+<h2 id="弹性盒子FlexBox"><a href="#弹性盒子FlexBox" class="headerlink" title="弹性盒子FlexBox"></a>弹性盒子FlexBox</h2><p>display: flex<br>省略，天天用就行了</p>
 
       
     </div>
@@ -664,21 +802,24 @@ export MAVEN_HOME</code></pre></li>
 <li>color</li>
 </ul>
 <h2 id="内阴影，四边阴影，双边阴影"><a href="#内阴影，四边阴影，双边阴影" class="headerlink" title="内阴影，四边阴影，双边阴影"></a>内阴影，四边阴影，双边阴影</h2><ul>
-<li><p>内阴影</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>四边阴影</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>相临边阴影</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">   box-shadow: 10px 10px 10px 0px #000; // 向右和向下分别移动10px，模糊半径也是10px，刚好被真实div盖住两边</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-</li>
+<li>内阴影</li>
 </ul>
-<h2 id="单边阴影"><a href="#单边阴影" class="headerlink" title="单边阴影"></a>单边阴影</h2>  <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">10px</span> <span class="number">10px</span> -<span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>  这个也好懂了。</p>
+<ul>
+<li>四边阴影</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>相临边阴影</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">10px</span> <span class="number">10px</span> <span class="number">10px</span> <span class="number">0px</span> <span class="number">#000</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>向右和向下分别移动10px，模糊半径也是10px，刚好被真实div盖住两边</p>
+<h2 id="单边阴影"><a href="#单边阴影" class="headerlink" title="单边阴影"></a>单边阴影</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">10px</span> <span class="number">10px</span> -<span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个也好懂了。</p>
 <ol>
 <li>首先四边模糊半径10px；</li>
 <li>然后向下偏移10px；</li>
@@ -687,130 +828,6 @@ export MAVEN_HOME</code></pre></li>
 <li>四边阴影长度分别是： 上右下左： -10px 0px 10px 0px;</li>
 </ol>
 <h2 id="多阴影规则"><a href="#多阴影规则" class="headerlink" title="多阴影规则"></a>多阴影规则</h2><p>  逗号隔开，最左的阴影在最上层，覆盖右侧写的阴影样式</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/07/03/base-0/">css:BFC</a></h1>
-  
-
-      
-        <time datetime="2020-07-03T07:21:03.000Z">2020-07-03</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>Block Formatting Content</p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>  块级格式化上下文</p>
-<p>  首先明确几个定义</p>
-<ul>
-<li><p>普通流<br>普通流元素，行内元素横向排列，超出换行。块级元素独占一行。上至下排列。</p>
-</li>
-<li><p>浮动<br>在浮动布局中，元素首先在正常文档流位置，然后根据浮动方向，尽可能的向这个方向移动。渲染效果和文字环绕效果类似。</p>
-</li>
-<li><p>绝对定位<br>绝对定位的元素完全<em>脱离了文档流</em>，不会占用普通文档流的位置，根据定位信息确定位置，在另外的层级。</p>
-<h3 id="BFC属于普通流元素"><a href="#BFC属于普通流元素" class="headerlink" title="BFC属于普通流元素"></a>BFC属于普通流元素</h3><p>它可以被视作一个完全和外界隔离的独立容器，<em>不会对外界产生影响</em></p>
-</li>
-</ul>
-<h2 id="触发元素的BFC"><a href="#触发元素的BFC" class="headerlink" title="触发元素的BFC"></a>触发元素的BFC</h2><ul>
-<li><p>root元素</p>
-</li>
-<li><p>display: inline-block; table-cell; flex;</p>
-</li>
-<li><p>float 除了none不设置之外的</p>
-</li>
-<li><p>position: fixed; absolute; 绝对定位元素</p>
-</li>
-<li><p>overflow: visible 之外的值 auto scroll hidden</p>
-<p>可以知道，这些元素的内部无论怎么变化折腾，都不会对外界元素产生影响。<br>也就可以理解为什么overflow:visible 会被排除在外了。</p>
-</li>
-</ul>
-<h2 id="BFC内部"><a href="#BFC内部" class="headerlink" title="BFC内部"></a>BFC内部</h2><p>  root元素都是BFC，可以说整个DOM文档流都是BFC内部元素。</p>
-<p>  刚刚说了BFC不会对外部元素影响。</p>
-<p>  那么它内部的非BFC元素还是会互相影响的。</p>
-<p>  互相影响会出现的问题</p>
-<ul>
-<li>上下边距margint融合问题</li>
-<li>浮动（怎么清除浮动）</li>
-<li>占用其他元素内容区域（float）</li>
-</ul>
-<h2 id="BFC可以做什么"><a href="#BFC可以做什么" class="headerlink" title="BFC可以做什么"></a>BFC可以做什么</h2><p>  通过给元素设置成BFC，解决问题：</p>
-<ul>
-<li><p>上下边距融合问题<br>根据BFC特性，只要把其中一个元素设置成BFC（增加overflow:hidden），它就不会对外界元素产生影响。</p>
-</li>
-<li><p>清除浮动<br>给浮动元素设置成BFC，即使它子元素只有浮动元素。也会被撑起来。因为BFC的内部元素不应该超出自己的元素内部。</p>
-</li>
-<li><p>两栏布局<br>左侧元素float。右侧元素的一部分会被浮动元素占据，形成环绕效果。</p>
-<p>给右侧元素设置成BFC，可以实现两栏布局。</p>
-<p>左右都是BFC不会互相影响。</p>
-</li>
-</ul>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/07/02/webpack-2/">webpack:文件处理</a></h1>
-  
-
-      
-        <time datetime="2020-07-02T05:54:00.000Z">2020-07-02</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="file-loader"><a href="#file-loader" class="headerlink" title="file-loader"></a>file-loader</h2><p>  作用是移动文件，原始文件名加哈希值放在指定文件夹</p>
-<h2 id="url-loader"><a href="#url-loader" class="headerlink" title="url-loader"></a>url-loader</h2><p>  options: {<br>    limit: 10000,<br>    name: utils.assetsPath(‘img/[name].[contenthash:8].[ext]’)<br>  }</p>
-<p>  小于limit的文件打包成base64</p>
-<h2 id="无损压缩"><a href="#无损压缩" class="headerlink" title="无损压缩"></a>无损压缩</h2><p>  image-webpack-loader</p>
-<p>  注意点就是，mac上 npm yarn都按不上，cnpm按的上</p>
 
       
     </div>
@@ -854,6 +871,14 @@ export MAVEN_HOME</code></pre></li>
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
     
       <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
@@ -900,7 +925,7 @@ export MAVEN_HOME</code></pre></li>
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>

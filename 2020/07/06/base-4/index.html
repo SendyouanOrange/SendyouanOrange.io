@@ -6,10 +6,12 @@
   <title>js:x=y=0;a.x=a={n:1} › lic-blog</title>
   <meta name="author" content="triumphLic">
   
-  <meta name="description" content="这个面试题诞生以来就被各种讨论，记录一下自己的想法
-var x = y = 1;  这个表达式可以被拆成  123var x // 变量声明提升y = 1 // 隐式创建一个全局变量x = y // 赋值语句
-  需要注意的就是 y = 1 表达式隐式的创建了全局对象y
-a.x = a = { n:">
+  <meta name="description" content="TIP:这个面试题诞生以来就被各种讨论，记录一下自己的想法
+var x = y = 1这个表达式可以被拆成
+123var x // 变量声明提升y = 1 // 隐式创建一个全局变量x = y // 赋值语句
+
+需要注意的就是 y = 1 表达式隐式的创建了全局对象y
+a.x = a = { n: ">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -58,22 +60,28 @@ a.x = a = { n:">
     </header>
     <div class="entry">
       
-        <p><em>这个面试题诞生以来就被各种讨论，记录一下自己的想法</em></p>
-<h2 id="var-x-y-1"><a href="#var-x-y-1" class="headerlink" title="var x = y = 1;"></a>var x = y = 1;</h2><p>  这个表达式可以被拆成<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="comment">// 变量声明提升</span></span><br><span class="line">y = <span class="number">1</span> <span class="comment">// 隐式创建一个全局变量</span></span><br><span class="line">x = y <span class="comment">// 赋值语句</span></span><br></pre></td></tr></table></figure></p>
-<p>  需要注意的就是 y = 1 表达式隐式的创建了全局对象y</p>
-<h2 id="a-x-a-n-2"><a href="#a-x-a-n-2" class="headerlink" title="a.x = a = { n: 2 }"></a>a.x = a = { n: 2 }</h2><p>  这段代码不好分析，网上一堆深奥的答案。</p>
-  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+        <p>TIP:<em>这个面试题诞生以来就被各种讨论，记录一下自己的想法</em></p>
+<h2 id="var-x-y-1"><a href="#var-x-y-1" class="headerlink" title="var x = y = 1"></a>var x = y = 1</h2><p>这个表达式可以被拆成</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="comment">// 变量声明提升</span></span><br><span class="line">y = <span class="number">1</span> <span class="comment">// 隐式创建一个全局变量</span></span><br><span class="line">x = y <span class="comment">// 赋值语句</span></span><br></pre></td></tr></table></figure>
 
-<p>  最开始理解，会觉得a的值应该是这样：<br>  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  n: <span class="number">2</span>,</span><br><span class="line">  x: &#123;</span><br><span class="line">    n: <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>  额，完全不是</p>
-<p>  a打印出来是： { n: 2 }</p>
-<p>  怎么都不好分析。不如把代码改写成这样</p>
-  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">var</span> b = a <span class="comment">// 缓存一下初始的a</span></span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(a) <span class="comment">// &#123; n: 2 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(b) <span class="comment">// &#123; n: 1, x: &#123; n: 2 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的就是 y = 1 表达式隐式的创建了全局对象y</p>
+<h2 id="a-x-a-n-2"><a href="#a-x-a-n-2" class="headerlink" title="a.x = a = { n: 2 }"></a>a.x = a = { n: 2 }</h2><p>这段代码不好分析，网上一堆深奥的答案。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
 
-<p>  <strong>这个表达式和 var x = y = 1 的区别是：</strong></p>
+<p>最开始理解，会觉得a的值应该是这样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  n: <span class="number">2</span>,</span><br><span class="line">  x: &#123;</span><br><span class="line">    n: <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>额，完全不是</p>
+<p>a打印出来是： { n: 2 }</p>
+<p>怎么都不好分析。不如把代码改写成这样</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">var</span> b = a <span class="comment">// 缓存一下初始的a</span></span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(a) <span class="comment">// &#123; n: 2 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(b) <span class="comment">// &#123; n: 1, x: &#123; n: 2 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>这个表达式和 var x = y = 1 的区别是：</strong></p>
 <ul>
-<li><h3 id="var-x-…-就是一个初始化赋值语句的左半边"><a href="#var-x-…-就是一个初始化赋值语句的左半边" class="headerlink" title="var x = … 就是一个初始化赋值语句的左半边"></a>var x = … 就是一个初始化赋值语句的左半边</h3><p>而</p>
-</li>
+<li><h3 id="var-x-…-就是一个初始化赋值语句的左半边"><a href="#var-x-…-就是一个初始化赋值语句的左半边" class="headerlink" title="var x = … 就是一个初始化赋值语句的左半边"></a>var x = … 就是一个初始化赋值语句的左半边</h3></li>
+</ul>
+<p>而</p>
+<ul>
 <li><h3 id="a-x-本身就是一个语句。"><a href="#a-x-本身就是一个语句。" class="headerlink" title="a.x 本身就是一个语句。"></a>a.x 本身就是一个语句。</h3><ol>
 <li>根据js从左到右的执行顺序，会先执行a.x（即取a的值，当前是 { n: 1 }, a.x= 等到给a.x赋值）</li>
 <li>然后 a被赋了新的对象地址，把之前的a覆盖了</li>
@@ -138,6 +146,14 @@ a.x = a = { n:">
   <ul class="entry">
     
       <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
       </li>
     
@@ -182,7 +198,7 @@ a.x = a = { n:">
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>

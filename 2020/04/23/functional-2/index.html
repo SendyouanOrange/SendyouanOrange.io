@@ -8,8 +8,9 @@
   
   <meta name="description" content="什么是函数组合先看一个函数
 1const compose = (a, b) =&amp;gt; c =&amp;gt; a(b())
+
 上面的函数可以把两个函数组合成一个新的函数例：
-1234const nameF = n =&amp;gt; &#39;name: &#39; + nconst firstF = s =&amp;gt; &#39;first">
+1234const nameF = n =&amp;gt; &#39;name: &#39; + nconst firstF = s =&amp;gt; &#39;firs">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -60,10 +61,13 @@
       
         <h2 id="什么是函数组合"><a href="#什么是函数组合" class="headerlink" title="什么是函数组合"></a><em>什么是函数组合</em></h2><p>先看一个函数</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">a, b</span>) =&gt;</span> <span class="function"><span class="params">c</span> =&gt;</span> a(b())</span><br></pre></td></tr></table></figure>
+
 <p>上面的函数可以把两个函数<em>组合</em>成一个新的函数<br>例：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> nameF = <span class="function"><span class="params">n</span> =&gt;</span> <span class="string">'name: '</span> + n</span><br><span class="line"><span class="keyword">const</span> firstF = <span class="function"><span class="params">s</span> =&gt;</span> <span class="string">'first '</span> + s</span><br><span class="line"><span class="keyword">const</span> name = nameF(<span class="string">'li'</span>)</span><br><span class="line"><span class="keyword">const</span> firstName = firstF(name) <span class="comment">// first name: li</span></span><br></pre></td></tr></table></figure>
+
 <p>使用compose之后：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> firstNameFunc = compose(firstF, nameF)</span><br><span class="line"><span class="keyword">const</span> firstName = firstNameFunc(name) <span class="comment">// first name: li</span></span><br></pre></td></tr></table></figure>
+
 <p>两个函数nameF和firstF组合成一个新的函数firstNameFunc</p>
 <p>上面的例子只能接收两个函数，把compose改造成一个能接收更多函数的组合函数</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">...funcs</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> funcs.reverse().reduce(<span class="function">(<span class="params">preV, fn</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn(preV)</span><br><span class="line">    &#125;, v)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -73,6 +77,7 @@
 <p><em>管道</em>是一个能让函数从右向左执行的函数</p>
 <p>看一个例子：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pipe = <span class="function">(<span class="params">...funcs</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> funcs.reduce(<span class="function">(<span class="params">preV, fn</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn(preV)</span><br><span class="line">    &#125;, v)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>和上面的组合函数的区别就是没有reverse了，它的执行顺序就是从左向右了</p>
 
       
@@ -129,6 +134,14 @@
   <ul class="entry">
     
       <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
       </li>
     
@@ -173,7 +186,7 @@
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>

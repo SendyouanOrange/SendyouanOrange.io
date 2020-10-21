@@ -67,11 +67,14 @@ js中万物皆对象即使是基本类型，也可以看作对象，new Number(1
 <li>每个对象，都有一个 <strong>proto</strong> 属性<pre><code>a.__proto__ 它指向a的构造函数的原型对象</code></pre></li>
 <li>每个函数对象，都有一个原型对象<pre><code>const func = new Function() 那么，func 具有一个原型对象，即func.prototype</code></pre></li>
 <li>函数的原型对象也是一个对象，那么它也有构造函数，所以它的 <strong>proto</strong> 指向这个原型对象的构造函数的原型对象</li>
-<li>需要注意的是，<strong>proto</strong>在es6才写进规范，浏览器的支持有一定兼容问题，可以用Object.getPrototypeOf()函数<h4 id="这样一个由-proto-够成的链，就叫做-原型链"><a href="#这样一个由-proto-够成的链，就叫做-原型链" class="headerlink" title="这样一个由 __proto__ 够成的链，就叫做 原型链"></a>这样一个由 <code>__proto__</code> 够成的链，就叫做 <strong><em>原型链</em></strong></h4></li>
+<li>需要注意的是，<strong>proto</strong>在es6才写进规范，浏览器的支持有一定兼容问题，可以用Object.getPrototypeOf()函数</li>
 </ul>
+<p>所以，这样一个由 <code>__proto__</code> 够成的链，就叫做 <strong><em>原型链</em></strong></p>
 <h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> A = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.a = <span class="number">1</span></span><br><span class="line">  <span class="keyword">this</span>.b = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line">A.prototype.toString = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.a + <span class="keyword">this</span>.b + <span class="string">'_string'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> newA = <span class="keyword">new</span> A()</span><br><span class="line"><span class="built_in">console</span>.log(newA.a) <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(nweA.b) <span class="comment">// 2</span></span><br><span class="line"><span class="built_in">console</span>.log(newA.toString()) <span class="comment">// '3string'</span></span><br></pre></td></tr></table></figure>
+
 <p>其中newA自身是只有a,b属性的，没有toString方法<br>没有怎么办呢<br>会去它的 <strong>proto</strong> 去找<br>我们知道</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newA.__proro__ == A.prototype</span><br></pre></td></tr></table></figure>
+
 <p>就找到了toString方法，其中this指向的是调用方</p>
 <h2 id="constructor-NaN"><a href="#constructor-NaN" class="headerlink" title="constructor"></a><em>constructor</em></h2><ul>
 <li>我们都知道 F.prototype.constructor === F<br>const f = new F() 其中 f.constructor === F.prototype.constructor = F<br>所以实例对象的constructor指向它的构造函数</li>
@@ -133,6 +136,14 @@ js中万物皆对象即使是基本类型，也可以看作对象，new Number(1
   <ul class="entry">
     
       <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
       </li>
     
@@ -177,7 +188,7 @@ js中万物皆对象即使是基本类型，也可以看作对象，new Number(1
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>

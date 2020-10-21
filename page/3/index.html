@@ -45,6 +45,110 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/04/23/functional-2/">函数式编程 --组合和管道</a></h1>
+  
+
+      
+        <time datetime="2020-04-23T06:28:22.000Z">2020-04-23</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="什么是函数组合"><a href="#什么是函数组合" class="headerlink" title="什么是函数组合"></a><em>什么是函数组合</em></h2><p>先看一个函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">a, b</span>) =&gt;</span> <span class="function"><span class="params">c</span> =&gt;</span> a(b())</span><br></pre></td></tr></table></figure>
+
+<p>上面的函数可以把两个函数<em>组合</em>成一个新的函数<br>例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> nameF = <span class="function"><span class="params">n</span> =&gt;</span> <span class="string">'name: '</span> + n</span><br><span class="line"><span class="keyword">const</span> firstF = <span class="function"><span class="params">s</span> =&gt;</span> <span class="string">'first '</span> + s</span><br><span class="line"><span class="keyword">const</span> name = nameF(<span class="string">'li'</span>)</span><br><span class="line"><span class="keyword">const</span> firstName = firstF(name) <span class="comment">// first name: li</span></span><br></pre></td></tr></table></figure>
+
+<p>使用compose之后：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> firstNameFunc = compose(firstF, nameF)</span><br><span class="line"><span class="keyword">const</span> firstName = firstNameFunc(name) <span class="comment">// first name: li</span></span><br></pre></td></tr></table></figure>
+
+<p>两个函数nameF和firstF组合成一个新的函数firstNameFunc</p>
+<p>上面的例子只能接收两个函数，把compose改造成一个能接收更多函数的组合函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">...funcs</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> funcs.reverse().reduce(<span class="function">(<span class="params">preV, fn</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn(preV)</span><br><span class="line">    &#125;, v)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面就是一个较为完整的组合函数</p>
+<h2 id="什么是函数管道（序列）"><a href="#什么是函数管道（序列）" class="headerlink" title="什么是函数管道（序列）"></a><em>什么是函数管道（序列）</em></h2><p>上面讲的组合函数，它传入的函数都是从右向左调用的。</p>
+<p><em>管道</em>是一个能让函数从右向左执行的函数</p>
+<p>看一个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pipe = <span class="function">(<span class="params">...funcs</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> funcs.reduce(<span class="function">(<span class="params">preV, fn</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn(preV)</span><br><span class="line">    &#125;, v)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和上面的组合函数的区别就是没有reverse了，它的执行顺序就是从左向右了</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/04/22/functional-1/">函数式编程 --函数的柯里化</a></h1>
+  
+
+      
+        <time datetime="2020-04-22T06:28:22.000Z">2020-04-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>函数柯里化是将一个多参数函数转换成嵌套的一元函数的过程</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><em>例子</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function">(<span class="params">func</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">firstArg</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">secondArg</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> func (firstArg, secondArg)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>显而易见：它的实现原理<strong>闭包</strong></p>
+<p>现在有一个<code>const sum = (a, b) =&gt; a + b</code>函数，我们轻易的可以利用curry函数把sum函数<strong>柯里化</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> currySum = curry(sum)</span><br><span class="line">curry(<span class="number">1</span>)(<span class="number">2</span>)</span><br><span class="line"><span class="comment">// 3</span></span><br><span class="line">sum(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"><span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="多参数的柯里化"><a href="#多参数的柯里化" class="headerlink" title="多参数的柯里化"></a><em>多参数的柯里化</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function">(<span class="params">func</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> func !== <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">'argument is not function!'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">innerFunc</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(args)</span><br><span class="line">    <span class="keyword">if</span> (func.length &gt; args.length) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> innerFunc.apply(<span class="literal">null</span>, args.concat(<span class="built_in">Array</span>.from(<span class="built_in">arguments</span>)))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> func.apply(<span class="literal">null</span>, args)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><em>小结</em></h2><p>柯里化的实现和原理都很好搞懂，就是在实践中，如果遇到问题能够运用它解决一些问题才是实在的</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/04/21/functional-0/">函数式编程 --纯函数</a></h1>
   
 
@@ -56,11 +160,15 @@
       
         <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a><em>定义</em></h2><p>纯函数就是，只要输入一致，那么输出一定一致。不受外部变量、环境影响。</p>
 <h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a><em>例子</em></h2><ul>
-<li>纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br></pre></td></tr></table></figure></li>
-<li>非纯函数<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">words = <span class="string">'hi'</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hi lic</span></span><br></pre></td></tr></table></figure>
-
-</li>
+<li>纯函数</li>
 </ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>非纯函数</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> words = <span class="string">'hello'</span></span><br><span class="line"><span class="keyword">const</span> func = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> words + name</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hello lic</span></span><br><span class="line">words = <span class="string">'hi'</span></span><br><span class="line">func(<span class="string">'lic'</span>) <span class="comment">// hi lic</span></span><br></pre></td></tr></table></figure>
+
 <h2 id="纯函数的扩展"><a href="#纯函数的扩展" class="headerlink" title="纯函数的扩展"></a><em>纯函数的扩展</em></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> g = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> f = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> g(b)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> cf = <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> g(b)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在上面的例子中<br>显而易见的是<code>g()</code>函数不是纯函数，<code>f()</code>函数也不是纯函数<br>但是，<code>cf()</code>函数却是纯函数，因为相同的输入，都会返回一个相同的函数。即使返回值是函数，那也符合纯函数的定义：输入一致，输出永远一致</p>
@@ -219,6 +327,14 @@
   <ul class="entry">
     
       <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
       </li>
     
@@ -263,7 +379,7 @@
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>

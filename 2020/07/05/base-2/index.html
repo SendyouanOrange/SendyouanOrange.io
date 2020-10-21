@@ -6,13 +6,13 @@
   <title>css:盒模型，box-sizing应用场景 › lic-blog</title>
   <meta name="author" content="triumphLic">
   
-  <meta name="description" content="盒模型的属性  由内向外：    content -&amp;gt; padding 内边距 -&amp;gt; border 边框 -&amp;gt; margin 外边距
-  盒子模型只包括两种：
+  <meta name="description" content="盒模型的属性由内向外：  content -&amp;gt; padding 内边距 -&amp;gt; border 边框 -&amp;gt; margin 外边距
+盒子模型只包括两种：
 
 标准盒模型
 怪异盒模型
 
-标准盒模型  width、height  在标准盒模型中，width是content的宽度, ">
+标准盒模型  width、height  在标准盒模型中，width是content的宽度, height">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -61,27 +61,29 @@
     </header>
     <div class="entry">
       
-        <h2 id="盒模型的属性"><a href="#盒模型的属性" class="headerlink" title="盒模型的属性"></a>盒模型的属性</h2><p>  由内向外：<br>    content -&gt; padding 内边距 -&gt; border 边框 -&gt; margin 外边距</p>
-<p>  盒子模型只包括两种：</p>
+        <h2 id="盒模型的属性"><a href="#盒模型的属性" class="headerlink" title="盒模型的属性"></a>盒模型的属性</h2><p>由内向外：<br>  content -&gt; padding 内边距 -&gt; border 边框 -&gt; margin 外边距</p>
+<p>盒子模型只包括两种：</p>
 <ul>
 <li>标准盒模型</li>
 <li>怪异盒模型</li>
 </ul>
 <h2 id="标准盒模型"><a href="#标准盒模型" class="headerlink" title="标准盒模型"></a>标准盒模型</h2><p>  <strong>width、height</strong><br>  在标准盒模型中，width是content的宽度, height 是content的高度</p>
-<h2 id="怪异盒模型"><a href="#怪异盒模型" class="headerlink" title="怪异盒模型"></a>怪异盒模型</h2><p>  <strong>width、height</strong><br>  在怪异盒模型中，width是content + padding + border的宽度, height 是content的高度</p>
-<p>  <strong>触发怪异盒模型的方式</strong></p>
+<h2 id="怪异盒模型"><a href="#怪异盒模型" class="headerlink" title="怪异盒模型"></a>怪异盒模型</h2><p><strong>width、height</strong><br>在怪异盒模型中，width是content + padding + border的宽度, height 是content的高度</p>
 <ul>
+<li><strong>触发怪异盒模型的方式</strong><ul>
 <li>在ie6、7、8下html文件缺少<!DOCTYPE html></li>
 <li>box-sizing: border-box 开启div的怪异盒模型</li>
 </ul>
-<h2 id="box-sizing"><a href="#box-sizing" class="headerlink" title="box-sizing"></a>box-sizing</h2><p>  它的取值：</p>
+</li>
+</ul>
+<h2 id="box-sizing"><a href="#box-sizing" class="headerlink" title="box-sizing"></a>box-sizing</h2><p>它的取值：</p>
 <ul>
 <li>content-box 默认，标准盒模型</li>
 <li>border-box 怪异盒模型</li>
 <li>padding-box 兼容巨差</li>
 </ul>
-<p>  为啥没有margin-box,如果设置了，会和现在很多标准冲突，最简单的例子就是background怎么办</p>
-<h2 id="弹性盒子FlexBox"><a href="#弹性盒子FlexBox" class="headerlink" title="弹性盒子FlexBox"></a>弹性盒子FlexBox</h2><p>  display: flex<br>  省略，天天用就行了</p>
+<p>为啥没有margin-box,如果设置了，会和现在很多标准冲突，最简单的例子就是background怎么办</p>
+<h2 id="弹性盒子FlexBox"><a href="#弹性盒子FlexBox" class="headerlink" title="弹性盒子FlexBox"></a>弹性盒子FlexBox</h2><p>display: flex<br>省略，天天用就行了</p>
 
       
     </div>
@@ -137,6 +139,14 @@
   <ul class="entry">
     
       <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
         <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
       </li>
     
@@ -181,7 +191,7 @@
       </li>
     
       <li>
-        <a href="/2020/06/22/vue-0-md/">newVue.md</a>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
       </li>
     
       <li>
