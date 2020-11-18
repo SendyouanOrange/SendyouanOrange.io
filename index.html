@@ -45,6 +45,225 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/11/18/js-base-7/">手写promise</a></h1>
+  
+
+      
+        <time datetime="2020-11-18T09:16:05.000Z">2020-11-18</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>默写完去看看对不对</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> PENDING = <span class="string">'pending'</span></span><br><span class="line"><span class="keyword">const</span> REJECTED = <span class="string">'rejected'</span></span><br><span class="line"><span class="keyword">const</span> FULFILLED = <span class="string">'fulfilled'</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LPromise</span> </span>&#123;</span><br><span class="line">  status = PENDING</span><br><span class="line">  value = <span class="literal">null</span></span><br><span class="line">  reason = <span class="literal">null</span></span><br><span class="line">  resolveCallBacks = []</span><br><span class="line">  rejectCallBacks = []</span><br><span class="line">  <span class="keyword">constructor</span>(handler) &#123;</span><br><span class="line">    <span class="keyword">const</span> resolve = <span class="function"><span class="params">value</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.status === PENDING) &#123;</span><br><span class="line">        <span class="keyword">this</span>.value = value</span><br><span class="line">        <span class="keyword">this</span>.status = FULFILLED</span><br><span class="line">        <span class="keyword">this</span>.resolveCallBacks.forEach(<span class="function"><span class="params">fn</span> =&gt;</span> fn())</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> reject = <span class="function"><span class="params">reason</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.status === PENDING) &#123;</span><br><span class="line">        <span class="keyword">this</span>.reason = reason</span><br><span class="line">        <span class="keyword">this</span>.status = REJECTED</span><br><span class="line">        <span class="keyword">this</span>.rejectCallBacks.forEach(<span class="function"><span class="params">fn</span> =&gt;</span> fn())</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      handler(resolve, reject)</span><br><span class="line">    &#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">      reject(e)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  then(onFulFilled, onRejected)&#123;</span><br><span class="line"></span><br><span class="line">    onFulFilled = onFulFilled <span class="keyword">instanceof</span> <span class="built_in">Function</span> ? onFulFilled : <span class="function"><span class="params">v</span> =&gt;</span> v</span><br><span class="line">    onRejected = onRejected <span class="keyword">instanceof</span> <span class="built_in">Function</span> ? onRejected : <span class="function"><span class="params">v</span> =&gt;</span> v</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> _promise = <span class="keyword">new</span> LPromise(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.status === FULFILLED) &#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> v = onFulFilled(<span class="keyword">this</span>.value)</span><br><span class="line">            resolvePromise(_promise, v, resolve, reject)</span><br><span class="line">          &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">            reject(e)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.status === REJECTED) &#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> v = onRejected(<span class="keyword">this</span>.value)</span><br><span class="line">            resolvePromise(_promise, v, resolve, reject)</span><br><span class="line">          &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">            reject(e)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.status === PENDING) &#123;</span><br><span class="line">        <span class="keyword">this</span>.resolveCallBacks.push(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">          setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">              <span class="keyword">let</span> v = onFulFilled(<span class="keyword">this</span>.value)</span><br><span class="line">              resolvePromise(_promise, v, resolve, reject)</span><br><span class="line">            &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">              reject(e)</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">this</span>.rejectCallBacks.push(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">          setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">              <span class="keyword">let</span> v = onRejected(<span class="keyword">this</span>.value)</span><br><span class="line">              resolvePromise(_promise, v, resolve, reject)</span><br><span class="line">            &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">              reject(e)</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> _promise</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">catch</span>(onRejected) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.then(<span class="literal">null</span>, onRejected)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resolvePromise</span>(<span class="params">_promise, valFn, resolve, reject</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (_promise === valFn) &#123;</span><br><span class="line">    reject(<span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'循环调用了'</span>))</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> ((<span class="keyword">typeof</span> valFn === <span class="string">'object'</span> &amp;&amp; valFn !== <span class="literal">null</span>) || <span class="keyword">typeof</span> valFn === <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> called = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> then = valFn.then</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> then === <span class="string">'function'</span>) &#123;</span><br><span class="line">        then.call(valFn, v =&gt; &#123;</span><br><span class="line">          <span class="keyword">if</span> (called) <span class="keyword">return</span></span><br><span class="line">          called = <span class="literal">true</span></span><br><span class="line">          resolvePromise(_promise, v, resolve, reject)</span><br><span class="line">        &#125;, e =&gt; &#123;</span><br><span class="line">          reject(e)</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        resolve(valFn)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">      reject(e)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    resolve(valFn)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> pro = <span class="keyword">new</span> LPromise(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    resolve(<span class="string">'6666'</span>)</span><br><span class="line">  &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">pro.then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'the value is : '</span>, data)</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> LPromise(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    resolve(<span class="string">'the value is : '</span> + data)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'2the value is : '</span>, data)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>还行，就是直接在md里写有单词拼错了</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/10/28/browser-3/">WebWorkers</a></h1>
+  
+
+      
+        <time datetime="2020-10-28T08:50:02.000Z">2020-10-28</time>
+      
+    </header>
+    <div class="entry">
+      
+        
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/10/22/js-base-6/">手写Promise.all-limit</a></h1>
+  
+
+      
+        <time datetime="2020-10-22T08:52:51.000Z">2020-10-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DealPromise</span> </span>&#123;</span><br><span class="line">  list = [] <span class="comment">// 函数数组，每个函数调用返回一个真正需要执行的promise</span></span><br><span class="line">  limit = <span class="number">0</span> <span class="comment">// 限制请求个数</span></span><br><span class="line">  count = <span class="number">0</span> <span class="comment">// 当前正在请求的个数</span></span><br><span class="line">  holdList= []</span><br><span class="line">  <span class="keyword">constructor</span>(list, limit) &#123;</span><br><span class="line">    <span class="keyword">this</span>.limit = limit</span><br><span class="line">    <span class="keyword">this</span>.list = list</span><br><span class="line">  &#125;</span><br><span class="line">  map(fn) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.count &lt; <span class="keyword">this</span>.limit) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.run(fn)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.hold(fn)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  run(fn) &#123;</span><br><span class="line">    <span class="keyword">return</span> fn().then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.count--</span><br><span class="line">      <span class="keyword">this</span>.pickNext()</span><br><span class="line">      <span class="keyword">return</span> data</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  hold(fn) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.holdList.push(&#123; fn, resolve, reject &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  pickNext() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.count &lt; <span class="keyword">this</span>.limit &amp;&amp; <span class="keyword">this</span>.holdList.length) &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123; fn, resolve, reject &#125; = <span class="keyword">this</span>.holdList.shift()</span><br><span class="line">      <span class="keyword">this</span>.run(fn).then(resolve).catch(reject)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">promiseAllLimit</span>(<span class="params">list, limit</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> tool = <span class="keyword">new</span> DealPromise(list, limit)</span><br><span class="line">  <span class="keyword">const</span> data = <span class="keyword">await</span> <span class="built_in">Promise</span>.all(list.map(<span class="function"><span class="params">fn</span> =&gt;</span> tool.map(fn)))</span><br><span class="line">  <span class="keyword">return</span> data</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简版</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">holdList</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (count &lt; limit &amp;&amp; holdList.length) &#123;</span><br><span class="line">    count++</span><br><span class="line">    <span class="keyword">const</span> &#123; fn, resolve, reject &#125; = holdList.shift</span><br><span class="line">    fn().then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">      count--</span><br><span class="line">      run()</span><br><span class="line">      <span class="keyword">return</span> res</span><br><span class="line">    &#125;).then(resolve).catch(reject)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">promiseAllLimit</span>(<span class="params">list, limit</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> count = <span class="number">0</span></span><br><span class="line">  <span class="keyword">let</span> holdList = []</span><br><span class="line">  list = list.map(<span class="function"><span class="params">fn</span> =&gt;</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(resolve, reject) =&gt; &#123;</span><br><span class="line">    holdList.push(&#123; fn, resolve, reject &#125;)</span><br><span class="line">    run(holdList)</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">const</span> data = <span class="keyword">await</span> <span class="built_in">Promise</span>.all(list)</span><br><span class="line">  <span class="keyword">return</span> data</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="async-await-实现"><a href="#async-await-实现" class="headerlink" title="async await 实现"></a>async await 实现</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">promiseAllLimit</span>(<span class="params">list, limit</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> count = <span class="number">0</span></span><br><span class="line">  <span class="keyword">const</span> holdList = []</span><br><span class="line">  <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (count &gt; limit) &#123;</span><br><span class="line">      <span class="keyword">await</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        holdList.push(resolve)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    count++</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> fn()</span><br><span class="line">    count--</span><br><span class="line">    <span class="keyword">if</span> (holdList.length &gt; <span class="number">0</span>) holdList.shift()()</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> data = <span class="keyword">await</span> <span class="built_in">Promise</span>.all(list.map(<span class="function"><span class="params">fn</span> =&gt;</span> run(fn)))</span><br><span class="line">  <span class="keyword">return</span> data</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>主要还是得需要执行的promise函数用一个函数包裹起来() =&gt; Promise 这样保证需要并发执行的promise不会在建立的时候就被动被执行了</p>
+</li>
+<li><p>其次就是缓存每个Promise的resolve和reject函数，这样整体的Promise.all就是在同步执行100个Promise，只是limit之外的Promise的状态一直是pending，直到它可以被执行，然后内部Promise再改变状态</p>
+</li>
+</ul>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title"><a href="/2020/10/21/browser-2/">http</a></h1>
+  
+
+      
+        <time datetime="2020-10-21T08:49:12.000Z">2020-10-21</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="HTTP历史版本"><a href="#HTTP历史版本" class="headerlink" title="HTTP历史版本"></a>HTTP历史版本</h2><ul>
+<li>http1.0</li>
+<li>http1.1</li>
+<li>https</li>
+<li>http2.0</li>
+<li>http3.0</li>
+</ul>
+<h2 id="HttP1-0"><a href="#HttP1-0" class="headerlink" title="HttP1.0"></a>HttP1.0</h2><p>http1.0其实为了客户端获取html，js文件诞生的</p>
+<ul>
+<li>每次请求都会发生一遍TCP三次握手</li>
+<li>没有长链接的解决发难</li>
+<li>缓存由expires字段控制，不合理</li>
+</ul>
+<h2 id="HTTP1-1"><a href="#HTTP1-1" class="headerlink" title="HTTP1.1"></a>HTTP1.1</h2><p>http1.1在http1.0发布后六个月就诞生了，是现在应用最广的http规范</p>
+<p>相对与http1.0，它增加了：</p>
+<ul>
+<li>keep-alive复用TCP通道，chrome好像限制每个进程只能开启5-6个tcp链接</li>
+<li>cache-control字段控制浏览器缓存机制</li>
+<li>增加HOST请求头，方便浏览器知道客户端ip地址</li>
+</ul>
+<h2 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a>HTTP2.0</h2><p>说到http2.0总会提起一个名词： 多路复用</p>
+<p>多路复用：通俗的，它就是多个http请求使用同一个TCP链接通道进行数据传输</p>
+<p>相对与之前的http版本，它实现了：</p>
+<ul>
+<li>多路复用</li>
+<li>header压缩，其实很有必要，现在的http1.1优化方案都会对body内容进行gzip压缩处理，导致header的内容比较大，对头部信息进行压缩处理是必要的。通过服务端维护的字典项，某个字符标示“cache-control: no-cache”，差不多这样的形式。</li>
+<li>二进制传输，http和tcp层增加了二进制传输层，用来压缩文本内容变成二进制数据，相同题集的二进制比文本的数据内容大太多了</li>
+<li>分块传输，每个请求的id和index不同，确保了TCP通道上某个延时的http请求不会阻塞其他请求的不阻塞</li>
+<li>支持服务器推送消息，毕竟通道一直开着</li>
+</ul>
+<h2 id="HTTP3-0"><a href="#HTTP3-0" class="headerlink" title="HTTP3.0"></a>HTTP3.0</h2><p>之前的http请求协议都是基于TCP/TCL的</p>
+<p>TCP有一些缺点</p>
+<ul>
+<li>三次握手<ul>
+<li>三次握手是为了确认客户端和服务端的收发能力是否都正常</li>
+<li>第一次，服务端知道客户端发能力和自己接收能力正常</li>
+<li>第二次，客户端知道服务端发送能力正常，自己的接收能力正常</li>
+<li>第三次，知道所有功能正常</li>
+</ul>
+</li>
+<li>慢启动</li>
+</ul>
+<p>HTTP3的草案是基于QUIC协议，它基于UDP，它热启动，增加了TSL1.3的加密，解决了安全问题</p>
+<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>https是什么，就是基于TSL/SSL的通信协议</p>
+<p>基于CA证书的公钥私钥进行非对称加密，互相交换对称密钥</p>
+<p>其他部分也是基于TCP的三次握手之类的还是避免不了，它只是交换密钥，对内容进行加密传输</p>
+<p>交换密钥的过程：</p>
+<ul>
+<li>客户端给服务端发送请求，包含一个随机数，客户端支持的机密算法，协议版本号https</li>
+<li>服务端返回CA证书（公钥就在CA证书中，只要颁发CA证书的机构是可信任的，这个密钥就是可信任的）、双方支持的加密算法、以及客户端的随机数</li>
+<li>前两个随机数是明文的，最后拿到ca证书的公钥加密一个新的随机数发送给服务端</li>
+<li>当前客户端服务端都确认了加密算法，三个随机数。</li>
+<li>之后的通信内容就都根据三个随机数和加密算法加密内容传输</li>
+</ul>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a></h1>
   
 
@@ -80,6 +299,7 @@
 </ul>
 </li>
 </ul>
+<p><strong>怎么击中协商缓存？</strong></p>
 <p>cache-control非no-cache|no-store，&amp; （max-age倒计时没到 ｜ expires没到时）<br>如果击中了强制缓存，浏览器直接使用缓存数据:</p>
 <ul>
 <li><p>缓存数据是js或者图片数据，http请求返回状态码200，标示from memory cache</p>
@@ -94,15 +314,21 @@
 <li><p>cache-control：no-cache 直接走协商缓存</p>
 </li>
 </ol>
+<p>客户端带的协商缓存请求头</p>
 <ul>
-<li>if-modified-since</li>
-<li>if-none-matched</li>
-<li>Etag 标示符</li>
+<li>if-modified-since，如果没有击中强缓存，这个字段会带着服务端请求带回来的Last-Modified值</li>
+<li>if-none-matched，如果没有击中强缓存，客户端请求会带着这个请求头字段，值为服务端返回的Etag值</li>
 </ul>
-<p>顾名思义的headers</p>
+<p>服务端返回的缓存标示请求头</p>
 <ul>
-<li>缓存没有变化， http请求服务器返回状态码304</li>
-<li>缓存有变化，http请求返回200，相当于重新请求</li>
+<li><p>Etag 标示符， 服务端对内容，文件索引，大小，最后修改时间得来的哈希值，服务端返回数据的请求头带的</p>
+</li>
+<li><p>Last-Modified：服务端发送给客户端的资源最后修改时间</p>
+</li>
+<li><p>缓存没有变化， http请求服务器返回状态码304</p>
+</li>
+<li><p>缓存有变化，http请求返回200，相当于重新请求</p>
+</li>
 </ul>
 
       
@@ -555,302 +781,6 @@ export MAVEN_HOME</code></pre></li>
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/07/06/base-4/">js:x=y=0;a.x=a={n:1}</a></h1>
-  
-
-      
-        <time datetime="2020-07-06T02:17:17.000Z">2020-07-06</time>
-      
-    </header>
-    <div class="entry">
-      
-        <p>TIP:<em>这个面试题诞生以来就被各种讨论，记录一下自己的想法</em></p>
-<h2 id="var-x-y-1"><a href="#var-x-y-1" class="headerlink" title="var x = y = 1"></a>var x = y = 1</h2><p>这个表达式可以被拆成</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="comment">// 变量声明提升</span></span><br><span class="line">y = <span class="number">1</span> <span class="comment">// 隐式创建一个全局变量</span></span><br><span class="line">x = y <span class="comment">// 赋值语句</span></span><br></pre></td></tr></table></figure>
-
-<p>需要注意的就是 y = 1 表达式隐式的创建了全局对象y</p>
-<h2 id="a-x-a-n-2"><a href="#a-x-a-n-2" class="headerlink" title="a.x = a = { n: 2 }"></a>a.x = a = { n: 2 }</h2><p>这段代码不好分析，网上一堆深奥的答案。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
-
-<p>最开始理解，会觉得a的值应该是这样：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  n: <span class="number">2</span>,</span><br><span class="line">  x: &#123;</span><br><span class="line">    n: <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>额，完全不是</p>
-<p>a打印出来是： { n: 2 }</p>
-<p>怎么都不好分析。不如把代码改写成这样</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">var</span> b = a <span class="comment">// 缓存一下初始的a</span></span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(a) <span class="comment">// &#123; n: 2 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(b) <span class="comment">// &#123; n: 1, x: &#123; n: 2 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>这个表达式和 var x = y = 1 的区别是：</strong></p>
-<ul>
-<li><h3 id="var-x-…-就是一个初始化赋值语句的左半边"><a href="#var-x-…-就是一个初始化赋值语句的左半边" class="headerlink" title="var x = … 就是一个初始化赋值语句的左半边"></a>var x = … 就是一个初始化赋值语句的左半边</h3></li>
-</ul>
-<p>而</p>
-<ul>
-<li><h3 id="a-x-本身就是一个语句。"><a href="#a-x-本身就是一个语句。" class="headerlink" title="a.x 本身就是一个语句。"></a>a.x 本身就是一个语句。</h3><ol>
-<li>根据js从左到右的执行顺序，会先执行a.x（即取a的值，当前是 { n: 1 }, a.x= 等到给a.x赋值）</li>
-<li>然后 a被赋了新的对象地址，把之前的a覆盖了</li>
-<li>a.x 等待赋值，右侧 a = { n :2 }这个值。</li>
-<li>可是刚刚1.这个阶段的a已经被覆盖了，a.x = { n: 2}执行之后也没有意义了。{ n: 1 } 这个值的指针被指到别的地了</li>
-<li>打印出b, 发现b是原来的a的值，并且x也被赋值了。说明只是1. 这一步的赋值影响不到新的a了</li>
-</ol>
-</li>
-</ul>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/07/05/base-3/">css:两栏、三栏、圣杯、双飞翼布局</a></h1>
-  
-
-      
-        <time datetime="2020-07-05T13:05:36.000Z">2020-07-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="左侧固定，右侧自适应"><a href="#左侧固定，右侧自适应" class="headerlink" title="左侧固定，右侧自适应"></a>左侧固定，右侧自适应</h2><ul>
-<li>float + margin</li>
-</ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">margin-left</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>或者利用BFC<br>把main元素变成BFC，left就不会占用main的空间，左右隔开</p>
-<ul>
-<li>position + margin</li>
-</ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">left</span>:  <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">margin-left</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>flex</li>
-</ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">flex</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">flex</span>: <span class="number">1</span> <span class="number">1</span> auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>flex 布局的item其中<br>flex： a b c</p>
-<p>a: flex-grow: 存在剩余空间是否放大<br>b: flex-shrink: 空间不够是否要缩小<br>c: flex-basics: 不缩小放大的占据主轴空间大小</p>
-<h2 id="三栏布局"><a href="#三栏布局" class="headerlink" title="三栏布局"></a>三栏布局</h2><p><strong>左右固定，中间自适应</strong>，其实就是两列布局的翻版</p>
-<p>其中特别的出现了<em>圣杯布局<em>和</em>双飞翼布局</em> </p>
-<h2 id="圣杯布局-amp-双飞翼布局"><a href="#圣杯布局-amp-双飞翼布局" class="headerlink" title="圣杯布局 &amp; 双飞翼布局"></a>圣杯布局 &amp; 双飞翼布局</h2><p>tip: <strong>他们可以让中间内容区域首先渲染</strong></p>
-<p>圣杯布局和双飞翼布局：</p>
-<p>自元素都是float，父元素BFC</p>
-<ul>
-<li><h3 id="圣杯布局"><a href="#圣杯布局" class="headerlink" title="圣杯布局"></a>圣杯布局</h3></li>
-</ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">header</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Header内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>中间弹性区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>左边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>右边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Footer内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>其中css为：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">header</span>, <span class="selector-tag">footer</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">60px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">overflow</span>: scroll;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span> <span class="number">100px</span> <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span>, <span class="selector-class">.right</span>, <span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">300px</span>;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">position</span>: relative;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: blue;</span><br><span class="line">  <span class="attribute">left</span>: -<span class="number">200px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.right</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: yellow;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">100px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="圣杯布局其中比较重要的点："><a href="#圣杯布局其中比较重要的点：" class="headerlink" title="圣杯布局其中比较重要的点："></a><strong>圣杯布局其中比较重要的点：</strong></h3><ul>
-<li><p>container 容器需要设置成BFC，子元素都是浮动元素，container不设置成BFC在普通文档流中不占位</p>
-</li>
-<li><p>margin-left: -100%; // 为了浮动元素left能够到和main同一行，<a href="https://www.cnblogs.com/2050/archive/2012/08/13/2636467.html" target="__blank">参考文章</a><br>负边距可以</p>
-<ol>
-<li>让元素变大</li>
-<li>让浮动元素重叠，后写的元素可以显示在先写的元素前（<strong>！！！这就是圣杯和双飞翼的关键！！！</strong>）</li>
-</ol>
-</li>
-<li><p>position:relative + left 可以使这个元素水平偏移，top，bottom =&gt; 垂直偏移</p>
-</li>
-<li><h3 id="双飞翼布局"><a href="#双飞翼布局" class="headerlink" title="双飞翼布局"></a>双飞翼布局</h3></li>
-</ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">header</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Header内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"innner"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h4</span>&gt;</span>中间弹性区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>左边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>右边栏<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span>&gt;</span><span class="tag">&lt;<span class="name">h4</span>&gt;</span>Footer内容区<span class="tag">&lt;/<span class="name">h4</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>可以清楚的看到，它比圣杯布局多了一个inner的元素</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">header</span>,</span><br><span class="line"><span class="selector-tag">footer</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">60px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">overflow</span>: scroll;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.left</span>,</span><br><span class="line"><span class="selector-class">.right</span>,</span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">300px</span>;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.main</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.inner</span> &#123;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> <span class="number">100px</span> <span class="number">0</span> <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: coral;</span><br><span class="line">  <span class="attribute">min-height</span>: <span class="number">300px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.left</span> &#123;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: transparent;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.right</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: transparent;</span><br><span class="line">  <span class="attribute">margin-left</span>: -<span class="number">100px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="双飞翼布局其中比较重要的点："><a href="#双飞翼布局其中比较重要的点：" class="headerlink" title="双飞翼布局其中比较重要的点："></a><strong>双飞翼布局其中比较重要的点：</strong></h3><ul>
-<li>比圣杯布局多了一个inner元素，这个元素的<strong>宽度不设置</strong></li>
-<li>去除圣杯布局的定位信息</li>
-</ul>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/07/05/base-2/">css:盒模型，box-sizing应用场景</a></h1>
-  
-
-      
-        <time datetime="2020-07-05T10:33:41.000Z">2020-07-05</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="盒模型的属性"><a href="#盒模型的属性" class="headerlink" title="盒模型的属性"></a>盒模型的属性</h2><p>由内向外：<br>  content -&gt; padding 内边距 -&gt; border 边框 -&gt; margin 外边距</p>
-<p>盒子模型只包括两种：</p>
-<ul>
-<li>标准盒模型</li>
-<li>怪异盒模型</li>
-</ul>
-<h2 id="标准盒模型"><a href="#标准盒模型" class="headerlink" title="标准盒模型"></a>标准盒模型</h2><p>  <strong>width、height</strong><br>  在标准盒模型中，width是content的宽度, height 是content的高度</p>
-<h2 id="怪异盒模型"><a href="#怪异盒模型" class="headerlink" title="怪异盒模型"></a>怪异盒模型</h2><p><strong>width、height</strong><br>在怪异盒模型中，width是content + padding + border的宽度, height 是content的高度</p>
-<ul>
-<li><strong>触发怪异盒模型的方式</strong><ul>
-<li>在ie6、7、8下html文件缺少<!DOCTYPE html></li>
-<li>box-sizing: border-box 开启div的怪异盒模型</li>
-</ul>
-</li>
-</ul>
-<h2 id="box-sizing"><a href="#box-sizing" class="headerlink" title="box-sizing"></a>box-sizing</h2><p>它的取值：</p>
-<ul>
-<li>content-box 默认，标准盒模型</li>
-<li>border-box 怪异盒模型</li>
-<li>padding-box 兼容巨差</li>
-</ul>
-<p>为啥没有margin-box,如果设置了，会和现在很多标准冲突，最简单的例子就是background怎么办</p>
-<h2 id="弹性盒子FlexBox"><a href="#弹性盒子FlexBox" class="headerlink" title="弹性盒子FlexBox"></a>弹性盒子FlexBox</h2><p>display: flex<br>省略，天天用就行了</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/07/03/base-1/">css:box-shadow</a></h1>
-  
-
-      
-        <time datetime="2020-07-03T09:36:45.000Z">2020-07-03</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="ie8以上"><a href="#ie8以上" class="headerlink" title="ie8以上"></a><em>ie8以上</em></h2><h2 id="box-shadow-怎么产生的"><a href="#box-shadow-怎么产生的" class="headerlink" title="box-shadow 怎么产生的"></a><em>box-shadow 怎么产生的</em></h2><ol>
-<li>首先在元素下面生成一个一样的大小的，位置重叠的，颜色等同于《color》的div</li>
-<li>四边向外或者向内做高斯模糊，在blur-radius长度内做完模糊，类似正态分布，只是边就算是坐标0点</li>
-<li>根据xy-offset偏移量移动</li>
-<li>删除和真实div重合部分</li>
-</ol>
-<h2 id="box-shadow-的属性较多"><a href="#box-shadow-的属性较多" class="headerlink" title="box-shadow 的属性较多"></a>box-shadow 的属性较多</h2><ul>
-<li>‘inset’ 有则阴影在边框内部，阴影会在边框之内 (即使是透明边框）、背景之上、内容之下</li>
-<li>x-offset 向右偏移量</li>
-<li>y-offset 向下偏移量</li>
-<li>blur-radius 模糊半径。值越大，模糊面积越大。 默认0，此时阴影边缘是锐利的，不能是负的。（高斯模糊）</li>
-<li>spread-radius 那个根据真实的div产生的虚拟元素的大小扩展半径</li>
-<li>color</li>
-</ul>
-<h2 id="内阴影，四边阴影，双边阴影"><a href="#内阴影，四边阴影，双边阴影" class="headerlink" title="内阴影，四边阴影，双边阴影"></a>内阴影，四边阴影，双边阴影</h2><ul>
-<li>内阴影</li>
-</ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>四边阴影</li>
-</ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>相临边阴影</li>
-</ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">10px</span> <span class="number">10px</span> <span class="number">10px</span> <span class="number">0px</span> <span class="number">#000</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>向右和向下分别移动10px，模糊半径也是10px，刚好被真实div盖住两边</p>
-<h2 id="单边阴影"><a href="#单边阴影" class="headerlink" title="单边阴影"></a>单边阴影</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">  <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">10px</span> <span class="number">10px</span> -<span class="number">10px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个也好懂了。</p>
-<ol>
-<li>首先四边模糊半径10px；</li>
-<li>然后向下偏移10px；</li>
-<li>四边阴影长度分别是： 上右下左： 0 10px 20px 10px;</li>
-<li>然后-10px的阴影扩展长度；(各减去10)</li>
-<li>四边阴影长度分别是： 上右下左： -10px 0px 10px 0px;</li>
-</ol>
-<h2 id="多阴影规则"><a href="#多阴影规则" class="headerlink" title="多阴影规则"></a>多阴影规则</h2><p>  逗号隔开，最左的阴影在最上层，覆盖右侧写的阴影样式</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
 
 <nav id="pagination">
   
@@ -871,6 +801,22 @@ export MAVEN_HOME</code></pre></li>
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/11/18/js-base-7/">手写promise</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/28/browser-3/">WebWorkers</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/22/js-base-6/">手写Promise.all-limit</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/21/browser-2/">http</a>
+      </li>
     
       <li>
         <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>

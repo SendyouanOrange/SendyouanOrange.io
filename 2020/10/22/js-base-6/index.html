@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>手写Promise.all-limit › lic-blog</title>
+  <meta name="author" content="triumphLic">
+  
+  <meta name="description" content="1234567891011121314151617181920212223242526272829303132333435363738394041class DealPromise &amp;#123;  list = [] // 函数数组，每个函数调用返回一个真正需要执行的promise  limit =">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="手写Promise.all-limit"/>
+  <meta property="og:site_name" content="lic-blog"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="lic-blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">lic-blog</a></h1>
+  <h2><a href="/"></a></h2>
+  <nav id="main-nav">
+    <ul>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">手写Promise.all-limit</h1>
+  
+
+      
+        <time datetime="2020-10-22T08:52:51.000Z">2020-10-22</time>
+      
+    </header>
+    <div class="entry">
+      
+        <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DealPromise</span> </span>&#123;</span><br><span class="line">  list = [] <span class="comment">// 函数数组，每个函数调用返回一个真正需要执行的promise</span></span><br><span class="line">  limit = <span class="number">0</span> <span class="comment">// 限制请求个数</span></span><br><span class="line">  count = <span class="number">0</span> <span class="comment">// 当前正在请求的个数</span></span><br><span class="line">  holdList= []</span><br><span class="line">  <span class="keyword">constructor</span>(list, limit) &#123;</span><br><span class="line">    <span class="keyword">this</span>.limit = limit</span><br><span class="line">    <span class="keyword">this</span>.list = list</span><br><span class="line">  &#125;</span><br><span class="line">  map(fn) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.count &lt; <span class="keyword">this</span>.limit) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.run(fn)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.hold(fn)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  run(fn) &#123;</span><br><span class="line">    <span class="keyword">return</span> fn().then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.count--</span><br><span class="line">      <span class="keyword">this</span>.pickNext()</span><br><span class="line">      <span class="keyword">return</span> data</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  hold(fn) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.holdList.push(&#123; fn, resolve, reject &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  pickNext() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.count &lt; <span class="keyword">this</span>.limit &amp;&amp; <span class="keyword">this</span>.holdList.length) &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123; fn, resolve, reject &#125; = <span class="keyword">this</span>.holdList.shift()</span><br><span class="line">      <span class="keyword">this</span>.run(fn).then(resolve).catch(reject)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">promiseAllLimit</span>(<span class="params">list, limit</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> tool = <span class="keyword">new</span> DealPromise(list, limit)</span><br><span class="line">  <span class="keyword">const</span> data = <span class="keyword">await</span> <span class="built_in">Promise</span>.all(list.map(<span class="function"><span class="params">fn</span> =&gt;</span> tool.map(fn)))</span><br><span class="line">  <span class="keyword">return</span> data</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简版</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">holdList</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (count &lt; limit &amp;&amp; holdList.length) &#123;</span><br><span class="line">    count++</span><br><span class="line">    <span class="keyword">const</span> &#123; fn, resolve, reject &#125; = holdList.shift</span><br><span class="line">    fn().then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">      count--</span><br><span class="line">      run()</span><br><span class="line">      <span class="keyword">return</span> res</span><br><span class="line">    &#125;).then(resolve).catch(reject)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">promiseAllLimit</span>(<span class="params">list, limit</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> count = <span class="number">0</span></span><br><span class="line">  <span class="keyword">let</span> holdList = []</span><br><span class="line">  list = list.map(<span class="function"><span class="params">fn</span> =&gt;</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(resolve, reject) =&gt; &#123;</span><br><span class="line">    holdList.push(&#123; fn, resolve, reject &#125;)</span><br><span class="line">    run(holdList)</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">const</span> data = <span class="keyword">await</span> <span class="built_in">Promise</span>.all(list)</span><br><span class="line">  <span class="keyword">return</span> data</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="async-await-实现"><a href="#async-await-实现" class="headerlink" title="async await 实现"></a>async await 实现</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">promiseAllLimit</span>(<span class="params">list, limit</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> count = <span class="number">0</span></span><br><span class="line">  <span class="keyword">const</span> holdList = []</span><br><span class="line">  <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (count &gt; limit) &#123;</span><br><span class="line">      <span class="keyword">await</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        holdList.push(resolve)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    count++</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> fn()</span><br><span class="line">    count--</span><br><span class="line">    <span class="keyword">if</span> (holdList.length &gt; <span class="number">0</span>) holdList.shift()()</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> data = <span class="keyword">await</span> <span class="built_in">Promise</span>.all(list.map(<span class="function"><span class="params">fn</span> =&gt;</span> run(fn)))</span><br><span class="line">  <span class="keyword">return</span> data</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>主要还是得需要执行的promise函数用一个函数包裹起来() =&gt; Promise 这样保证需要并发执行的promise不会在建立的时候就被动被执行了</p>
+</li>
+<li><p>其次就是缓存每个Promise的resolve和reject函数，这样整体的Promise.all就是在同步执行100个Promise，只是limit之外的Promise的状态一直是pending，直到它可以被执行，然后内部Promise再改变状态</p>
+</li>
+</ul>
+
+      
+    </div>
+      
+      <footer>
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 20:48:26
+ * @Description  : 描述信息
+ -->
+
+<div class="widget tag">
+  <h3 class="title">目录</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/11/18/js-base-7/">手写promise</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/28/browser-3/">WebWorkers</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/22/js-base-6/">手写Promise.all-limit</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/21/browser-2/">http</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/vue-1/">vue-1</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/07/css-1/">层叠上下文（内附浏览器渲染流程）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/25/service-0/">CentOS8搭建nexus</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/08/js-base-5/">js基础:this指向call、apply、bind</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/06/js-base-4/">js基础--js执行机制</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/06/base-4/">js:x=y=0;a.x=a={n:1}</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/05/base-3/">css:两栏、三栏、圣杯、双飞翼布局</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/05/base-2/">css:盒模型，box-sizing应用场景</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/03/base-1/">css:box-shadow</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/03/base-0/">css:BFC</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/02/webpack-2/">webpack:文件处理</a>
+      </li>
+    
+      <li>
+        <a href="/2020/07/01/webpack-1/">webpack:MiniCssExtractPlugin问题</a>
+      </li>
+    
+      <li>
+        <a href="/2020/06/22/vue-0-md/">vue的基本概览.md</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/21/nginx/">nginx操作</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/06/js-base-3/">js基础 -- 执行上下文，变量环境，词法环境，作用域相关</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/04/webpack-0/">webpack:基础知识</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/02/js-base-2/">js基础 --原型相关方法，Object，Reflect</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/30/js-base-1/">js基础 --类和继承</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/25/js-base-0/">js基础 --原型链</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/23/functional-2/">函数式编程 --组合和管道</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/22/functional-1/">函数式编程 --函数的柯里化</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/21/functional-0/">函数式编程 --纯函数</a>
+      </li>
+    
+      <li>
+        <a href="/2020/04/21/wasm-2/">WASM（二）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/03/21/wasm-1/">WASM（一）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 triumphLic
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+</body>
+</html>
+

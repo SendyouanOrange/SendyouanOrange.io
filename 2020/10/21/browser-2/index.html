@@ -3,20 +3,28 @@
 <head>
   <meta charset="utf-8">
   
-  <title>js:x=y=0;a.x=a={n:1} › lic-blog</title>
+  <title>http › lic-blog</title>
   <meta name="author" content="triumphLic">
   
-  <meta name="description" content="TIP:这个面试题诞生以来就被各种讨论，记录一下自己的想法
-var x = y = 1这个表达式可以被拆成
-123var x // 变量声明提升y = 1 // 隐式创建一个全局变量x = y // 赋值语句
+  <meta name="description" content="HTTP历史版本
+http1.0
+http1.1
+https
+http2.0
+http3.0
 
-需要注意的就是 y = 1 表达式隐式的创建了全局对象y
-a.x = a = { n: ">
+HttP1.0http1.0其实为了客户端获取html，js文件诞生的
+
+每次请求都会发生一遍TCP三次握手
+没有长链接的解决发难
+缓存由expires字段控制，不合理
+
+HTTP1.1http1.1在h">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="js:x=y=0;a.x=a={n:1}"/>
+  <meta property="og:title" content="http"/>
   <meta property="og:site_name" content="lic-blog"/>
 
   
@@ -51,45 +59,68 @@ a.x = a = { n: ">
     <header>
       
   
-    <h1 class="title">js:x=y=0;a.x=a={n:1}</h1>
+    <h1 class="title">http</h1>
   
 
       
-        <time datetime="2020-07-06T02:17:17.000Z">2020-07-06</time>
+        <time datetime="2020-10-21T08:49:12.000Z">2020-10-21</time>
       
     </header>
     <div class="entry">
       
-        <p>TIP:<em>这个面试题诞生以来就被各种讨论，记录一下自己的想法</em></p>
-<h2 id="var-x-y-1"><a href="#var-x-y-1" class="headerlink" title="var x = y = 1"></a>var x = y = 1</h2><p>这个表达式可以被拆成</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="comment">// 变量声明提升</span></span><br><span class="line">y = <span class="number">1</span> <span class="comment">// 隐式创建一个全局变量</span></span><br><span class="line">x = y <span class="comment">// 赋值语句</span></span><br></pre></td></tr></table></figure>
-
-<p>需要注意的就是 y = 1 表达式隐式的创建了全局对象y</p>
-<h2 id="a-x-a-n-2"><a href="#a-x-a-n-2" class="headerlink" title="a.x = a = { n: 2 }"></a>a.x = a = { n: 2 }</h2><p>这段代码不好分析，网上一堆深奥的答案。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
-
-<p>最开始理解，会觉得a的值应该是这样：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  n: <span class="number">2</span>,</span><br><span class="line">  x: &#123;</span><br><span class="line">    n: <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>额，完全不是</p>
-<p>a打印出来是： { n: 2 }</p>
-<p>怎么都不好分析。不如把代码改写成这样</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123; <span class="attr">n</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">var</span> b = a <span class="comment">// 缓存一下初始的a</span></span><br><span class="line">a.x = a = &#123; <span class="attr">n</span>: <span class="number">2</span> &#125;</span><br><span class="line"><span class="built_in">console</span>.log(a.x)  <span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(a) <span class="comment">// &#123; n: 2 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(b) <span class="comment">// &#123; n: 1, x: &#123; n: 2 &#125; &#125;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>这个表达式和 var x = y = 1 的区别是：</strong></p>
-<ul>
-<li><h3 id="var-x-…-就是一个初始化赋值语句的左半边"><a href="#var-x-…-就是一个初始化赋值语句的左半边" class="headerlink" title="var x = … 就是一个初始化赋值语句的左半边"></a>var x = … 就是一个初始化赋值语句的左半边</h3></li>
+        <h2 id="HTTP历史版本"><a href="#HTTP历史版本" class="headerlink" title="HTTP历史版本"></a>HTTP历史版本</h2><ul>
+<li>http1.0</li>
+<li>http1.1</li>
+<li>https</li>
+<li>http2.0</li>
+<li>http3.0</li>
 </ul>
-<p>而</p>
+<h2 id="HttP1-0"><a href="#HttP1-0" class="headerlink" title="HttP1.0"></a>HttP1.0</h2><p>http1.0其实为了客户端获取html，js文件诞生的</p>
 <ul>
-<li><h3 id="a-x-本身就是一个语句。"><a href="#a-x-本身就是一个语句。" class="headerlink" title="a.x 本身就是一个语句。"></a>a.x 本身就是一个语句。</h3><ol>
-<li>根据js从左到右的执行顺序，会先执行a.x（即取a的值，当前是 { n: 1 }, a.x= 等到给a.x赋值）</li>
-<li>然后 a被赋了新的对象地址，把之前的a覆盖了</li>
-<li>a.x 等待赋值，右侧 a = { n :2 }这个值。</li>
-<li>可是刚刚1.这个阶段的a已经被覆盖了，a.x = { n: 2}执行之后也没有意义了。{ n: 1 } 这个值的指针被指到别的地了</li>
-<li>打印出b, 发现b是原来的a的值，并且x也被赋值了。说明只是1. 这一步的赋值影响不到新的a了</li>
-</ol>
+<li>每次请求都会发生一遍TCP三次握手</li>
+<li>没有长链接的解决发难</li>
+<li>缓存由expires字段控制，不合理</li>
+</ul>
+<h2 id="HTTP1-1"><a href="#HTTP1-1" class="headerlink" title="HTTP1.1"></a>HTTP1.1</h2><p>http1.1在http1.0发布后六个月就诞生了，是现在应用最广的http规范</p>
+<p>相对与http1.0，它增加了：</p>
+<ul>
+<li>keep-alive复用TCP通道，chrome好像限制每个进程只能开启5-6个tcp链接</li>
+<li>cache-control字段控制浏览器缓存机制</li>
+<li>增加HOST请求头，方便浏览器知道客户端ip地址</li>
+</ul>
+<h2 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a>HTTP2.0</h2><p>说到http2.0总会提起一个名词： 多路复用</p>
+<p>多路复用：通俗的，它就是多个http请求使用同一个TCP链接通道进行数据传输</p>
+<p>相对与之前的http版本，它实现了：</p>
+<ul>
+<li>多路复用</li>
+<li>header压缩，其实很有必要，现在的http1.1优化方案都会对body内容进行gzip压缩处理，导致header的内容比较大，对头部信息进行压缩处理是必要的。通过服务端维护的字典项，某个字符标示“cache-control: no-cache”，差不多这样的形式。</li>
+<li>二进制传输，http和tcp层增加了二进制传输层，用来压缩文本内容变成二进制数据，相同题集的二进制比文本的数据内容大太多了</li>
+<li>分块传输，每个请求的id和index不同，确保了TCP通道上某个延时的http请求不会阻塞其他请求的不阻塞</li>
+<li>支持服务器推送消息，毕竟通道一直开着</li>
+</ul>
+<h2 id="HTTP3-0"><a href="#HTTP3-0" class="headerlink" title="HTTP3.0"></a>HTTP3.0</h2><p>之前的http请求协议都是基于TCP/TCL的</p>
+<p>TCP有一些缺点</p>
+<ul>
+<li>三次握手<ul>
+<li>三次握手是为了确认客户端和服务端的收发能力是否都正常</li>
+<li>第一次，服务端知道客户端发能力和自己接收能力正常</li>
+<li>第二次，客户端知道服务端发送能力正常，自己的接收能力正常</li>
+<li>第三次，知道所有功能正常</li>
+</ul>
 </li>
+<li>慢启动</li>
+</ul>
+<p>HTTP3的草案是基于QUIC协议，它基于UDP，它热启动，增加了TSL1.3的加密，解决了安全问题</p>
+<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>https是什么，就是基于TSL/SSL的通信协议</p>
+<p>基于CA证书的公钥私钥进行非对称加密，互相交换对称密钥</p>
+<p>其他部分也是基于TCP的三次握手之类的还是避免不了，它只是交换密钥，对内容进行加密传输</p>
+<p>交换密钥的过程：</p>
+<ul>
+<li>客户端给服务端发送请求，包含一个随机数，客户端支持的机密算法，协议版本号https</li>
+<li>服务端返回CA证书（公钥就在CA证书中，只要颁发CA证书的机构是可信任的，这个密钥就是可信任的）、双方支持的加密算法、以及客户端的随机数</li>
+<li>前两个随机数是明文的，最后拿到ca证书的公钥加密一个新的随机数发送给服务端</li>
+<li>当前客户端服务端都确认了加密算法，三个随机数。</li>
+<li>之后的通信内容就都根据三个随机数和加密算法加密内容传输</li>
 </ul>
 
       

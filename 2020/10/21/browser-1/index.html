@@ -88,6 +88,7 @@
 </ul>
 </li>
 </ul>
+<p><strong>怎么击中协商缓存？</strong></p>
 <p>cache-control非no-cache|no-store，&amp; （max-age倒计时没到 ｜ expires没到时）<br>如果击中了强制缓存，浏览器直接使用缓存数据:</p>
 <ul>
 <li><p>缓存数据是js或者图片数据，http请求返回状态码200，标示from memory cache</p>
@@ -102,15 +103,21 @@
 <li><p>cache-control：no-cache 直接走协商缓存</p>
 </li>
 </ol>
+<p>客户端带的协商缓存请求头</p>
 <ul>
-<li>if-modified-since</li>
-<li>if-none-matched</li>
-<li>Etag 标示符</li>
+<li>if-modified-since，如果没有击中强缓存，这个字段会带着服务端请求带回来的Last-Modified值</li>
+<li>if-none-matched，如果没有击中强缓存，客户端请求会带着这个请求头字段，值为服务端返回的Etag值</li>
 </ul>
-<p>顾名思义的headers</p>
+<p>服务端返回的缓存标示请求头</p>
 <ul>
-<li>缓存没有变化， http请求服务器返回状态码304</li>
-<li>缓存有变化，http请求返回200，相当于重新请求</li>
+<li><p>Etag 标示符， 服务端对内容，文件索引，大小，最后修改时间得来的哈希值，服务端返回数据的请求头带的</p>
+</li>
+<li><p>Last-Modified：服务端发送给客户端的资源最后修改时间</p>
+</li>
+<li><p>缓存没有变化， http请求服务器返回状态码304</p>
+</li>
+<li><p>缓存有变化，http请求返回200，相当于重新请求</p>
+</li>
 </ul>
 
       
@@ -165,6 +172,22 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/11/18/js-base-7/">手写promise</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/28/browser-3/">WebWorkers</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/22/js-base-6/">手写Promise.all-limit</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/21/browser-2/">http</a>
+      </li>
     
       <li>
         <a href="/2020/10/21/browser-1/">浏览器：浏览器缓存机制</a>
