@@ -45,6 +45,66 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/05/06/js-base-3/">js基础 -- 执行上下文，变量环境，词法环境，作用域相关</a></h1>
+  
+
+      
+        <time datetime="2020-05-06T14:12:14.000Z">2020-05-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="可执行代码"><a href="#可执行代码" class="headerlink" title="可执行代码"></a>可执行代码</h2><p>不仅仅是function可以作为执行上下文在执行栈中运行，在JS里定义了四种可执行代码：</p>
+<ul>
+<li>global code：整个js文件。</li>
+<li>function code：函数代码。</li>
+<li>module：模块代码</li>
+<li>eval code：放在eval的代码。</li>
+</ul>
+<h2 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h2><p>js预编译一个可执行代码块，会生成一个执行上下文<br>它分成四个部分：</p>
+<ul>
+<li>outer 它是外部词法环境的引用</li>
+<li>变量环境记录 VariableEnvironment 存放var function 定义的变量</li>
+<li>词法环境记录 LexicalEnvironment 存放let const class 定义的变量</li>
+<li>ThisBinding 就是<strong>this</strong></li>
+</ul>
+<h2 id="词法环境"><a href="#词法环境" class="headerlink" title="词法环境"></a>词法环境</h2><p>上面的变量环境和词法环境，其实不用细分，都称为词法环境</p>
+<p>词法环境有 两个组成部分：</p>
+<ul>
+<li>对外部词法环境的引用outer</li>
+<li>词法环境环境（Environment Record），（变量环境记录，词法环境记录的统称）这个就是真正登记变量的地方。</li>
+</ul>
+<p>通过outer可以访问<br>在ES6中，词法环境链，就是其实就是<strong>作用域链</strong></p>
+<p>词法环境和我们写的代码相对应，代码写成什么样子，词法环境就是什么样的，所以说js是词法作用域的（静态作用域）</p>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><p>函数作用域还是块级作用域</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/05/04/webpack-0/">webpack:基础知识</a></h1>
   
 
@@ -683,6 +743,10 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/11/25/base-5/">写一下排序算法</a>
+      </li>
     
       <li>
         <a href="/2020/11/18/js-base-7/">手写promise</a>

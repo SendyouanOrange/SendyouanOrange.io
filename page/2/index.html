@@ -45,6 +45,121 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/07/06/js-base-4/">js基础--js执行机制</a></h1>
+  
+
+      
+        <time datetime="2020-07-06T13:01:10.000Z">2020-07-06</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="js执行机制"><a href="#js执行机制" class="headerlink" title="js执行机制"></a>js执行机制</h2><p>首先，<em>js是单线程的</em>，它从诞生就是单线程的。</p>
+<p>为什么不能是多线程？浏览器两个线程同时操作Dom，就没得玩了</p>
+<p>tip： html5的web worker标准，允许js脚本创建多个线程，但是完全被主线程控制，且不能操作Dom</p>
+<h2 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h2><p>  js的运行环境一定不是单线程的。</p>
+<p>  浏览器中，常驻线程就三个： js执行主线程，GUI渲染线程，事件监听线程。<br>  还有http请求线程，定时器线程</p>
+<p>  Dom渲染时，js线程会被挂起。</p>
+<h2 id="线程和进程"><a href="#线程和进程" class="headerlink" title="线程和进程"></a>线程和进程</h2><p>  进程是CPU分配资源的最小单位，线程是资源执行的最小单位。</p>
+<p>  一个进程没有线程就不能执行，那就只是静止的资源。</p>
+<p>  进程中可以存在很多线程，线程的通行可以通过资源内存共享比较方便。进程之间通行就得通过管道、消息来通信了。</p>
+<p>  打开浏览器会启动这几个<strong>进程</strong></p>
+<ul>
+<li><p>browser进程，控制与用户交互，前进后退，渲染等行为</p>
+</li>
+<li><p>GPU进程，控制3D渲染，如果没有开启硬件加速，则使用browser进程渲染</p>
+</li>
+<li><p>插件进程，以保证插件崩了网页不崩</p>
+<p>那么js运行在哪呢？render进程</p>
+<p>每次打开一个Tab标签页面，对应的浏览器都会启动一个新的<strong>Render进程</strong><br><em>但是相同的站点，只有一个进程</em>，相同的协议，相同的根域名</p>
+<p>这个render进程里，有很多线程。</p>
+<p>三个常驻线程：</p>
+<ul>
+<li>js执行主进程</li>
+<li>GUI渲染进程，页面渲染，重绘，回流都得触发它，执行时主线程挂起</li>
+<li>事件监听触发线程<br>还有</li>
+<li>http请求线程</li>
+<li>定时器线程</li>
+</ul>
+</li>
+</ul>
+<h2 id="任务队列"><a href="#任务队列" class="headerlink" title="任务队列"></a>任务队列</h2><p>  单线程意味着，一个时间，js只能做一件事，做一个任务。</p>
+<p>  那么，js执行就得排队</p>
+<p>  如果，所有的任务都一件一件顺序执行，那么有一些Ajax请求很耗时，不能等到它执行完再走下一个任务。</p>
+<h4 id="所以，js的任务分成了两种，同步任务-amp-异步任务"><a href="#所以，js的任务分成了两种，同步任务-amp-异步任务" class="headerlink" title="所以，js的任务分成了两种，同步任务 &amp; 异步任务"></a>所以，js的任务分成了两种，同步任务 &amp; 异步任务</h4><ul>
+<li><p>同步任务： 在主线程上执行，只有上一个任务完成了，才会执行下一个任务，形成了一个执行栈</p>
+</li>
+<li><p>异步任务： 不进入主进程执行，被推入<strong>异步队列</strong>（task queue），只有任务队列通知主线程某个任务需要执行了，才会进入主线程执行</p>
+<h4 id="所以js的异步执行模式就是这样的"><a href="#所以js的异步执行模式就是这样的" class="headerlink" title="所以js的异步执行模式就是这样的"></a>所以js的异步执行模式就是这样的</h4><ul>
+<li>同步任务，生成执行栈，一个一个顺序执行</li>
+<li>异步任务被挂起，推到<strong>异步队列</strong>，等待执行</li>
+<li>执行栈所有内容执行完，主线程读取“异步队列”的需要执行的任务，推到执行栈中执行</li>
+<li>重复上面三步</li>
+</ul>
+</li>
+</ul>
+<h2 id="事件和回调函数"><a href="#事件和回调函数" class="headerlink" title="事件和回调函数"></a>事件和回调函数</h2><p>  <strong>异步任务队列</strong>，是一个<strong>事件的队列</strong>，无论是IO设备触发的事件，还是ajax事件，都是事件。</p>
+<p>  每个事件都需要设置一个<strong>回调函数</strong>，它会被用来推到执行栈执行</p>
+<p>  这些事件一触发，就相当于给“异步队列”通知说： ”我的回调函数可以被推到执行栈执行了！“</p>
+<p>  只要主线程的执行栈一清空，任务队列第一个事件的回调函数就被推到主线程的执行栈执行了</p>
+<h2 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h2><p>  上面介绍的</p>
+<pre><code>主线程的执行栈清空、执行完之后，需要从异步任务队列中读取任务，这个过程是循环的：所以叫事件循环Event Loop</code></pre><p>  主线程运行的时候，产生堆（存放数据）栈（执行js任务）</p>
+<p>  执行栈任务执行的同时，会调用一些IO的API，Ajax的API去产生新的异步任务，并且添加到异步任务队列中</p>
+<p>  某一时刻执行栈中的代码，一定在异步任务队列执行前执行</p>
+<h2 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h2><p>  setTimeout() &amp;&amp; setInterval()</p>
+<p>  setTimeout(fn,0)的含义是，指定某个任务在主线程最早可得的空闲时间执行，也就是说，尽可能早得执行。它在”任务队列”的尾部添加一个事件，因此要等到同步任务和”任务队列”现有的事件都处理完，才会得到执行。</p>
+<p>  队列： 队首添加，队尾删除。</p>
+<p>  setTimeout(fn, 1000) ，会进入定时器线程进行倒计时，时间到了在主线程异步宏任务队列添加回调函数，等待主线程执行栈清空，主线程去任务队列取任务放在执行栈执行。</p>
+<p>  如果主线程执行栈有任务正在执行，那势必会影响到定时器的准确性。</p>
+<h2 id="宏任务、微任务"><a href="#宏任务、微任务" class="headerlink" title="宏任务、微任务"></a>宏任务、微任务</h2><p>  在浏览器环境里，宏任务微任务可以大致的分为，需要调用其他线程的API都是宏任务，js主线程产生的异步任务属于微任务。</p>
+<p>  <strong>每个宏任务都关联了一个微任务队列</strong></p>
+<p>  V8引擎在进入一个宏任务执行时，都会给这个宏任务生成一个微任务队列用于存放微任务。</p>
+<p>  宏任务：</p>
+<ul>
+<li><p>setTimeout/setInterval</p>
+</li>
+<li><p>IO操作</p>
+</li>
+<li><p>http请求</p>
+</li>
+<li><p>script脚本执行</p>
+</li>
+<li><p>Dom渲染</p>
+<p>微任务：</p>
+</li>
+<li><p>Promise</p>
+</li>
+<li><p>MutationObserver</p>
+</li>
+</ul>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/07/06/base-4/">js:x=y=0;a.x=a={n:1}</a></h1>
   
 
@@ -603,66 +718,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/05/06/js-base-3/">js基础 -- 执行上下文，变量环境，词法环境，作用域相关</a></h1>
-  
-
-      
-        <time datetime="2020-05-06T14:12:14.000Z">2020-05-06</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="可执行代码"><a href="#可执行代码" class="headerlink" title="可执行代码"></a>可执行代码</h2><p>不仅仅是function可以作为执行上下文在执行栈中运行，在JS里定义了四种可执行代码：</p>
-<ul>
-<li>global code：整个js文件。</li>
-<li>function code：函数代码。</li>
-<li>module：模块代码</li>
-<li>eval code：放在eval的代码。</li>
-</ul>
-<h2 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h2><p>js预编译一个可执行代码块，会生成一个执行上下文<br>它分成四个部分：</p>
-<ul>
-<li>outer 它是外部词法环境的引用</li>
-<li>变量环境记录 VariableEnvironment 存放var function 定义的变量</li>
-<li>词法环境记录 LexicalEnvironment 存放let const class 定义的变量</li>
-<li>ThisBinding 就是<strong>this</strong></li>
-</ul>
-<h2 id="词法环境"><a href="#词法环境" class="headerlink" title="词法环境"></a>词法环境</h2><p>上面的变量环境和词法环境，其实不用细分，都称为词法环境</p>
-<p>词法环境有 两个组成部分：</p>
-<ul>
-<li>对外部词法环境的引用outer</li>
-<li>词法环境环境（Environment Record），（变量环境记录，词法环境记录的统称）这个就是真正登记变量的地方。</li>
-</ul>
-<p>通过outer可以访问<br>在ES6中，词法环境链，就是其实就是<strong>作用域链</strong></p>
-<p>词法环境和我们写的代码相对应，代码写成什么样子，词法环境就是什么样的，所以说js是词法作用域的（静态作用域）</p>
-<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><p>函数作用域还是块级作用域</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
 
 <nav id="pagination">
   
@@ -685,6 +740,10 @@
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/11/25/base-5/">写一下排序算法</a>
+      </li>
     
       <li>
         <a href="/2020/11/18/js-base-7/">手写promise</a>
