@@ -45,6 +45,94 @@
     <header>
       
   
+    <h1 class="title"><a href="/2020/12/02/base-6/">js里的位运算</a></h1>
+  
+
+      
+        <time datetime="2020-12-02T10:23:19.000Z">2020-12-02</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>首先明确几个概念：</p>
+<ul>
+<li>js数字范围是 -2^32 - 1 到 2^32</li>
+<li>其中32是哪来的： 32个二进制存储位，第一个是符号位，0正1负。</li>
+<li>负数是用补码存的，（补码，原码除符号位 取反 再+1 ）</li>
+<li>其中-1的存储是 11111….111（32位） 这样的</li>
+<li><em>得到补码的原码的方式是对补码再进行一次补码操作*</em></li>
+</ul>
+<h2 id="十进制转二进制"><a href="#十进制转二进制" class="headerlink" title="十进制转二进制"></a>十进制转二进制</h2><p>parseInt(ten).toString(2)<br><strong>对十进制数进行二进制操作符操作得到的也是十进制数，只是操作是针对二进制存储的</strong></p>
+<h2 id="与或非异或"><a href="#与或非异或" class="headerlink" title="与或非异或"></a>与或非异或</h2><h3 id="非（-）"><a href="#非（-）" class="headerlink" title="非（~）"></a>非（~）</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 非操作 ~</span></span><br><span class="line">~<span class="number">1</span> <span class="comment">// -2</span></span><br><span class="line">~<span class="number">234</span> <span class="comment">//-235</span></span><br><span class="line">~<span class="number">231321</span> <span class="comment">// -231322</span></span><br><span class="line">~<span class="number">-1</span> <span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 这里就有点问题了</span></span><br></pre></td></tr></table></figure>
+
+<p>分析一下~1的过程，就能知道为什么了</p>
+<ul>
+<li>首先1的二进制表示是 00000…0001</li>
+<li>对它取反为：       11111…1110</li>
+<li>11111…1110这个数是十进制数多少的二进制表示呢</li>
+<li>负数存储是补码，得到补码的原码的方式是对补码再进行一次补码操作得到原码： 1000000…0010</li>
+<li>1000000…0010是（-2）的二进制表示</li>
+</ul>
+<p><em>其中需要注意的地方就是：-1的非是0，其他的所有数的非操作都不是0</em><br>可以在日常开发使用的就是数组的indexOf，lastIndexOf，findIndex如果不存在，都会返回-1，但是我们有时候不需要index是多少，只需要知道存在与否</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 元素是否存在与数组中，返回值是布尔值</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isExist</span>(<span class="params">arr, val</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Boolean</span>(~arr.indexOf(val))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="或-（｜）"><a href="#或-（｜）" class="headerlink" title="或 （｜）"></a>或 （｜）</h3><p>很简单，就是带着符号为的按位取或<br>对应位有一个1结果就是1，其他情况是0</p>
+<p>11111…00000<br>00000…11111<br>上面这两个取或，结果就是-1（111111….11111）</p>
+<ul>
+<li>A | ~A // -1</li>
+<li>A | 0 // A</li>
+<li>A | -1 // -1</li>
+<li>A | A // A</li>
+</ul>
+<h3 id="与-（-amp-）"><a href="#与-（-amp-）" class="headerlink" title="与 （&amp;）"></a>与 （&amp;）</h3><p>对应位都是1才是1，其他情况是0</p>
+<p>11111…00000<br>00000…11111<br>上面这两个取与，结果就是0（00000…0000）</p>
+<ul>
+<li>A &amp; ~A // 0</li>
+<li>A &amp; 0 // 0</li>
+<li>A &amp; A // A</li>
+<li>A &amp; -1 // A</li>
+<li><em>其中上面的第三和第四个，可以用来验证是否是超出范围（-2^32-1 -&gt; 2^23）的数，超范围的数不符合上面的那两条*</em></li>
+</ul>
+<h3 id="异或"><a href="#异或" class="headerlink" title="异或 (^)"></a>异或 (^)</h3><p>对应位不相同结果是1，相同则是0</p>
+<p>0 ^ 0 // 0<br>1 ^ 1 // 0<br>0 ^ 1 // 1<br>1 ^ 1 // 0</p>
+<p>A ^ 0 // A<br>A ^ ~A // -1<br>A ^ A // 0<br>A ^ -1 // ~A</p>
+<p>异或可以交换数值</p>
+<p>a = a ^ b<br>b = a ^ b<br>a = a ^ b</p>
+<h2 id="位移运算"><a href="#位移运算" class="headerlink" title="位移运算"></a>位移运算</h2><h3 id="左位移运算-lt-lt"><a href="#左位移运算-lt-lt" class="headerlink" title="左位移运算 &lt;&lt;"></a>左位移运算 &lt;&lt;</h3><p>A &lt;&lt; B 表示A的二进制存储表示所有位向左移动B位，右侧补0, 会是整个三十二位的整体位移，带着符号位，所以绝对值大数很可能位移一下正负值都变了</p>
+<p>A &lt;&lt; B = A * (2 ** B) = A * Math.pow(2, B)</p>
+<h4 id="应用到颜色转换"><a href="#应用到颜色转换" class="headerlink" title="应用到颜色转换"></a><strong>应用到颜色转换</strong></h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> transRgb = <span class="function">(<span class="params">red = <span class="number">0</span>, green = <span class="number">0</span>, blue = <span class="number">0</span></span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`#<span class="subst">$&#123;<span class="built_in">parseInt</span>((res &lt;&lt; <span class="number">16</span>) &amp; (green &lt;&lt; <span class="number">8</span>) &amp; (blue)).toString(<span class="number">16</span>)&#125;</span>`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="右位移运算（有符号）-gt-gt"><a href="#右位移运算（有符号）-gt-gt" class="headerlink" title="右位移运算（有符号）&gt;&gt;"></a>右位移运算（有符号）&gt;&gt;</h3><p>A &gt;&gt; B 表示A的二进制存储表示所有位向右移动B位，左侧补充和符号位一样的位</p>
+<p>1111…00100 &gt;&gt; 2 // (11)1111…001<br>0111…00100 &gt;&gt; 2 // (00)1111…001</p>
+<h3 id="右位移运算（无符号）-gt-gt-gt"><a href="#右位移运算（无符号）-gt-gt-gt" class="headerlink" title="右位移运算（无符号）&gt;&gt;&gt;"></a>右位移运算（无符号）&gt;&gt;&gt;</h3><p>1111…00100 &gt;&gt;&gt; 2 // (00)1111…001<br>0111…00100 &gt;&gt;&gt; 2 // (00)1111…001</p>
+
+      
+    </div>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+      </footer>
+  </div>
+</article>
+
+<!--
+ * @Author       : licheng252@xdf.cn
+ * @Date         : 2020-04-21 16:01:24
+ * @LastEditors  : licheng252@xdf.cn
+ * @LastEditTime : 2020-05-11 21:27:37
+ * @Description  : 描述信息
+ -->
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2020/11/25/base-5/">写一下排序算法</a></h1>
   
 
@@ -650,69 +738,6 @@ export MAVEN_HOME</code></pre></li>
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2020/07/08/js-base-5/">js基础:this指向call、apply、bind</a></h1>
-  
-
-      
-        <time datetime="2020-07-08T11:08:58.000Z">2020-07-08</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h2 id="this"><a href="#this" class="headerlink" title="this"></a>this</h2><p>this原理<a href="https://www.ruanyifeng.com/blog/2018/06/javascript-this.html" target="_blank">阮一峰博客</a>讲的很好了</p>
-<p>this是js里面很特殊的一个东西，整个js是词法作用域的（静态），但是this的指向确实动态的</p>
-<p>this指向当前执行上下文环境，运行时环境。</p>
-<h2 id="this的指向整理"><a href="#this的指向整理" class="headerlink" title="this的指向整理"></a>this的指向整理</h2><p><a href="https://www.ruanyifeng.com/blog/2018/06/javascript-this.html" target="_blank">MDN地址</a></p>
-<ol>
-<li><h2 id="全局环境中"><a href="#全局环境中" class="headerlink" title="全局环境中"></a>全局环境中</h2><p> 无论是否是严格模式，this都指向全局对象window、global</p>
-</li>
-<li><h2 id="函数执行环境中（运行时）"><a href="#函数执行环境中（运行时）" class="headerlink" title="函数执行环境中（运行时）"></a>函数执行环境中（运行时）</h2></li>
-</ol>
-<ul>
-<li>正常调用<br>  函数内是严格模式，this指向undefined，非严格模式下指向全局对象</li>
-</ul>
-<h2 id="call"><a href="#call" class="headerlink" title="call"></a>call</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">c, d , e</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.a + <span class="keyword">this</span>.b + c + d + e </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj = &#123; <span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">2</span> &#125;</span><br><span class="line">sum.call(obj, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>) <span class="comment">// 15</span></span><br></pre></td></tr></table></figure>
-
-<p>call 用来改变函数运行时this的指向</p>
-<p>传参格式是 fun.call(obj, arg0, arg1…)</p>
-<h2 id="apply"><a href="#apply" class="headerlink" title="apply"></a>apply</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 上面的函数也可以这样调用</span></span><br><span class="line">sum.apply(obj, [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]) <span class="comment">// 15</span></span><br></pre></td></tr></table></figure>
-
-<p>apply的行为是和call一致的，传参的方式不一致。<br>传参方式是fun.apply(obj, [arg1, arg2, …])</p>
-<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><p>bind的行为方式和call、apply是不一致的</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 同样的期望，bind的方式是这样的</span></span><br><span class="line">sum.bind(obj)(<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>) <span class="comment">// 15</span></span><br></pre></td></tr></table></figure>
-
-<p>可以看到，bind操作会产生一个新的函数，这个函数的this被绑定到了指定的对象上了</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> newSum = sum.bind(obj)</span><br><span class="line">newSum(<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>) <span class="comment">// 15</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>call、apply会执行函数，这一次调用的this被替换了，再次正常调用原函数，this还是原来的指向<br>bind会返回一个改变了this的新函数，新函数的this被改变成了指定的对象</p>
-
-      
-    </div>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-      </footer>
-  </div>
-</article>
-
-<!--
- * @Author       : licheng252@xdf.cn
- * @Date         : 2020-04-21 16:01:24
- * @LastEditors  : licheng252@xdf.cn
- * @LastEditTime : 2020-05-11 21:27:37
- * @Description  : 描述信息
- -->
-
-
-
-
 
 <nav id="pagination">
   
@@ -733,6 +758,10 @@ export MAVEN_HOME</code></pre></li>
 <div class="widget tag">
   <h3 class="title">目录</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/12/02/base-6/">js里的位运算</a>
+      </li>
     
       <li>
         <a href="/2020/11/25/base-5/">写一下排序算法</a>
